@@ -7,6 +7,8 @@ public class Main {
         final long FRAME_TIME = 1000 / TARGET_FPS;
 
         GameEngine game = new GameEngine();
+        //game.printAllCellsUsage();
+        game.printAllPiecesInPlay();
 
         while (game.windowExists()) {
             long startTime = System.currentTimeMillis();

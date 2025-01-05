@@ -22,6 +22,10 @@ public class GameEngine {
         this.bMgr = new BoardManager(cells, creator);
         this.pMgr = new PieceManager(pieces, creator);
         this.bdRdr = new BoardRenderer(cells, pieces);
+
+        for (entity.Entity piece : pieces) {
+            updateCellUse(piece.getX(), piece.getY());
+        }
     }
 
     public boolean windowExists() {
@@ -30,5 +34,17 @@ public class GameEngine {
 
     public void repaintWindow() {
         bdRdr.repaint();
+    }
+
+    private void updateCellUse(int x, int y) {
+        bMgr.updateSpace(x, y);
+    }
+
+    public void printAllCellsUsage() {
+        bMgr.printAllIsCellOccupied();
+    }
+
+    public void printAllPiecesInPlay() {
+        pMgr.printAllPiecesInPlay();
     }
 }
