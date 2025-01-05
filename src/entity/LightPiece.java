@@ -10,6 +10,7 @@ public class LightPiece extends Entity {
     public LightPiece(int x, int y, BufferedImage image) {
         super("LightPiece", x, y, image);
         this.movementHandler = new MovementHandler();
+        generateLegalMoves();
     }
 
     public void update() {

@@ -8,7 +8,7 @@ public class Main {
 
         GameEngine game = new GameEngine();
         //game.printAllCellsUsage();
-        game.printAllPiecesInPlay();
+        //game.printAllPiecesInPlay();
 
         while (game.windowExists()) {
             long startTime = System.currentTimeMillis();

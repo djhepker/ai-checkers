@@ -1,5 +1,6 @@
 package gameworld;
 
+import entity.Entity;
 import utils.EntityCreator;
 import utils.EntityList;
 
@@ -41,6 +42,15 @@ public class PieceManager {
                 x += 2;
             }
         }
+    }
+
+    public Entity getPiece(int x, int y) {
+        for (Entity piece : pieces) {
+            if (piece.getX() == x && piece.getY() == y) {
+                return piece;
+            }
+        }
+        return null;
     }
 
     public void printNumPieces() {

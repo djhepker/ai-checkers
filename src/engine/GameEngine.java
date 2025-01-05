@@ -28,6 +28,11 @@ public class GameEngine {
         }
     }
 
+    // TODO: Figure out how to create and test movement logic for LightPiece
+    public void movePiece(int x, int y) {
+
+    }
+
     public boolean windowExists() {
         return bdRdr.windowOpen();
     }
