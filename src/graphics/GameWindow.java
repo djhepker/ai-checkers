@@ -1,6 +1,4 @@
-package utils;
-
-import gameworld.BoardRenderer;
+package graphics;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;

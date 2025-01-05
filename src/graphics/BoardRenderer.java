@@ -1,19 +1,26 @@
-package gameworld;
+package graphics;
 
 import entity.DarkPiece;
 import entity.Entity;
 import entity.LightPiece;
+import gameworld.Cell;
 import utils.EntityList;
-import utils.GameWindow;
 
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.BorderFactory;
 import javax.swing.border.Border;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class BoardRenderer extends JPanel {
     private EntityList cells;
     private EntityList pieces;
     private GameWindow gameWindow;
+
+    private int selectedRow;
+    private int selectedCol;
 
     public BoardRenderer(EntityList cells, EntityList pieces) {
         this.cells = cells;
@@ -21,10 +28,31 @@ public class BoardRenderer extends JPanel {
         this.gameWindow = new GameWindow(this);
         Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 10); // 5px black border
         setBorder(blackLine);
+        this.selectedCol = -1;
+        this.selectedRow = -1;
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleMouseClick(e.getX(), e.getY());
+            }
+        });
     }
 
     public boolean windowOpen() {
         return gameWindow.isOpen();
+    }
+
+    private void handleMouseClick(int mouseX, int mouseY) {
+        int panelWidth = getWidth();
+        int panelHeight = getHeight();
+        int cellWidth = panelWidth / 8;
+        int cellHeight = panelHeight / 8;
+        int col = mouseX / cellWidth;
+        int row = mouseY / cellHeight;
+
+        selectedRow = row;
+        selectedCol = col;
     }
 
     @Override
@@ -32,6 +60,24 @@ public class BoardRenderer extends JPanel {
         super.paintComponent(g);
         drawBoard(g);
         drawPieces(g);
+
+        int panelWidth = getWidth();
+        int panelHeight = getHeight();
+        int cellWidth = panelWidth / 8;
+        int cellHeight = panelHeight / 8;
+
+        if (selectedRow != -1 && selectedCol != -1) {
+            // Calculate the top-left corner of the selected cell
+            int xPos = selectedCol * cellWidth;
+            int yPos = selectedRow * cellHeight;
+
+            // Set color for the highlight border
+            g.setColor(Color.BLUE);
+            //g.setStroke(new BasicStroke(3));
+
+            // Draw a rectangle around the selected cell
+            g.drawRect(xPos, yPos, cellWidth, cellHeight);
+        }
     }
 
     private void drawBoard(Graphics g) {

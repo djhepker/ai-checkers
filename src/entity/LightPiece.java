@@ -18,6 +18,10 @@ public class LightPiece extends Entity {
         generateLegalMoves();
     }
 
+    public int[][] getTheoreticalMoves() {
+        return movementHandler.getTheoreticalMoves();
+    }
+
     // y-= 1; x +- 1
     private void generateLegalMoves() {
         if (getY() - 1 >= 0) {

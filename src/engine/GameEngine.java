@@ -1,7 +1,7 @@
 package engine;
 
 import gameworld.BoardManager;
-import gameworld.BoardRenderer;
+import graphics.BoardRenderer;
 import gameworld.PieceManager;
 import utils.EntityCreator;
 import utils.EntityList;
