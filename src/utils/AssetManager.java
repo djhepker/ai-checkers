@@ -8,8 +8,8 @@ public class AssetManager {
 
     private final int cellWidth = 16;
     private final int cellHeight = 16;
-    private final int darkTileStart = 16;
-    private final int lightTileStart = 0;
+    private final int darkTileStart = 0;
+    private final int lightTileStart = 16;
     private final int lightPieceStart = 32;
     private final int darkPieceStart = 48;
 

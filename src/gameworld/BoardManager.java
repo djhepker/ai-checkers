@@ -58,8 +58,8 @@ public class BoardManager {
     }
 
     private void createBoardCells() {
-        for (int j = 0; j < 8; j++) {
-            for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 cells.addEntity(creator.createCell(i, j));
             }
         }

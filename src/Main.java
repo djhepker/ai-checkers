@@ -4,11 +4,14 @@ import gameworld.BoardRenderer;
 
 public class Main {
     public static void main(String[] args) {
-        BoardManager boardManager = new BoardManager();
-        BoardRenderer boardRenderer = new BoardRenderer(boardManager.getCells(), boardManager.getPieces());
+        BoardManager bMgr = new BoardManager();
+        BoardRenderer bRdr = new BoardRenderer(bMgr.getCells(), bMgr.getPieces());
 
-        while (boardRenderer.windowOpen()) {
-            boardRenderer.repaint();
+        //bMgr.printAllPiecesInPlay();
+        //bMgr.printAllCellsInPlay();
+
+        while (bRdr.windowOpen()) {
+            bRdr.repaint();
         }
     }
 }
