@@ -1,27 +1,14 @@
 package gameworld;
 
-import entity.DarkPiece;
 import utils.EntityCreator;
 import utils.EntityList;
-import utils.AssetManager;
 
-/*
-* Handles setting up and maintaining our gameboard
-* */
 public class BoardManager {
-    private final int cellWidth = 16;
-    private final int cellHeight = 16;
-    private final int darkTileStart = 16;
-    private final int lightTileStart = 0;
-
-    private boolean[][] inUseArr;
     private EntityList pieces;
     private EntityList cells;
     private EntityCreator creator;
 
     public BoardManager() {
-        //  default set to false
-         inUseArr = new boolean[8][8];
          pieces = new EntityList();
          cells = new EntityList();
          creator = new EntityCreator();
@@ -95,19 +82,5 @@ public class BoardManager {
                 x += 2;
             }
         }
-    }
-
-    public String coordinatesToString(int row, int column) {
-        char col = (char) ('A' + column);
-        return "" + col + row;
-    }
-
-    public int[] stringCoordinateToIntArr(String position) {
-        char column = position.charAt(0);
-        int row = Integer.parseInt(position.substring(1));
-        int x = column - 'A';
-        int y = row - 1;
-
-        return new int[] {x, y};
     }
 }

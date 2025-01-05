@@ -9,9 +9,7 @@ import utils.GameWindow;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-/*
-* Handles draw logic for our checkersboard
-* */
+
 public class BoardRenderer extends JPanel {
     private EntityList cells;
     private EntityList pieces;
@@ -40,8 +38,8 @@ public class BoardRenderer extends JPanel {
         int panelWidth = getWidth();
         int panelHeight = getHeight();
 
-        int cellWidth = panelWidth / 8;   // 8 columns on the board
-        int cellHeight = panelHeight / 8; // 8 rows on the board
+        int cellWidth = panelWidth / 8;
+        int cellHeight = panelHeight / 8;
 
         for (Entity entity : cells) {
             Cell cell = (Cell) entity;
@@ -51,13 +49,12 @@ public class BoardRenderer extends JPanel {
         }
     }
 
-
     private void drawPieces(Graphics g) {
         int panelWidth = getWidth();
         int panelHeight = getHeight();
 
-        int pieceWidth = panelWidth / 8;   // 8 columns on the board
-        int pieceHeight = panelHeight / 8; // 8 rows on the board
+        int pieceWidth = panelWidth / 8;
+        int pieceHeight = panelHeight / 8;
 
         for (Entity entity : pieces) {
             if (entity.getName() == "DarkPiece") {

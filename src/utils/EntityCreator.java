@@ -9,7 +9,6 @@ public class EntityCreator {
 
     public EntityCreator() {
         assetManager = new AssetManager();
-
     }
 
     public Cell createCell(int x, int y) {
