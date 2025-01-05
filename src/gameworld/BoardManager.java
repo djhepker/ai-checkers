@@ -20,4 +20,12 @@ public class BoardManager {
             }
         }
     }
+
+    public void printNumCells() {
+        System.out.println("The number of Cells: " + cells.getNumEntities());
+    }
+
+    public void printAllCellsInPlay() {
+        cells.printEntities();
+    }
 }

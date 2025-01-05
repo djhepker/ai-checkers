@@ -31,27 +31,4 @@ public class GameEngine {
     public void repaintWindow() {
         bdRdr.repaint();
     }
-
-    public EntityList getPieces() {
-        return pieces;
-    }
-
-    public void printAllPiecesInPlay() {
-        pieces.printEntities();
-    }
-    public void printNumPieces() {
-        System.out.println("The number of pieces: " + pieces.getNumEntities());
-    }
-
-    public EntityList getCells() {
-        return cells;
-    }
-
-    public void printAllCellsInPlay() {
-        cells.printEntities();
-    }
-
-    public void printNumCells() {
-        System.out.println("The number of Cells: " + cells.getNumEntities());
-    }
 }

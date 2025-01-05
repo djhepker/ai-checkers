@@ -10,11 +10,10 @@ public class PieceManager {
     public PieceManager(EntityList pieces, EntityCreator creator) {
         this.pieces = pieces;
         this.creator = creator;
+        createBeginningPieces();
     }
 
     private void createBeginningPieces() {
-        // starting from top left
-        // dark starts on 2nd index, so x = 1
         int x = 1;
         int y = 0;
         while (y < 3) {
@@ -42,5 +41,13 @@ public class PieceManager {
                 x += 2;
             }
         }
+    }
+
+    public void printNumPieces() {
+        System.out.println("The number of pieces: " + pieces.getNumEntities());
+    }
+
+    public void printAllPiecesInPlay() {
+        pieces.printEntities();
     }
 }
