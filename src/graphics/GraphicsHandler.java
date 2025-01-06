@@ -20,13 +20,13 @@ public class GraphicsHandler extends JPanel {
     private EntityList cells;
     private EntityList pieces;
     private GameWindow gameWindow;
-    private InputHandler inHndlr;
+    private InputHandler inputHandler;
 
     public GraphicsHandler(EntityList cells, EntityList pieces) {
         this.cells = cells;
         this.pieces = pieces;
         this.gameWindow = new GameWindow(this);
-        this.inHndlr = new InputHandler(this);
+        this.inputHandler = new InputHandler(this);
 
         Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 8); // 10px black border
         setBorder(blackLine);
@@ -34,13 +34,9 @@ public class GraphicsHandler extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                inHndlr.handleMouseClick(e);
+                inputHandler.handleMouseClick(e);
             }
         });
-    }
-
-    public boolean windowOpen() {
-        return gameWindow.isOpen();
     }
 
     @Override
@@ -50,12 +46,10 @@ public class GraphicsHandler extends JPanel {
 
         drawBoard(g2d);
         drawPieces(g2d);
-        inHndlr.update();
-        if (inHndlr.cellIsChosen()) {
+        if (inputHandler.getFirstXPos() != -1) {
             g2d.setColor(Color.BLUE);
             g2d.setStroke(new BasicStroke(3));
-            g2d.drawRect(inHndlr.getXPosCell(), inHndlr.getYPosCell(), getWidth() / 8, getHeight() / 8);
-            inHndlr.setCellChosen(false);
+            g2d.drawRect(inputHandler.getFirstXPos(), inputHandler.getFirstYPos(), getWidth() / 8, getHeight() / 8);
         }
     }
 
@@ -94,5 +88,13 @@ public class GraphicsHandler extends JPanel {
                 g2d.drawImage(light.getSprite(), xPos, yPos, pieceWidth, pieceHeight, null);
             }
         }
+    }
+
+    public InputHandler getInputHandler() {
+        return inputHandler;
+    }
+
+    public GameWindow getGameWindow() {
+        return gameWindow;
     }
 }

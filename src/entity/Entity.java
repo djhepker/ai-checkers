@@ -39,6 +39,10 @@ public abstract class Entity {
         return sprite;
     }
 
+    public void printName() {
+        System.out.println("Name of Entity: " + name);
+    }
+
     public void setSprite(BufferedImage inputSprite) {
         sprite = inputSprite;
     }

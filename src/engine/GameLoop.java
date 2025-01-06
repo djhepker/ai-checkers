@@ -11,7 +11,7 @@ public class GameLoop implements Runnable {
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted() && game.windowExists()) {
+        while (!Thread.currentThread().isInterrupted() && game.isOpen()) {
             long startTime = System.nanoTime();
             game.updateGame();
 

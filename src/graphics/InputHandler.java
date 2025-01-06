@@ -6,45 +6,68 @@ public class InputHandler {
     private GraphicsHandler gHandler;
     private int selectedRow;
     private int selectedCol;
-    private int yPosCell;
-    private int xPosCell;
-    private boolean cellChosen;
+    private int firstXPos;
+    private int firstYPos;
+    private int secondXPos;
+    private int secondYPos;
+    private boolean firstClick;
+    private boolean secondClick;
 
     public InputHandler(GraphicsHandler gHandler) {
         this.gHandler = gHandler;
         this.selectedCol = -1;
         this.selectedRow = -1;
-        this.xPosCell = -1;
-        this.yPosCell = -1;
-        this.cellChosen = false;
+        this.firstXPos = -1;
+        this.firstYPos = -1;
+        this.secondXPos = -1;
+        this.secondYPos = -1;
+        this.firstClick = false;
+        this.secondClick = false;
     }
 
     public void update() {
-        if (selectedRow != -1 && selectedCol != -1) {
-            xPosCell = selectedCol * (gHandler.getWidth() / 8);
-            yPosCell = selectedRow * (gHandler.getHeight() / 8);
+        if (firstClick) {
+            firstXPos = selectedCol * (gHandler.getWidth() / 8);
+            firstYPos = selectedRow * (gHandler.getHeight() / 8);
+        } else if (secondClick) {
+            System.out.println("Second action detected");
+            secondXPos = selectedCol * (gHandler.getWidth() / 8);
+            secondYPos = selectedRow * (gHandler.getHeight() / 8);
         }
     }
 
     public void handleMouseClick(MouseEvent e) {
+        if (!firstClick) {
+            firstClick = true;
+        } else {
+            secondClick = true;
+        }
         selectedRow = e.getY() / (gHandler.getHeight() / 8);
         selectedCol = e.getX() / (gHandler.getWidth() / 8);
-        cellChosen = true;
     }
 
-    public void setCellChosen(boolean isCellChosen) {
-        cellChosen = isCellChosen;
+    public void resetClicks() {
+        firstClick = false;
+        secondClick = false;
     }
 
-    public boolean cellIsChosen() {
-        return cellChosen;
+    public boolean movementChosen() {
+        return secondClick;
     }
 
-    public int getYPosCell() {
-        return yPosCell;
+    public int getFirstXPos() {
+        return firstXPos;
     }
 
-    public int getXPosCell() {
-        return xPosCell;
+    public int getFirstYPos() {
+        return firstYPos;
+    }
+
+    public int getSecondXPos() {
+        return secondXPos;
+    }
+
+    public int getSecondYPos() {
+        return secondYPos;
     }
 }

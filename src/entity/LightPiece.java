@@ -22,7 +22,6 @@ public class LightPiece extends Entity {
         return movementHandler.getTheoreticalMoves();
     }
 
-    // y-= 1; x +- 1
     private void generateLegalMoves() {
         if (getY() - 1 >= 0) {
             if (getX() + 1 <= 7) {
