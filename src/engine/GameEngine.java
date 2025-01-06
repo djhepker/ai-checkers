@@ -3,6 +3,7 @@ package engine;
 import gameworld.BoardManager;
 import graphics.GraphicsHandler;
 import gameworld.PieceManager;
+import graphics.InputHandler;
 import utils.EntityCreator;
 import utils.EntityList;
 
@@ -10,7 +11,8 @@ public class GameEngine {
     private EntityCreator creator;
     private BoardManager bMgr;
     private PieceManager pMgr;
-    private GraphicsHandler gHdlr;
+    private GraphicsHandler gHndlr;
+    private InputHandler inHndlr;
 
     private EntityList cells;
     private EntityList pieces;
@@ -21,24 +23,25 @@ public class GameEngine {
         this.cells = new EntityList();
         this.bMgr = new BoardManager(cells, creator);
         this.pMgr = new PieceManager(pieces, creator);
-        this.gHdlr = new GraphicsHandler(cells, pieces);
+        this.gHndlr = new GraphicsHandler(cells, pieces);
 
         for (entity.Entity piece : pieces) {
             updateCellUse(piece.getX(), piece.getY());
         }
     }
 
+    public void updateGame() {
+
+        gHndlr.repaint();
+    }
+
     // TODO: Figure out how to create and test movement logic for LightPiece
-    public void movePiece(int x, int y) {
+    private void movePiece(int x, int y) {
 
     }
 
     public boolean windowExists() {
-        return gHdlr.windowOpen();
-    }
-
-    public void repaintWindow() {
-        gHdlr.repaint();
+        return gHndlr.windowOpen();
     }
 
     private void updateCellUse(int x, int y) {

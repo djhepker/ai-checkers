@@ -15,29 +15,26 @@ import java.awt.Graphics2D;
 import java.awt.BasicStroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 
 public class GraphicsHandler extends JPanel {
     private EntityList cells;
     private EntityList pieces;
     private GameWindow gameWindow;
-
-    private int selectedRow;
-    private int selectedCol;
+    private InputHandler inHndlr;
 
     public GraphicsHandler(EntityList cells, EntityList pieces) {
         this.cells = cells;
         this.pieces = pieces;
         this.gameWindow = new GameWindow(this);
-        Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 10); // 10px black border
+        this.inHndlr = new InputHandler(this);
+
+        Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 8); // 10px black border
         setBorder(blackLine);
-        this.selectedCol = -1;
-        this.selectedRow = -1;
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                handleMouseClick(e.getX(), e.getY());
+                inHndlr.handleMouseClick(e);
             }
         });
     }
@@ -46,36 +43,19 @@ public class GraphicsHandler extends JPanel {
         return gameWindow.isOpen();
     }
 
-    private void handleMouseClick(int mouseX, int mouseY) {
-        selectedRow = mouseY / (getHeight() / 8);
-        selectedCol = mouseX / (getWidth() / 8);
-        repaint();
-    }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         Graphics2D g2d = (Graphics2D) g;
 
         drawBoard(g2d);
         drawPieces(g2d);
-
-        int panelWidth = getWidth();
-        int panelHeight = getHeight();
-        int cellWidth = panelWidth / 8;
-        int cellHeight = panelHeight / 8;
-
-        if (selectedRow != -1 && selectedCol != -1) {
-            int xPos = selectedCol * cellWidth;
-            int yPos = selectedRow * cellHeight;
-
-            // Set stroke and color
+        inHndlr.update();
+        if (inHndlr.cellIsChosen()) {
             g2d.setColor(Color.BLUE);
-            g2d.setStroke(new BasicStroke(3)); // 3-pixel wide stroke
-
-            // Draw a rectangle around the selected cell
-            g2d.drawRect(xPos, yPos, cellWidth, cellHeight);
+            g2d.setStroke(new BasicStroke(3));
+            g2d.drawRect(inHndlr.getXPosCell(), inHndlr.getYPosCell(), getWidth() / 8, getHeight() / 8);
+            inHndlr.setCellChosen(false);
         }
     }
 
