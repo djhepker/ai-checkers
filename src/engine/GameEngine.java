@@ -1,7 +1,7 @@
 package engine;
 
 import gameworld.BoardManager;
-import graphics.BoardRenderer;
+import graphics.GraphicsHandler;
 import gameworld.PieceManager;
 import utils.EntityCreator;
 import utils.EntityList;
@@ -10,7 +10,7 @@ public class GameEngine {
     private EntityCreator creator;
     private BoardManager bMgr;
     private PieceManager pMgr;
-    private BoardRenderer bdRdr;
+    private GraphicsHandler gHdlr;
 
     private EntityList cells;
     private EntityList pieces;
@@ -21,7 +21,7 @@ public class GameEngine {
         this.cells = new EntityList();
         this.bMgr = new BoardManager(cells, creator);
         this.pMgr = new PieceManager(pieces, creator);
-        this.bdRdr = new BoardRenderer(cells, pieces);
+        this.gHdlr = new GraphicsHandler(cells, pieces);
 
         for (entity.Entity piece : pieces) {
             updateCellUse(piece.getX(), piece.getY());
@@ -34,11 +34,11 @@ public class GameEngine {
     }
 
     public boolean windowExists() {
-        return bdRdr.windowOpen();
+        return gHdlr.windowOpen();
     }
 
     public void repaintWindow() {
-        bdRdr.repaint();
+        gHdlr.repaint();
     }
 
     private void updateCellUse(int x, int y) {

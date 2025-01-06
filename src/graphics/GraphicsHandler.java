@@ -11,10 +11,13 @@ import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.BasicStroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
-public class BoardRenderer extends JPanel {
+public class GraphicsHandler extends JPanel {
     private EntityList cells;
     private EntityList pieces;
     private GameWindow gameWindow;
@@ -22,18 +25,18 @@ public class BoardRenderer extends JPanel {
     private int selectedRow;
     private int selectedCol;
 
-    public BoardRenderer(EntityList cells, EntityList pieces) {
+    public GraphicsHandler(EntityList cells, EntityList pieces) {
         this.cells = cells;
         this.pieces = pieces;
         this.gameWindow = new GameWindow(this);
-        Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 10); // 5px black border
+        Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 10); // 10px black border
         setBorder(blackLine);
         this.selectedCol = -1;
         this.selectedRow = -1;
 
         addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 handleMouseClick(e.getX(), e.getY());
             }
         });
@@ -44,22 +47,19 @@ public class BoardRenderer extends JPanel {
     }
 
     private void handleMouseClick(int mouseX, int mouseY) {
-        int panelWidth = getWidth();
-        int panelHeight = getHeight();
-        int cellWidth = panelWidth / 8;
-        int cellHeight = panelHeight / 8;
-        int col = mouseX / cellWidth;
-        int row = mouseY / cellHeight;
-
-        selectedRow = row;
-        selectedCol = col;
+        selectedRow = mouseY / (getHeight() / 8);
+        selectedCol = mouseX / (getWidth() / 8);
+        repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        drawBoard(g);
-        drawPieces(g);
+
+        Graphics2D g2d = (Graphics2D) g;
+
+        drawBoard(g2d);
+        drawPieces(g2d);
 
         int panelWidth = getWidth();
         int panelHeight = getHeight();
@@ -67,20 +67,19 @@ public class BoardRenderer extends JPanel {
         int cellHeight = panelHeight / 8;
 
         if (selectedRow != -1 && selectedCol != -1) {
-            // Calculate the top-left corner of the selected cell
             int xPos = selectedCol * cellWidth;
             int yPos = selectedRow * cellHeight;
 
-            // Set color for the highlight border
-            g.setColor(Color.BLUE);
-            //g.setStroke(new BasicStroke(3));
+            // Set stroke and color
+            g2d.setColor(Color.BLUE);
+            g2d.setStroke(new BasicStroke(3)); // 3-pixel wide stroke
 
             // Draw a rectangle around the selected cell
-            g.drawRect(xPos, yPos, cellWidth, cellHeight);
+            g2d.drawRect(xPos, yPos, cellWidth, cellHeight);
         }
     }
 
-    private void drawBoard(Graphics g) {
+    private void drawBoard(Graphics2D g2d) {
         int panelWidth = getWidth();
         int panelHeight = getHeight();
 
@@ -91,11 +90,11 @@ public class BoardRenderer extends JPanel {
             Cell cell = (Cell) entity;
             int xPos = cell.getX() * cellWidth;
             int yPos = cell.getY() * cellHeight;
-            g.drawImage(cell.getSprite(), xPos, yPos, cellWidth, cellHeight, null); // Resize the cell
+            g2d.drawImage(cell.getSprite(), xPos, yPos, cellWidth, cellHeight, null); // Resize the cell
         }
     }
 
-    private void drawPieces(Graphics g) {
+    private void drawPieces(Graphics2D g2d) {
         int panelWidth = getWidth();
         int panelHeight = getHeight();
 
@@ -103,16 +102,16 @@ public class BoardRenderer extends JPanel {
         int pieceHeight = panelHeight / 8;
 
         for (Entity entity : pieces) {
-            if (entity.getName() == "DarkPiece") {
+            if (entity.getName().equals("DarkPiece")) {
                 DarkPiece dark = (DarkPiece) entity;
                 int xPos = dark.getX() * pieceWidth;
                 int yPos = dark.getY() * pieceHeight;
-                g.drawImage(dark.getSprite(), xPos, yPos, pieceWidth, pieceHeight, null);
-            } else if (entity.getName() == "LightPiece") {
+                g2d.drawImage(dark.getSprite(), xPos, yPos, pieceWidth, pieceHeight, null);
+            } else if (entity.getName().equals("LightPiece")) {
                 LightPiece light = (LightPiece) entity;
                 int xPos = light.getX() * pieceWidth;
                 int yPos = light.getY() * pieceHeight;
-                g.drawImage(light.getSprite(), xPos, yPos, pieceWidth, pieceHeight, null);
+                g2d.drawImage(light.getSprite(), xPos, yPos, pieceWidth, pieceHeight, null);
             }
         }
     }

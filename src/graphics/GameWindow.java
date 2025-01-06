@@ -5,15 +5,15 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class GameWindow {
-    private BoardRenderer boardRenderer;
+    private GraphicsHandler graphicsHandler;
     private boolean windowOpen;
 
-    public GameWindow(BoardRenderer boardRenderer) {
-        this.boardRenderer = boardRenderer;
+    public GameWindow(GraphicsHandler graphicsHandler) {
+        this.graphicsHandler = graphicsHandler;
 
         JFrame frame = new JFrame("Checkers dev");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(boardRenderer);
+        frame.add(graphicsHandler);
         frame.setSize(800,800);
         frame.setLocationRelativeTo(null); // centered
         frame.setVisible(true);
