@@ -68,7 +68,7 @@ public class GraphicsHandler extends JPanel {
 
         drawBoard(g2d);
         drawPieces(g2d);
-        if (inputHandler.getFirstXPos() != -1) {
+        if (inputHandler.hasSelectedPiece()) {
             g2d.setColor(Color.BLUE);
             g2d.setStroke(new BasicStroke(3));
             g2d.drawRect(inputHandler.getFirstXPos(), inputHandler.getFirstYPos(), getWidth() / 8, getHeight() / 8);

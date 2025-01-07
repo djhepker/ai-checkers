@@ -10,8 +10,13 @@ public class InputHandler {
     private int firstYPos;
     private int secondXPos;
     private int secondYPos;
-    private boolean firstClick;
-    private boolean secondClick;
+    private InputState inputState;
+
+    private enum InputState {
+        NO_CLICK,
+        FIRST_CLICK,
+        SECOND_CLICK;
+    }
 
     public InputHandler(GraphicsHandler gHandler) {
         this.gHandler = gHandler;
@@ -21,38 +26,55 @@ public class InputHandler {
         this.firstYPos = -1;
         this.secondXPos = -1;
         this.secondYPos = -1;
-        this.firstClick = false;
-        this.secondClick = false;
+        inputState = InputState.NO_CLICK;
     }
 
     public void update() {
-        if (firstClick) {
-            firstXPos = selectedCol * (gHandler.getWidth() / 8);
-            firstYPos = selectedRow * (gHandler.getHeight() / 8);
-        } else if (secondClick) {
-            System.out.println("Second action detected");
-            secondXPos = selectedCol * (gHandler.getWidth() / 8);
-            secondYPos = selectedRow * (gHandler.getHeight() / 8);
+        switch (inputState) {
+            case NO_CLICK:
+                return;
+            case FIRST_CLICK:
+                firstXPos = selectedCol * (gHandler.getWidth() / 8);
+                firstYPos = selectedRow * (gHandler.getHeight() / 8);
+                return;
+            case SECOND_CLICK:
+                secondXPos = selectedCol * (gHandler.getWidth() / 8);
+                secondYPos = selectedRow * (gHandler.getHeight() / 8);
+                return;
+            default:
+                System.out.println("Invalid input state");
         }
     }
 
     public void handleMouseClick(MouseEvent e) {
-        if (!firstClick) {
-            firstClick = true;
-        } else {
-            secondClick = true;
+        switch (inputState) {
+            case NO_CLICK:
+                inputState = InputState.FIRST_CLICK;
+                break;
+            case FIRST_CLICK:
+                inputState = InputState.SECOND_CLICK;
+                break;
+            case SECOND_CLICK:
+                System.out.println("Slow down there, partner. We have two second clicks.");
+                return;
+            default:
+                System.out.println("Invalid input state");
+                return;
         }
         selectedRow = e.getY() / (gHandler.getHeight() / 8);
         selectedCol = e.getX() / (gHandler.getWidth() / 8);
     }
 
     public void resetClicks() {
-        firstClick = false;
-        secondClick = false;
+        inputState = InputState.NO_CLICK;
+    }
+
+    public boolean hasSelectedPiece() {
+        return inputState == InputState.FIRST_CLICK;
     }
 
     public boolean movementChosen() {
-        return secondClick;
+        return inputState == InputState.SECOND_CLICK;
     }
 
     public int getFirstXPos() {
