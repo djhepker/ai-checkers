@@ -14,6 +14,7 @@ public class GameEngine {
     private EntityCreator creator;
     private BoardManager bMgr;
     private PieceManager pMgr;
+    private MovementManager moveMgr;
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
     private GameWindow window;
@@ -27,6 +28,7 @@ public class GameEngine {
         this.cells = new EntityList();
         this.bMgr = new BoardManager(cells, creator);
         this.pMgr = new PieceManager(pieces, creator);
+        this.moveMgr = new MovementManager();
         this.graphicsHandler = new GraphicsHandler(cells, pieces);
         this.inputHandler = graphicsHandler.getInputHandler();
         this.window = graphicsHandler.getGameWindow();
@@ -39,31 +41,10 @@ public class GameEngine {
     public void updateGame() {
         inputHandler.update();
         if (inputHandler.movementChosen()) {
-            movePiece(inputHandler.getFirstXPos(), inputHandler.getFirstYPos());
+            moveMgr.movePiece(inputHandler.getFirstXPos(), inputHandler.getFirstYPos());
             inputHandler.resetClicks();
         }
         graphicsHandler.repaint();
-    }
-
-    private void movePiece(int x, int y) {
-        for (Entity e : pieces) {
-            System.out.println("e.getX(): " + e.getX() + " x: " + x);
-            if (e.getX() == x && e.getY() == y) {
-                if (e instanceof LightPiece) {
-                    LightPiece movementPiece = (LightPiece) e;
-                    int[][] possibleMoves = movementPiece.getTheoreticalMoves();
-                    for (int i = 0; i < possibleMoves.length; i++) {
-                        if (possibleMoves[i][0] == x && possibleMoves[i][1] == y) {
-                            System.out.println(
-                                    "Match found at: (" + possibleMoves[i][0] + ", " + possibleMoves[i][1] + ")");
-                            return;
-                        }
-                    }
-                } else {
-                    break;
-                }
-            }
-        }
     }
 
     public boolean isOpen() {
@@ -80,5 +61,28 @@ public class GameEngine {
 
     public void printAllPiecesInPlay() {
         pMgr.printAllPiecesInPlay();
+    }
+
+    public class MovementManager {
+        private void movePiece(int x, int y) {
+            for (Entity e : pieces) {
+                System.out.println("e.getX(): " + e.getX() + " x: " + x);
+                if (e.getX() == x && e.getY() == y) {
+                    if (e instanceof LightPiece) {
+                        LightPiece movementPiece = (LightPiece) e;
+                        int[][] possibleMoves = movementPiece.getTheoreticalMoves();
+                        for (int i = 0; i < possibleMoves.length; i++) {
+                            if (possibleMoves[i][0] == x && possibleMoves[i][1] == y) {
+                                System.out.println(
+                                        "Match found at: (" + possibleMoves[i][0] + ", " + possibleMoves[i][1] + ")");
+                                return;
+                            }
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
