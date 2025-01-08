@@ -29,10 +29,15 @@ public class EntityArray {
     }
 
     public void printEntities() {
-        for (int i = 0; i < entityArray.length; i++) {
-            for (int j = 0; j < entityArray[i].length; j++) {
-                System.out.println("Entity is: " + entityArray[j][i] + " with (x,y): " + j + ", " + i);
+        for (int j = 0; j < entityArray.length; j++) {
+            for (int i = 0; i < entityArray[j].length; i++) { // Access each element in row `j`
+                if (entityArray[j][i] != null) { // Corrected the index
+                    MovableEntity e = (MovableEntity) entityArray[j][i];
+                    System.out.println("Entity is: " + entityArray[j][i] + " with (x,y): "
+                            + e.getX() + ", " + e.getY());
+                }
             }
         }
     }
+
 }

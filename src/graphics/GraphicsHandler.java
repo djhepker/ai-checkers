@@ -34,10 +34,8 @@ public class GraphicsHandler extends JPanel {
         this.entityWidth = 0;
         this.entityHeight = 0;
         this.windowResized = true;
-
         Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 8); // 10px black border
         setBorder(blackLine);
-
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -45,7 +43,6 @@ public class GraphicsHandler extends JPanel {
                 super.componentResized(e);
             }
         });
-
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -58,11 +55,9 @@ public class GraphicsHandler extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-
         if (windowResized) {
             updateEntitySize();
         }
-
         drawBoard(g2d);
         drawPieces(g2d);
         if (inputHandler.hasSelectedPiece()) {

@@ -61,8 +61,8 @@ public class InputHandler {
                 System.out.println("Invalid input state");
                 return;
         }
-        selectedRow = e.getY() / (gHandler.getHeight() / 8);
         selectedCol = e.getX() / (gHandler.getWidth() / 8);
+        selectedRow = e.getY() / (gHandler.getHeight() / 8);
     }
 
     public void resetClicks() {
