@@ -15,6 +15,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+// TODO make border outline resizable
 public class GraphicsHandler extends JPanel {
     private EntityArray cells;
     private EntityArray pieces;
