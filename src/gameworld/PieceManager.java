@@ -2,13 +2,13 @@ package gameworld;
 
 import entity.Entity;
 import utils.EntityCreator;
-import utils.EntityList;
+import utils.EntityArray;
 
 public class PieceManager {
-    private EntityList pieces;
+    private EntityArray pieces;
     private EntityCreator creator;
 
-    public PieceManager(EntityList pieces, EntityCreator creator) {
+    public PieceManager(EntityArray pieces, EntityCreator creator) {
         this.pieces = pieces;
         this.creator = creator;
         createBeginningPieces();
@@ -45,12 +45,7 @@ public class PieceManager {
     }
 
     public Entity getPiece(int x, int y) {
-        for (Entity piece : pieces) {
-            if (piece.getX() == x && piece.getY() == y) {
-                return piece;
-            }
-        }
-        return null;
+        return pieces.getEntity(x, y);
     }
 
     public void printNumPieces() {

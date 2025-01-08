@@ -1,10 +1,7 @@
 package graphics;
 
-import entity.DarkPiece;
 import entity.Entity;
-import entity.LightPiece;
-import gameworld.Cell;
-import utils.EntityList;
+import utils.EntityArray;
 
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
@@ -19,8 +16,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class GraphicsHandler extends JPanel {
-    private EntityList cells;
-    private EntityList pieces;
+    private EntityArray cells;
+    private EntityArray pieces;
     private GameWindow gameWindow;
     private InputHandler inputHandler;
 
@@ -29,7 +26,7 @@ public class GraphicsHandler extends JPanel {
     private boolean windowResized;
 
 
-    public GraphicsHandler(EntityList cells, EntityList pieces) {
+    public GraphicsHandler(EntityArray cells, EntityArray pieces) {
         this.cells = cells;
         this.pieces = pieces;
         this.gameWindow = new GameWindow(this);
@@ -82,25 +79,24 @@ public class GraphicsHandler extends JPanel {
     }
 
     private void drawBoard(Graphics2D g2d) {
-        for (Entity entity : cells) {
-            Cell cell = (Cell) entity;
-            int xPos = cell.getX() * entityWidth;
-            int yPos = cell.getY() * entityHeight;
-            g2d.drawImage(cell.getSprite(), xPos, yPos, entityWidth, entityHeight, null); // Resize the cell
+        for (int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
+                int xPos = i * entityWidth;
+                int yPos = j * entityHeight;
+                g2d.drawImage(cells.getEntity(i, j).getSprite(), xPos, yPos, entityWidth, entityHeight, null); // Resize the cell
+            }
         }
     }
 
-    private void drawPieces(Graphics2D g2d) {for (Entity entity : pieces) {
-            if (entity.getName().equals("DarkPiece")) {
-                DarkPiece dark = (DarkPiece) entity;
-                int xPos = dark.getX() * entityWidth;
-                int yPos = dark.getY() * entityHeight;
-                g2d.drawImage(dark.getSprite(), xPos, yPos, entityWidth, entityHeight, null);
-            } else if (entity.getName().equals("LightPiece")) {
-                LightPiece light = (LightPiece) entity;
-                int xPos = light.getX() * entityWidth;
-                int yPos = light.getY() * entityHeight;
-                g2d.drawImage(light.getSprite(), xPos, yPos, entityWidth, entityHeight, null);
+    private void drawPieces(Graphics2D g2d) {
+        for (int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
+                Entity entity = pieces.getEntity(i, j);
+                if (entity != null) {
+                    int xPos = entity.getX() * entityWidth;
+                    int yPos = entity.getY() * entityHeight;
+                    g2d.drawImage(entity.getSprite(), xPos, yPos, entityWidth, entityHeight, null);
+                }
             }
         }
     }
