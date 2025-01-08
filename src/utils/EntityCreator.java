@@ -5,7 +5,7 @@ import entity.LightPiece;
 import gameworld.Cell;
 
 public class EntityCreator {
-    private AssetManager assetManager;
+    private final AssetManager assetManager;
 
     public EntityCreator() {
         assetManager = new AssetManager();

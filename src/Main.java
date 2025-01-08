@@ -1,17 +1,13 @@
 
-import gameworld.BoardManager;
-import gameworld.BoardRenderer;
+import engine.GameEngine;
+import engine.GameLoop;
 
 public class Main {
     public static void main(String[] args) {
-        BoardManager bMgr = new BoardManager();
-        BoardRenderer bRdr = new BoardRenderer(bMgr.getCells(), bMgr.getPieces());
+        GameEngine game = new GameEngine();
+        GameLoop gameLoop = new GameLoop(game);
 
-        //bMgr.printAllPiecesInPlay();
-        //bMgr.printAllCellsInPlay();
-
-        while (bRdr.windowOpen()) {
-            bRdr.repaint();
-        }
+        //game.printAllCellsUsage();
+        //game.printAllPiecesInPlay();
     }
 }

@@ -8,7 +8,7 @@ public abstract class Entity {
     private int x;
     private int y;
 
-    public Entity(String inputName, int x, int y, BufferedImage image) {
+    protected Entity(String inputName, int x, int y, BufferedImage image) {
         this.name = inputName;
         this.x = x;
         this.y = y;
@@ -27,8 +27,20 @@ public abstract class Entity {
         return y;
     }
 
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
     public BufferedImage getSprite() {
         return sprite;
+    }
+
+    public void printName() {
+        System.out.println("Name of Entity: " + name);
     }
 
     public void setSprite(BufferedImage inputSprite) {
