@@ -29,10 +29,10 @@ public class GameEngine {
         this.cells = new EntityArray();
         this.bMgr = new BoardManager(cells, creator);
         this.pMgr = new PieceManager(pieces, creator);
-        this.moveMgr = new MovementManager(inputHandler);
         this.graphicsHandler = new GraphicsHandler(cells, pieces);
         this.inputHandler = graphicsHandler.getInputHandler();
         this.window = graphicsHandler.getGameWindow();
+        this.moveMgr = new MovementManager(inputHandler);
     }
 
     public void updateGame() {

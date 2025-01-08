@@ -23,6 +23,9 @@ public class GraphicsHandler extends JPanel {
 
     private int entityWidth;
     private int entityHeight;
+    private int highlightRectangleX;
+    private int highlightRectangleY;
+
     private boolean windowResized;
 
 
@@ -33,6 +36,8 @@ public class GraphicsHandler extends JPanel {
         this.inputHandler = new InputHandler(this);
         this.entityWidth = 0;
         this.entityHeight = 0;
+        this.highlightRectangleX = 0;
+        this.highlightRectangleY = 0;
         this.windowResized = true;
         Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 8); // 10px black border
         setBorder(blackLine);
@@ -63,7 +68,9 @@ public class GraphicsHandler extends JPanel {
         if (inputHandler.hasSelectedPiece()) {
             g2d.setColor(Color.BLUE);
             g2d.setStroke(new BasicStroke(3));
-            g2d.drawRect(inputHandler.getFirstXPos(), inputHandler.getFirstYPos(), getWidth() / 8, getHeight() / 8);
+            highlightRectangleX = inputHandler.getSelectedCol() * (getWidth() / 8);
+            highlightRectangleY = inputHandler.getSelectedRow() * (getHeight()/ 8);
+            g2d.drawRect(highlightRectangleX, highlightRectangleY, getWidth() / 8, getHeight() / 8);
         }
     }
 

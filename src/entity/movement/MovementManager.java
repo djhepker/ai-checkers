@@ -19,8 +19,8 @@ public class MovementManager {
 
     private void movePieceHelper(MovableEntity entityToMove) {
         int[][] theoreticalMoves = entityToMove.getTheoreticalMoves();
-        int postX = input.getSecondXPos();
-        int postY = input.getSecondYPos();
+        int postX = input.getSelectedCol();
+        int postY = input.getSelectedRow();
 
         for (int[] xPosition : theoreticalMoves) {
             if (postX == xPosition[0] && postY == xPosition[1]) {
