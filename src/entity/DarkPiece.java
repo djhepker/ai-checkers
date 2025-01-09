@@ -63,12 +63,12 @@ public class DarkPiece extends Entity implements MovableEntity {
     }
 
     private void generateTheoreticalMoves() {
-        if (getY() - 1 >= 0) {
+        if (getY() + 1 >= 0) {
             if (getX() + 1 <= 7) {
-                movementHandler.addMovement(getX() + 1, getY() - 1);
+                movementHandler.addMovement(getX() + 1, getY() + 1);
             }
             if (getX() - 1 >= 0) {
-                movementHandler.addMovement(getX() - 1, getY() - 1);
+                movementHandler.addMovement(getX() - 1, getY() + 1);
             }
         }
     }
