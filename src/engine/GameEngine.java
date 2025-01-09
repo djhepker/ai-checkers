@@ -1,8 +1,6 @@
 package engine;
 
 import entity.Entity;
-import entity.LightPiece;
-import entity.movement.MovementManager;
 import gameworld.BoardManager;
 import graphics.GameWindow;
 import graphics.GraphicsHandler;
@@ -10,12 +8,12 @@ import gameworld.PieceManager;
 import graphics.InputHandler;
 import utils.EntityCreator;
 import utils.EntityArray;
+import utils.MovableEntity;
 
 public class GameEngine {
     private EntityCreator creator;
     private BoardManager bMgr;
     private PieceManager pMgr;
-    private MovementManager moveMgr;
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
     private GameWindow window;
@@ -28,24 +26,39 @@ public class GameEngine {
         this.pieces = new EntityArray();
         this.cells = new EntityArray();
         this.bMgr = new BoardManager(cells, creator);
-        this.pMgr = new PieceManager(pieces, creator);
         this.graphicsHandler = new GraphicsHandler(cells, pieces);
         this.inputHandler = graphicsHandler.getInputHandler();
         this.window = graphicsHandler.getGameWindow();
-        this.moveMgr = new MovementManager(inputHandler);
+        this.pMgr = new PieceManager(pieces, creator, inputHandler);
     }
 
     public void updateGame() {
         inputHandler.update();
         if (inputHandler.movementChosen()) {
-            moveMgr.movePiece(pieces.getEntity(inputHandler.getFirstXPos(), inputHandler.getFirstYPos()));
+            int firstXPos = inputHandler.getFirstXPos();
+            int firstYPos = inputHandler.getFirstYPos();
+
+            pMgr.movePiece(pieces.getEntity(firstXPos, firstYPos));
             inputHandler.resetClicks();
+            printSelectedPiece();
         }
         graphicsHandler.repaint();
     }
 
     public boolean isOpen() {
         return window.isOpen();
+    }
+
+    private void printSelectedPiece() {
+        int xCell = inputHandler.getFirstXPos();
+        int yCell = inputHandler.getFirstYPos();
+
+        Entity e = pMgr.getPiece(xCell, yCell);
+        if (e instanceof MovableEntity) {
+            MovableEntity piece = (MovableEntity) e;
+            piece.printData();
+        }
+
     }
 
     public void printAllPiecesInPlay() {

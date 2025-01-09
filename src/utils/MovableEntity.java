@@ -1,7 +1,11 @@
 package utils;
 
 public interface MovableEntity {
+    void update();
+
     int[][] getTheoreticalMoves();
+
+    String getName();
 
     void setX(int x);
 
@@ -10,4 +14,6 @@ public interface MovableEntity {
     int getX();
 
     int getY();
+
+    void printData();
 }

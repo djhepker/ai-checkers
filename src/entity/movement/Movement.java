@@ -9,7 +9,11 @@ public class Movement {
         this.postY = postY;
     }
 
-    public int[] getMoveCoordinates() {
-        return new int[] {postX, postY};
+    public int getpostX() {
+        return postX;
+    }
+
+    public int getpostY() {
+        return postY;
     }
 }

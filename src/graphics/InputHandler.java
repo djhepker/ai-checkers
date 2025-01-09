@@ -57,6 +57,11 @@ public class InputHandler {
         }
         selectedCol = e.getX() / (gHandler.getWidth() / 8);
         selectedRow = e.getY() / (gHandler.getHeight() / 8);
+        System.out.println("Mouse clicked with selection of: (" + selectedCol + ", " + selectedRow + ")");
+    }
+
+    public String getInputState() {
+        return String.valueOf(inputState);
     }
 
     public void resetClicks() {

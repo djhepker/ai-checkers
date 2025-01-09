@@ -29,7 +29,6 @@ public class GraphicsHandler extends JPanel {
 
     private boolean windowResized;
 
-
     public GraphicsHandler(EntityArray cells, EntityArray pieces) {
         this.cells = cells;
         this.pieces = pieces;

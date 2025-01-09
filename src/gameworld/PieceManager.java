@@ -1,17 +1,48 @@
 package gameworld;
 
 import entity.Entity;
+import graphics.InputHandler;
 import utils.EntityCreator;
 import utils.EntityArray;
+import utils.MovableEntity;
 
 public class PieceManager {
     private EntityArray pieces;
     private EntityCreator creator;
+    private InputHandler input;
 
-    public PieceManager(EntityArray pieces, EntityCreator creator) {
+    public PieceManager(EntityArray pieces, EntityCreator creator, InputHandler inputHandler) {
         this.pieces = pieces;
         this.creator = creator;
+        this.input = inputHandler;
         createBeginningPieces();
+    }
+
+    public void movePiece(Entity entity) {
+        if (entity instanceof MovableEntity && movePieceHelper((MovableEntity) entity)) {
+            pieces.addEntity(entity);
+        }
+    }
+
+    private boolean movePieceHelper(MovableEntity entityToMove) {
+        int[][] theoreticalMoves = entityToMove.getTheoreticalMoves();
+        if (theoreticalMoves == null) {
+            return false;
+        }
+
+        int postX = input.getSelectedCol();
+        int postY = input.getSelectedRow();
+
+        for (int[] xPosition : theoreticalMoves) {
+            if (postX == xPosition[0] && postY == xPosition[1]) {
+                entityToMove.setX(postX);
+                entityToMove.setY(postY);
+                entityToMove.update();
+                pieces.removeEntity(input.getFirstXPos(), input.getFirstYPos());
+                return true;
+            }
+        }
+        return false;
     }
 
     private void createBeginningPieces() {

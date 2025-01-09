@@ -11,23 +11,28 @@ public class MovementHandler {
         this.cursor = null;
     }
 
-    public void clearList() {
+    public void clearListOfMoves() {
         mList.clearList();
     }
 
+    // creates Nx2 matrix
     public int[][] getTheoreticalMoves() {
         cursor = mList.getHead();
+        if (cursor == null) {
+            return null;
+        }
         int[][] moves = new int[mList.getSize()][2];
-        int i = 0;
-        while(cursor != null) {
-            moves[i] = cursor.getData();
+        int row = 0;
+        while (cursor != null) {
+            moves[row][0] = cursor.getDataX();
+            moves[row][1] = cursor.getDataY();
             cursor = cursor.getNext();
-            i++;
+            row++;
         }
         return moves;
     }
 
     public void addMovement(int postX, int postY) {
-        mList.addNode( new MovementNode(postX, postY));
+        mList.addNode(new MovementNode(postX, postY));
     }
 }
