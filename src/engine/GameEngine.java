@@ -8,7 +8,7 @@ import gameworld.PieceManager;
 import graphics.InputHandler;
 import utils.EntityCreator;
 import utils.EntityArray;
-import utils.MovableEntity;
+import utils.GameBoardPiece;
 
 public class GameEngine {
     private EntityCreator creator;
@@ -54,8 +54,8 @@ public class GameEngine {
         int yCell = inputHandler.getFirstYPos();
 
         Entity e = pMgr.getPiece(xCell, yCell);
-        if (e instanceof MovableEntity) {
-            MovableEntity piece = (MovableEntity) e;
+        if (e instanceof GameBoardPiece) {
+            GameBoardPiece piece = (GameBoardPiece) e;
             piece.printData();
         }
 

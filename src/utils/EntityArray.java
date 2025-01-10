@@ -32,7 +32,7 @@ public class EntityArray {
         for (int j = 0; j < entityArray.length; j++) {
             for (int i = 0; i < entityArray[j].length; i++) { // Access each element in row `j`
                 if (entityArray[j][i] != null) { // Corrected the index
-                    MovableEntity e = (MovableEntity) entityArray[j][i];
+                    GameBoardPiece e = (GameBoardPiece) entityArray[j][i];
                     System.out.println("Entity is: " + entityArray[j][i] + " with (x,y): "
                             + e.getX() + ", " + e.getY());
                 }

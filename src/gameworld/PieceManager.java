@@ -4,7 +4,7 @@ import entity.Entity;
 import graphics.InputHandler;
 import utils.EntityCreator;
 import utils.EntityArray;
-import utils.MovableEntity;
+import utils.GameBoardPiece;
 
 public class PieceManager {
     private EntityArray pieces;
@@ -15,16 +15,16 @@ public class PieceManager {
         this.pieces = pieces;
         this.creator = creator;
         this.input = inputHandler;
-        createBeginningPieces();
+        createBeginningCheckers();
     }
 
     public void movePiece(Entity entity) {
-        if (entity instanceof MovableEntity && movePieceHelper((MovableEntity) entity)) {
+        if (entity instanceof GameBoardPiece && movePieceHelper((GameBoardPiece) entity)) {
             pieces.addEntity(entity);
         }
     }
 
-    private boolean movePieceHelper(MovableEntity entityToMove) {
+    private boolean movePieceHelper(GameBoardPiece entityToMove) {
         int[][] theoreticalMoves = entityToMove.getTheoreticalMoves();
         if (theoreticalMoves == null) {
             return false;
@@ -45,7 +45,7 @@ public class PieceManager {
         return false;
     }
 
-    private void createBeginningPieces() {
+    private void createBeginningCheckers() {
         int x = 1;
         int y = 0;
         while (y < 3) {
@@ -56,7 +56,7 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces.addEntity(creator.createDarkPiece(x, y));
+                pieces.addEntity(creator.createChecker("DuskyChecker", x, y));
                 x += 2;
             }
         }
@@ -69,7 +69,7 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces.addEntity(creator.createLightPiece(x, y));
+                pieces.addEntity(creator.createChecker("LightChecker", x, y));
                 x += 2;
             }
         }

@@ -1,9 +1,20 @@
 package utils;
 
-public interface MovableEntity {
+public interface GameBoardPiece {
+    enum PieceColor {
+        LIGHT,
+        DARK;
+    }
+
     void update();
 
+    void generateTheoreticalMoves();
+
+    void printTheoreticalMoves();
+
     int[][] getTheoreticalMoves();
+
+    void clearMovementList();
 
     String getName();
 

@@ -1,7 +1,6 @@
 package utils;
 
-import entity.DarkPiece;
-import entity.LightPiece;
+import entity.Checker;
 import gameworld.Cell;
 
 public class EntityCreator {
@@ -13,17 +12,13 @@ public class EntityCreator {
 
     public Cell createCell(int x, int y) {
         if ((x + y) % 2 == 0) {
-            return new Cell("LightTile", x, y, assetManager.getSpriteByLookup("LightTile"));
+            return new Cell("LightTile", x, y, assetManager.getSpriteByName("LightTile"));
         } else {
-            return new Cell("DarkTile", x, y, assetManager.getSpriteByLookup("DarkTile"));
+            return new Cell("DuskyTile", x, y, assetManager.getSpriteByName("DuskyTile"));
         }
     }
 
-    public LightPiece createLightPiece(int x, int y) {
-        return new LightPiece(x, y, assetManager.getSpriteByLookup("LightPiece"));
-    }
-
-    public DarkPiece createDarkPiece(int x, int y) {
-        return new DarkPiece(x, y, assetManager.getSpriteByLookup("DarkPiece"));
+    public Checker createChecker(String name, int x, int y) {
+        return new Checker(name, x, y, assetManager.getSpriteByName(name));
     }
 }
