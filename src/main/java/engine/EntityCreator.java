@@ -1,7 +1,8 @@
-package com.hepker.ai_checkers.utils;
+package main.java.engine;
 
-import com.hepker.ai_checkers.entity.Checker;
-import com.hepker.ai_checkers.gameworld.Cell;
+import main.java.entity.Checker;
+import main.java.gameworld.Cell;
+import main.java.utils.AssetManager;
 
 public class EntityCreator {
     private final AssetManager assetManager;

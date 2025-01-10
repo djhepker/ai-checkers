@@ -1,4 +1,4 @@
-package com.hepker.ai_checkers.engine;
+package main.java.engine;
 
 public class GameLoop implements Runnable {
     private final GameEngine game;

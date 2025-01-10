@@ -1,6 +1,6 @@
-package com.hepker.ai_checkers.gameworld;
+package main.java.gameworld;
 
-import com.hepker.ai_checkers.entity.Entity;
+import main.java.entity.Entity;
 
 import java.awt.image.BufferedImage;
 

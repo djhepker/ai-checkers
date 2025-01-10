@@ -1,10 +1,10 @@
-package com.hepker.ai_checkers.gameworld;
+package main.java.gameworld;
 
-import com.hepker.ai_checkers.entity.Entity;
-import com.hepker.ai_checkers.graphics.InputHandler;
-import com.hepker.ai_checkers.utils.EntityCreator;
-import com.hepker.ai_checkers.utils.EntityArray;
-import com.hepker.ai_checkers.utils.GameBoardPiece;
+import main.java.entity.Entity;
+import main.java.graphics.InputHandler;
+import main.java.utils.EntityArray;
+import main.java.engine.EntityCreator;
+import main.java.utils.GameBoardPiece;
 
 public class PieceManager {
     private EntityArray pieces;
@@ -56,7 +56,7 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces.addEntity(creator.createChecker("DuskyChecker", x, y));
+                pieces.addEntity(creator.createChecker("DUSKYChecker", x, y));
                 x += 2;
             }
         }
@@ -69,7 +69,7 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces.addEntity(creator.createChecker("LightChecker", x, y));
+                pieces.addEntity(creator.createChecker("LIGHTChecker", x, y));
                 x += 2;
             }
         }
@@ -80,7 +80,7 @@ public class PieceManager {
     }
 
     public void printNumPieces() {
-        System.out.println("The number of pieces: " + pieces.getNumEntities());
+        System.out.println("The number of pieces: " + pieces.getLength());
     }
 
     public void printAllPiecesInPlay() {

@@ -1,9 +1,9 @@
-package com.hepker.ai_checkers.utils;
+package main.java.utils;
 
 public interface GameBoardPiece {
     enum PieceColor {
         LIGHT,
-        DARK;
+        DUSKY
     }
 
     void update();

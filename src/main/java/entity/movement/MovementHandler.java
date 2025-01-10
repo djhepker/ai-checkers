@@ -1,6 +1,6 @@
-package com.hepker.ai_checkers.entity.movement;
+package main.java.entity.movement;
 
-import com.hepker.ai_checkers.utils.MovementList;
+import main.java.utils.MovementList;
 
 public class MovementHandler {
     private MovementNode cursor;

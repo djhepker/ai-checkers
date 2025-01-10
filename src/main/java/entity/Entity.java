@@ -1,4 +1,4 @@
-package com.hepker.ai_checkers.entity;
+package main.java.entity;
 
 import java.awt.image.BufferedImage;
 

@@ -1,14 +1,13 @@
-package com.hepker.ai_checkers.engine;
+package main.java.engine;
 
-import com.hepker.ai_checkers.entity.Entity;
-import com.hepker.ai_checkers.gameworld.BoardManager;
-import com.hepker.ai_checkers.graphics.GameWindow;
-import com.hepker.ai_checkers.graphics.GraphicsHandler;
-import com.hepker.ai_checkers.gameworld.PieceManager;
-import com.hepker.ai_checkers.graphics.InputHandler;
-import com.hepker.ai_checkers.utils.EntityCreator;
-import com.hepker.ai_checkers.utils.EntityArray;
-import com.hepker.ai_checkers.utils.GameBoardPiece;
+import main.java.entity.Entity;
+import main.java.gameworld.BoardManager;
+import main.java.graphics.GameWindow;
+import main.java.graphics.GraphicsHandler;
+import main.java.gameworld.PieceManager;
+import main.java.graphics.InputHandler;
+import main.java.utils.EntityArray;
+import main.java.utils.GameBoardPiece;
 
 public class GameEngine {
     private EntityCreator creator;
@@ -28,8 +27,8 @@ public class GameEngine {
         this.bMgr = new BoardManager(cells, creator);
         this.graphicsHandler = new GraphicsHandler(cells, pieces);
         this.inputHandler = graphicsHandler.getInputHandler();
-        this.window = graphicsHandler.getGameWindow();
         this.pMgr = new PieceManager(pieces, creator, inputHandler);
+        this.window = graphicsHandler.getGameWindow();
     }
 
     public void updateGame() {
@@ -57,6 +56,16 @@ public class GameEngine {
         if (e instanceof GameBoardPiece) {
             GameBoardPiece piece = (GameBoardPiece) e;
             piece.printData();
+        }
+
+    }
+
+    public void printAllCellsInPlay() {
+        for (int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
+                Entity e = cells.getEntity(i, j);
+                System.out.println("Name: " + e.getName() + "; Coordinates: " + e.getX() + ", " + e.getY());
+            }
         }
 
     }

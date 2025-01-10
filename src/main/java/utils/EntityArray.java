@@ -1,6 +1,6 @@
-package com.hepker.ai_checkers.utils;
+package main.java.utils;
 
-import com.hepker.ai_checkers.entity.Entity;
+import main.java.entity.Entity;
 
 public class EntityArray {
     private Entity[][] entityArray;
@@ -24,7 +24,7 @@ public class EntityArray {
         numEntities--;
     }
 
-    public int getNumEntities() {
+    public int getLength() {
         return numEntities;
     }
 

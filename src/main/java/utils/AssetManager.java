@@ -1,10 +1,10 @@
-package com.hepker.ai_checkers.utils;
+package main.java.utils;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 public class AssetManager {
-    private final String spriteSheetFilePath = "assets/images/chckers_spritesheet.png";
+    private final String spriteSheetFilePath = "src/main/assets/images/chckers_spritesheet.png";
 
     private final int cellWidth = 16;
     private final int cellHeight = 16;
@@ -28,8 +28,8 @@ public class AssetManager {
 
     private void loadSprites() {
         spriteMap.put("LightTile", spriteSheet.getSprite(lightTileStart, 0, cellWidth, cellHeight));
-        spriteMap.put("DarkTile", spriteSheet.getSprite(duskyTileStart, 0, cellWidth, cellHeight));
-        spriteMap.put("LightChecker", spriteSheet.getSprite(lightCheckerCoordinate, 0, cellWidth, cellHeight));
-        spriteMap.put("DuskyChecker", spriteSheet.getSprite(duskyCheckerCoordinate, 0, cellWidth, cellHeight));
+        spriteMap.put("DuskyTile", spriteSheet.getSprite(duskyTileStart, 0, cellWidth, cellHeight));
+        spriteMap.put("LIGHTChecker", spriteSheet.getSprite(lightCheckerCoordinate, 0, cellWidth, cellHeight));
+        spriteMap.put("DUSKYChecker", spriteSheet.getSprite(duskyCheckerCoordinate, 0, cellWidth, cellHeight));
     }
 }

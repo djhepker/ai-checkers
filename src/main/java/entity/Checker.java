@@ -1,7 +1,7 @@
-package com.hepker.ai_checkers.entity;
+package main.java.entity;
 
-import com.hepker.ai_checkers.entity.movement.MovementHandler;
-import com.hepker.ai_checkers.utils.GameBoardPiece;
+import main.java.entity.movement.MovementHandler;
+import main.java.utils.GameBoardPiece;
 
 import java.awt.image.BufferedImage;
 
@@ -13,7 +13,11 @@ public class Checker extends Entity implements GameBoardPiece {
     public Checker(String name, int x, int y, BufferedImage image) {
         super(name, x, y, image);
         this.movementHandler = new MovementHandler();
-        this.color = PieceColor.valueOf(name.substring(0, 4));
+        try {
+            this.color = PieceColor.valueOf(name.substring(0, 5));
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        }
         this.movementSign = color == PieceColor.LIGHT ? 1 : -1;
         generateTheoreticalMoves();
     }
