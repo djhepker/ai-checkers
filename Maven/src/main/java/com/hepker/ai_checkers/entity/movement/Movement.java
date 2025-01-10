@@ -1,4 +1,4 @@
-package entity.movement;
+package com.hepker.ai_checkers.entity.movement;
 
 public class Movement {
     private final int postX;

@@ -1,6 +1,6 @@
-package utils;
+package com.hepker.ai_checkers.utils;
 
-import entity.Entity;
+import com.hepker.ai_checkers.entity.Entity;
 
 public class EntityArray {
     private Entity[][] entityArray;

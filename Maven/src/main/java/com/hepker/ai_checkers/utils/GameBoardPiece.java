@@ -1,4 +1,4 @@
-package utils;
+package com.hepker.ai_checkers.utils;
 
 public interface GameBoardPiece {
     enum PieceColor {

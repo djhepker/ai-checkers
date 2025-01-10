@@ -1,4 +1,4 @@
-package utils;
+package com.hepker.ai_checkers.utils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

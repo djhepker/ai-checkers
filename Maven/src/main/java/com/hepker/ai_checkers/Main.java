@@ -1,6 +1,7 @@
+package com.hepker.ai_checkers;
 
-import engine.GameEngine;
-import engine.GameLoop;
+import com.hepker.ai_checkers.engine.GameEngine;
+import com.hepker.ai_checkers.engine.GameLoop;
 
 public class Main {
     public static void main(String[] args) {

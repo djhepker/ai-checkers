@@ -1,4 +1,4 @@
-package graphics;
+package com.hepker.ai_checkers.graphics;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;

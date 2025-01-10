@@ -1,14 +1,14 @@
-package engine;
+package com.hepker.ai_checkers.engine;
 
-import entity.Entity;
-import gameworld.BoardManager;
-import graphics.GameWindow;
-import graphics.GraphicsHandler;
-import gameworld.PieceManager;
-import graphics.InputHandler;
-import utils.EntityCreator;
-import utils.EntityArray;
-import utils.GameBoardPiece;
+import com.hepker.ai_checkers.entity.Entity;
+import com.hepker.ai_checkers.gameworld.BoardManager;
+import com.hepker.ai_checkers.graphics.GameWindow;
+import com.hepker.ai_checkers.graphics.GraphicsHandler;
+import com.hepker.ai_checkers.gameworld.PieceManager;
+import com.hepker.ai_checkers.graphics.InputHandler;
+import com.hepker.ai_checkers.utils.EntityCreator;
+import com.hepker.ai_checkers.utils.EntityArray;
+import com.hepker.ai_checkers.utils.GameBoardPiece;
 
 public class GameEngine {
     private EntityCreator creator;

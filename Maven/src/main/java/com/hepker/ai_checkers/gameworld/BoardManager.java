@@ -1,7 +1,7 @@
-package gameworld;
+package com.hepker.ai_checkers.gameworld;
 
-import utils.EntityCreator;
-import utils.EntityArray;
+import com.hepker.ai_checkers.utils.EntityCreator;
+import com.hepker.ai_checkers.utils.EntityArray;
 
 public class BoardManager {
     private EntityArray cells;

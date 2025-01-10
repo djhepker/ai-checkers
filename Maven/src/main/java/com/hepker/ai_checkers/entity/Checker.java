@@ -1,7 +1,7 @@
-package entity;
+package com.hepker.ai_checkers.entity;
 
-import entity.movement.MovementHandler;
-import utils.GameBoardPiece;
+import com.hepker.ai_checkers.entity.movement.MovementHandler;
+import com.hepker.ai_checkers.utils.GameBoardPiece;
 
 import java.awt.image.BufferedImage;
 

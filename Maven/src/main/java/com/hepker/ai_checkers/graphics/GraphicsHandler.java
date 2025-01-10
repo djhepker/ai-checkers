@@ -1,7 +1,7 @@
-package graphics;
+package com.hepker.ai_checkers.graphics;
 
-import entity.Entity;
-import utils.EntityArray;
+import com.hepker.ai_checkers.entity.Entity;
+import com.hepker.ai_checkers.utils.EntityArray;
 
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;

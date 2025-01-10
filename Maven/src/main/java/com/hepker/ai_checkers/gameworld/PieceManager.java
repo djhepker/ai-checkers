@@ -1,10 +1,10 @@
-package gameworld;
+package com.hepker.ai_checkers.gameworld;
 
-import entity.Entity;
-import graphics.InputHandler;
-import utils.EntityCreator;
-import utils.EntityArray;
-import utils.GameBoardPiece;
+import com.hepker.ai_checkers.entity.Entity;
+import com.hepker.ai_checkers.graphics.InputHandler;
+import com.hepker.ai_checkers.utils.EntityCreator;
+import com.hepker.ai_checkers.utils.EntityArray;
+import com.hepker.ai_checkers.utils.GameBoardPiece;
 
 public class PieceManager {
     private EntityArray pieces;
