@@ -21,9 +21,9 @@ public class GameEngine {
     private EntityArray pieces;
 
     public GameEngine() {
-        this.creator = new EntityCreator();
         this.pieces = new EntityArray();
         this.cells = new EntityArray();
+        this.creator = new EntityCreator(pieces);
         this.bMgr = new BoardManager(cells, creator);
         this.graphicsHandler = new GraphicsHandler(cells, pieces);
         this.inputHandler = graphicsHandler.getInputHandler();

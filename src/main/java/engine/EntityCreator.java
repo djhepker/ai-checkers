@@ -3,12 +3,15 @@ package main.java.engine;
 import main.java.entity.Checker;
 import main.java.gameworld.Cell;
 import main.java.utils.AssetManager;
+import main.java.utils.EntityArray;
 
 public class EntityCreator {
     private final AssetManager assetManager;
+    private EntityArray pieces;
 
-    public EntityCreator() {
+    public EntityCreator(EntityArray pieces) {
         assetManager = new AssetManager();
+        this.pieces = pieces;
     }
 
     public Cell createCell(int x, int y) {
@@ -20,6 +23,6 @@ public class EntityCreator {
     }
 
     public Checker createChecker(String name, int x, int y) {
-        return new Checker(name, x, y, assetManager.getSpriteByName(name));
+        return new Checker(name, x, y, assetManager.getSpriteByName(name), pieces);
     }
 }

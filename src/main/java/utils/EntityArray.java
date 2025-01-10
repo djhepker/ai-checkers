@@ -28,6 +28,10 @@ public class EntityArray {
         return numEntities;
     }
 
+    public boolean spaceIsNull(int x, int y) {
+        return entityArray[x][y] == null;
+    }
+
     public void printEntities() {
         for (int j = 0; j < entityArray.length; j++) {
             for (int i = 0; i < entityArray[j].length; i++) { // Access each element in row `j`

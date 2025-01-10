@@ -93,8 +93,8 @@ public class GraphicsHandler extends JPanel {
     private void drawPieces(Graphics2D g2d) {
         for (int j = 0; j < 8; j++) {
             for (int i = 0; i < 8; i++) {
-                Entity entity = pieces.getEntity(i, j);
-                if (entity != null) {
+                if (!pieces.spaceIsNull(i, j)) {
+                    Entity entity = pieces.getEntity(i, j);
                     int xPos = entity.getX() * entityWidth;
                     int yPos = entity.getY() * entityHeight;
                     g2d.drawImage(entity.getSprite(), xPos, yPos, entityWidth, entityHeight, null);

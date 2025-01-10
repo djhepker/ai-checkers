@@ -34,9 +34,9 @@ public class PieceManager {
         int postY = input.getSelectedRow();
 
         for (int[] xPosition : theoreticalMoves) {
-            if (postX == xPosition[0] && postY == xPosition[1] && isLegalMove(postX, postY)) {
-              entityToMove.setX(postX);
-              entityToMove.setY(postY);
+            if (postX == xPosition[0] && postY == xPosition[1] && spaceIsNull(postX, postY)) {
+                entityToMove.setX(postX);
+                entityToMove.setY(postY);
                 entityToMove.update();
                 pieces.removeEntity(input.getFirstXPos(), input.getFirstYPos());
                 return true;
@@ -45,8 +45,8 @@ public class PieceManager {
         return false;
     }
 
-    private boolean isLegalMove(int postX, int postY) {
-        return pieces.getEntity(postX, postY) == null;
+    private boolean spaceIsNull(int postX, int postY) {
+        return pieces.spaceIsNull(postX, postY);
     }
 
     private void createBeginningCheckers() {
