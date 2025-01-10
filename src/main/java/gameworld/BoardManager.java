@@ -1,7 +1,7 @@
-package gameworld;
+package main.java.gameworld;
 
-import utils.EntityCreator;
-import utils.EntityArray;
+import main.java.utils.EntityArray;
+import main.java.engine.EntityCreator;
 
 public class BoardManager {
     private EntityArray cells;
@@ -22,10 +22,6 @@ public class BoardManager {
     }
 
     public void printNumCells() {
-        System.out.println("The number of Cells: " + cells.getNumEntities());
-    }
-
-    public void printAllCellsInPlay() {
-        cells.printEntities();
+        System.out.println("The number of Cells: " + cells.getLength());
     }
 }

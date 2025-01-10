@@ -1,10 +1,10 @@
-package entity;
+package main.java.entity;
 
 import java.awt.image.BufferedImage;
 
 public abstract class Entity {
-    private String name;
-    private BufferedImage sprite;
+    private final String name;
+    private final BufferedImage sprite;
     private int x;
     private int y;
 
@@ -37,13 +37,5 @@ public abstract class Entity {
 
     public BufferedImage getSprite() {
         return sprite;
-    }
-
-    public void printName() {
-        System.out.println("Name of Entity: " + name);
-    }
-
-    public void setSprite(BufferedImage inputSprite) {
-        sprite = inputSprite;
     }
 }

@@ -1,6 +1,6 @@
-package utils;
+package main.java.utils;
 
-import entity.Entity;
+import main.java.entity.Entity;
 
 public class EntityArray {
     private Entity[][] entityArray;
@@ -24,15 +24,20 @@ public class EntityArray {
         numEntities--;
     }
 
-    public int getNumEntities() {
+    public int getLength() {
         return numEntities;
     }
 
     public void printEntities() {
-        for (int i = 0; i < entityArray.length; i++) {
-            for (int j = 0; j < entityArray[i].length; j++) {
-                System.out.println("Entity is: " + entityArray[j][i] + " with (x,y): " + j + ", " + i);
+        for (int j = 0; j < entityArray.length; j++) {
+            for (int i = 0; i < entityArray[j].length; i++) { // Access each element in row `j`
+                if (entityArray[j][i] != null) { // Corrected the index
+                    GameBoardPiece e = (GameBoardPiece) entityArray[j][i];
+                    System.out.println("Entity is: " + entityArray[j][i] + " with (x,y): "
+                            + e.getX() + ", " + e.getY());
+                }
             }
         }
     }
+
 }

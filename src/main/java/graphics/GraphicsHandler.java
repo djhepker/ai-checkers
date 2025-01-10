@@ -1,7 +1,7 @@
-package graphics;
+package main.java.graphics;
 
-import entity.Entity;
-import utils.EntityArray;
+import main.java.entity.Entity;
+import main.java.utils.EntityArray;
 
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
@@ -15,6 +15,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+// TODO make border outline resizable
 public class GraphicsHandler extends JPanel {
     private EntityArray cells;
     private EntityArray pieces;
@@ -23,8 +24,10 @@ public class GraphicsHandler extends JPanel {
 
     private int entityWidth;
     private int entityHeight;
-    private boolean windowResized;
+    private int highlightRectangleX;
+    private int highlightRectangleY;
 
+    private boolean windowResized;
 
     public GraphicsHandler(EntityArray cells, EntityArray pieces) {
         this.cells = cells;
@@ -33,11 +36,11 @@ public class GraphicsHandler extends JPanel {
         this.inputHandler = new InputHandler(this);
         this.entityWidth = 0;
         this.entityHeight = 0;
+        this.highlightRectangleX = 0;
+        this.highlightRectangleY = 0;
         this.windowResized = true;
-
         Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 8); // 10px black border
         setBorder(blackLine);
-
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -45,7 +48,6 @@ public class GraphicsHandler extends JPanel {
                 super.componentResized(e);
             }
         });
-
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -58,17 +60,17 @@ public class GraphicsHandler extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-
         if (windowResized) {
             updateEntitySize();
         }
-
         drawBoard(g2d);
         drawPieces(g2d);
         if (inputHandler.hasSelectedPiece()) {
             g2d.setColor(Color.BLUE);
             g2d.setStroke(new BasicStroke(3));
-            g2d.drawRect(inputHandler.getFirstXPos(), inputHandler.getFirstYPos(), getWidth() / 8, getHeight() / 8);
+            highlightRectangleX = inputHandler.getSelectedCol() * (getWidth() / 8);
+            highlightRectangleY = inputHandler.getSelectedRow() * (getHeight()/ 8);
+            g2d.drawRect(highlightRectangleX, highlightRectangleY, getWidth() / 8, getHeight() / 8);
         }
     }
 

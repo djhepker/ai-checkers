@@ -1,4 +1,4 @@
-package entity.movement;
+package main.java.entity.movement;
 
 public class Movement {
     private final int postX;
@@ -9,7 +9,11 @@ public class Movement {
         this.postY = postY;
     }
 
-    public int[] getMoveCoordinates() {
-        return new int[] {postX, postY};
+    public int getpostX() {
+        return postX;
+    }
+
+    public int getpostY() {
+        return postY;
     }
 }

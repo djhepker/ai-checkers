@@ -1,6 +1,6 @@
-package utils;
+package main.java.utils;
 
-import entity.movement.MovementNode;
+import main.java.entity.movement.MovementNode;
 
 public class MovementList {
     private MovementNode head;

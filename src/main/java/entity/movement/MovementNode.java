@@ -1,4 +1,4 @@
-package entity.movement;
+package main.java.entity.movement;
 
 public class MovementNode {
     private final Movement data;
@@ -9,8 +9,12 @@ public class MovementNode {
         this.next = null;
     }
 
-    public int[] getData() {
-        return data.getMoveCoordinates();
+    public int getDataX() {
+        return data.getpostX();
+    }
+
+    public int getDataY() {
+        return data.getpostY();
     }
 
     public MovementNode getNext() {

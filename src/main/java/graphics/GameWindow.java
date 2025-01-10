@@ -1,4 +1,4 @@
-package graphics;
+package main.java.graphics;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;

@@ -1,4 +1,4 @@
-package graphics;
+package main.java.graphics;
 
 import java.awt.event.MouseEvent;
 
@@ -8,8 +8,6 @@ public class InputHandler {
     private int selectedCol;
     private int firstXPos;
     private int firstYPos;
-    private int secondXPos;
-    private int secondYPos;
     private InputState inputState;
 
     private enum InputState {
@@ -24,8 +22,6 @@ public class InputHandler {
         this.selectedRow = -1;
         this.firstXPos = -1;
         this.firstYPos = -1;
-        this.secondXPos = -1;
-        this.secondYPos = -1;
         inputState = InputState.NO_CLICK;
     }
 
@@ -34,12 +30,10 @@ public class InputHandler {
             case NO_CLICK:
                 return;
             case FIRST_CLICK:
-                firstXPos = selectedCol * (gHandler.getWidth() / 8);
-                firstYPos = selectedRow * (gHandler.getHeight() / 8);
+                firstXPos = selectedCol;
+                firstYPos = selectedRow;
                 return;
             case SECOND_CLICK:
-                secondXPos = selectedCol * (gHandler.getWidth() / 8);
-                secondYPos = selectedRow * (gHandler.getHeight() / 8);
                 return;
             default:
                 System.out.println("Invalid input state");
@@ -61,8 +55,13 @@ public class InputHandler {
                 System.out.println("Invalid input state");
                 return;
         }
-        selectedRow = e.getY() / (gHandler.getHeight() / 8);
         selectedCol = e.getX() / (gHandler.getWidth() / 8);
+        selectedRow = e.getY() / (gHandler.getHeight() / 8);
+        System.out.println("Mouse clicked with selection of: (" + selectedCol + ", " + selectedRow + ")");
+    }
+
+    public String getInputState() {
+        return String.valueOf(inputState);
     }
 
     public void resetClicks() {
@@ -85,11 +84,11 @@ public class InputHandler {
         return firstYPos;
     }
 
-    public int getSecondXPos() {
-        return secondXPos;
+    public int getSelectedRow() {
+        return selectedRow;
     }
 
-    public int getSecondYPos() {
-        return secondYPos;
+    public int getSelectedCol() {
+        return selectedCol;
     }
 }

@@ -1,6 +1,7 @@
+package main.java;
 
-import engine.GameEngine;
-import engine.GameLoop;
+import main.java.engine.GameEngine;
+import main.java.engine.GameLoop;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,5 +10,6 @@ public class Main {
 
         //game.printAllCellsUsage();
         //game.printAllPiecesInPlay();
+        //game.printAllCellsInPlay();
     }
 }
