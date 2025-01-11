@@ -48,15 +48,10 @@ public class GameEngine {
     }
 
     private void printSelectedPiece() {
-        int xCell = inputHandler.getFirstXPos();
-        int yCell = inputHandler.getFirstYPos();
-
-        Entity e = pMgr.getPiece(xCell, yCell);
-        if (e instanceof GameBoardPiece) {
-            GameBoardPiece piece = (GameBoardPiece) e;
+        Entity e = pieces[inputHandler.getFirstXPos()][inputHandler.getFirstYPos()];
+        if (e instanceof GameBoardPiece piece) {
             piece.printData();
         }
-
     }
 
     public void printAllCellsInPlay() {

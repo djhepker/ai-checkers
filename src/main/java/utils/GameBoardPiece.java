@@ -1,5 +1,8 @@
 package main.java.utils;
 
+import java.awt.*;
+import java.util.Set;
+
 public interface GameBoardPiece {
     enum PieceColor {
         LIGHT,
@@ -12,7 +15,7 @@ public interface GameBoardPiece {
 
     void printLegalMoves();
 
-    int[][] getLegalMoves();
+    Set<Point> getLegalMoves();
 
     void clearMovementList();
 

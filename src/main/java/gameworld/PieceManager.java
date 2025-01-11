@@ -5,6 +5,9 @@ import main.java.graphics.InputHandler;
 import main.java.engine.EntityCreator;
 import main.java.utils.GameBoardPiece;
 
+import java.awt.Point;
+import java.util.Set;
+
 public class PieceManager {
     private Entity[][] pieces;
     private EntityCreator creator;
@@ -17,35 +20,62 @@ public class PieceManager {
         createBeginningCheckers();
     }
 
+    public void updateAllPieces() {
+        for (Entity[] row : pieces) {
+            for (Entity gameBoardPiece : row) {
+                if (gameBoardPiece instanceof GameBoardPiece piece) {
+                    piece.update();
+                }
+            }
+        }
+    }
+
     public void movePiece(Entity entity) {
-        if (entity instanceof GameBoardPiece && movePieceHelper((GameBoardPiece) entity)) {
+        if (entity instanceof GameBoardPiece piece && movePieceHelper(piece)) {
             pieces[entity.getX()][entity.getY()] = entity;
         }
     }
 
     private boolean movePieceHelper(GameBoardPiece entityToMove) {
-        int[][] theoreticalMoves = entityToMove.getLegalMoves();
-        if (theoreticalMoves == null) {
+        Set<Point> legalMoves = entityToMove.getLegalMoves();
+        if (legalMoves == null || legalMoves.isEmpty()) {
             return false;
         }
-
         int postX = input.getSelectedCol();
         int postY = input.getSelectedRow();
-
-        for (int[] xPosition : theoreticalMoves) {
-            if (postX == xPosition[0] && postY == xPosition[1] && spaceIsNull(postX, postY)) {
-                entityToMove.setX(postX);
-                entityToMove.setY(postY);
-                entityToMove.update();
-                pieces[input.getFirstXPos()][input.getFirstYPos()] = null;
-                return true;
-            }
+        Point targetMove = new Point(postX, postY);
+        if (legalMoves.contains(targetMove) && spaceIsNull(postX, postY)) {
+            entityToMove.setX(postX);
+            entityToMove.setY(postY);
+            entityToMove.update();
+            pieces[input.getFirstXPos()][input.getFirstYPos()] = null;
+            return true;
         }
         return false;
     }
 
+
     private boolean spaceIsNull(int postX, int postY) {
         return pieces[postX][postY] == null;
+    }
+
+    public Entity getPiece(int x, int y) {
+        return pieces[x][y];
+    }
+
+    public void printNumPieces() {
+        System.out.println("The number of pieces: " + pieces.length);
+    }
+
+    public void printAllPiecesInPlay() {
+        for (Entity[] row : pieces) {
+            for (Entity col : row) {
+                if (col instanceof GameBoardPiece) {
+                    GameBoardPiece piece = (GameBoardPiece) col;
+                    piece.printData();
+                }
+            }
+        }
     }
 
     private void createBeginningCheckers() {
@@ -74,25 +104,6 @@ public class PieceManager {
             } else {
                 pieces[x][y] = creator.createChecker("LIGHTChecker", x, y);
                 x += 2;
-            }
-        }
-    }
-
-    public Entity getPiece(int x, int y) {
-        return pieces[x][y];
-    }
-
-    public void printNumPieces() {
-        System.out.println("The number of pieces: " + pieces.length);
-    }
-
-    public void printAllPiecesInPlay() {
-        for (Entity[] row : pieces) {
-            for (Entity col : row) {
-                if (col instanceof GameBoardPiece) {
-                    GameBoardPiece piece = (GameBoardPiece) col;
-                    piece.printData();
-                }
             }
         }
     }

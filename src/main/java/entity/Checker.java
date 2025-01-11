@@ -3,7 +3,9 @@ package main.java.entity;
 import main.java.entity.movement.MovementHandler;
 import main.java.utils.GameBoardPiece;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.Set;
 
 public class Checker extends Entity implements GameBoardPiece {
     private final MovementHandler movementHandler;
@@ -27,15 +29,19 @@ public class Checker extends Entity implements GameBoardPiece {
 
     @Override
     public void printLegalMoves() {
-        int[][] moves = getLegalMoves();
-        if (moves == null) {
+        Set<Point> moves = getLegalMoves();
+        if (moves == null || moves.isEmpty()) {
+            System.out.println();
             return;
         }
-        for (int row = 0; row < moves[0].length; row++) {
-            System.out.print("Option " + row + ": (" + moves[row][0] + ", " + moves[row][1] + "); ");
+        int row = 0;
+        for (Point move : moves) {
+            System.out.print("Option " + row + ": (" + move.getX() + ", " + move.getY() + "); ");
+            row++;
         }
         System.out.println();
     }
+
 
     @Override
     public String getName() {
@@ -46,7 +52,6 @@ public class Checker extends Entity implements GameBoardPiece {
     public void update() {
         movementHandler.clearListOfMoves();
         generateLegalMoves();
-        printLegalMoves();
     }
 
     @Override
@@ -84,6 +89,7 @@ public class Checker extends Entity implements GameBoardPiece {
             if (leftX >= 0) {
                 if (pieces[leftX][nextYPosition] == null) {
                     movementHandler.addMovement(leftX, nextYPosition);
+                    // System.out.println("Boundary check: [" + (leftX >= 0) + "] leftX movement: [" + (pieces[leftX][nextYPosition] == null) + "] numRecursions is even: [" + (numRecursions % 2 == 0) + "]");
                     if (numRecursions % 2 != 0) {
                         generateMoveHelper(leftX, nextYPosition, numRecursions + 1);
                     }
@@ -110,7 +116,7 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     @Override
-    public int[][] getLegalMoves() {
+    public Set<Point> getLegalMoves() {
         return movementHandler.getLegalMoves();
     }
 
@@ -118,7 +124,7 @@ public class Checker extends Entity implements GameBoardPiece {
     public void printData() {
         System.out.print("Piece name: " + getName() + "; ");
         System.out.print("Piece coordinates: (" + getX() + ", " + getY() + "); ");
-        System.out.print("Theoretical move choices: ");
+        System.out.print("Legal move choices: ");
         printLegalMoves();
     }
 }
