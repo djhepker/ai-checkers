@@ -10,14 +10,10 @@ public class Checker extends Entity implements GameBoardPiece {
     private final PieceColor color;
     private final int movementSign;
 
-    public Checker(String name, int x, int y, BufferedImage image) {
+    public Checker(String name, int x, int y, BufferedImage image, Entity[][] pieces) {
         super(name, x, y, image);
         this.movementHandler = new MovementHandler();
-        try {
-            this.color = PieceColor.valueOf(name.substring(0, 5));
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        }
+        this.color = PieceColor.valueOf(name.substring(0, 5));
         this.movementSign = color == PieceColor.LIGHT ? 1 : -1;
         generateTheoreticalMoves();
     }

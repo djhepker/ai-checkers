@@ -6,7 +6,6 @@ import main.java.graphics.GameWindow;
 import main.java.graphics.GraphicsHandler;
 import main.java.gameworld.PieceManager;
 import main.java.graphics.InputHandler;
-import main.java.utils.EntityArray;
 import main.java.utils.GameBoardPiece;
 
 public class GameEngine {
@@ -17,13 +16,13 @@ public class GameEngine {
     private InputHandler inputHandler;
     private GameWindow window;
 
-    private EntityArray cells;
-    private EntityArray pieces;
+    private Entity[][] cells;
+    private Entity[][] pieces;
 
     public GameEngine() {
-        this.creator = new EntityCreator();
-        this.pieces = new EntityArray();
-        this.cells = new EntityArray();
+        this.pieces = new Entity[8][8];
+        this.cells = new Entity[8][8];
+        this.creator = new EntityCreator(pieces);
         this.bMgr = new BoardManager(cells, creator);
         this.graphicsHandler = new GraphicsHandler(cells, pieces);
         this.inputHandler = graphicsHandler.getInputHandler();
@@ -37,7 +36,7 @@ public class GameEngine {
             int firstXPos = inputHandler.getFirstXPos();
             int firstYPos = inputHandler.getFirstYPos();
 
-            pMgr.movePiece(pieces.getEntity(firstXPos, firstYPos));
+            pMgr.movePiece(pieces[firstXPos][firstYPos]);
             inputHandler.resetClicks();
             printSelectedPiece();
         }
@@ -63,11 +62,10 @@ public class GameEngine {
     public void printAllCellsInPlay() {
         for (int j = 0; j < 8; j++) {
             for (int i = 0; i < 8; i++) {
-                Entity e = cells.getEntity(i, j);
+                Entity e = cells[i][j];
                 System.out.println("Name: " + e.getName() + "; Coordinates: " + e.getX() + ", " + e.getY());
             }
         }
-
     }
 
     public void printAllPiecesInPlay() {
