@@ -92,18 +92,23 @@ public class Checker extends Entity implements GameBoardPiece {
                 return;
             }
 
-            if (pieces[leftX][nextY] == null) {
-                generateMoveHelper(leftX, nextY, numRecursions + 1);
-                moveMgr.addMovement(leftX, nextY);
-            } else if (numRecursions % 2 == 0) {
-                generateMoveHelper(leftX, nextY, numRecursions + 1);
+            if (numRecursions % 2 == 0) {
+                if (pieces[leftX][nextY] != null) {
+                    generateMoveHelper(leftX, nextY, numRecursions + 1);
+                    return;
+                }
+            } else if (pieces[leftX][nextY] != null) {
+                return;
             }
-//
+
+
 //            int rightX = xCell + 1;
 //
 //            if (rightX <= 7) {
 //
 //            }
+
+            moveMgr.addMovement(leftX, nextY);
         }
     }
 
