@@ -8,11 +8,11 @@ public interface GameBoardPiece {
 
     void update();
 
-    void generateTheoreticalMoves();
+    void generateLegalMoves();
 
     void printTheoreticalMoves();
 
-    int[][] getTheoreticalMoves();
+    int[][] getLegalMoves();
 
     void clearMovementList();
 

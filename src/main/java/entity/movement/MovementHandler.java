@@ -16,7 +16,7 @@ public class MovementHandler {
     }
 
     // creates Nx2 matrix
-    public int[][] getTheoreticalMoves() {
+    public int[][] getLegalMoves() {
         cursor = mList.getHead();
         if (cursor == null) {
             return null;

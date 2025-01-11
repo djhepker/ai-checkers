@@ -24,7 +24,7 @@ public class PieceManager {
     }
 
     private boolean movePieceHelper(GameBoardPiece entityToMove) {
-        int[][] theoreticalMoves = entityToMove.getTheoreticalMoves();
+        int[][] theoreticalMoves = entityToMove.getLegalMoves();
         if (theoreticalMoves == null) {
             return false;
         }

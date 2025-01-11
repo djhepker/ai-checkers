@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 public class Checker extends Entity implements GameBoardPiece {
     private final MovementHandler movementHandler;
     private final PieceColor color;
+    private Entity[][] pieces;
     private final int movementSign;
 
     public Checker(String name, int x, int y, BufferedImage image, Entity[][] pieces) {
@@ -15,7 +16,8 @@ public class Checker extends Entity implements GameBoardPiece {
         this.movementHandler = new MovementHandler();
         this.color = PieceColor.valueOf(name.substring(0, 5));
         this.movementSign = color == PieceColor.LIGHT ? 1 : -1;
-        generateTheoreticalMoves();
+        this.pieces = pieces;
+        generateLegalMoves();
     }
 
     @Override
@@ -25,7 +27,7 @@ public class Checker extends Entity implements GameBoardPiece {
 
     @Override
     public void printTheoreticalMoves() {
-        int[][] moves = getTheoreticalMoves();
+        int[][] moves = getLegalMoves();
         if (moves == null) {
             return;
         }
@@ -44,7 +46,7 @@ public class Checker extends Entity implements GameBoardPiece {
     public void update() {
         movementHandler.clearListOfMoves();
         printTheoreticalMoves();
-        generateTheoreticalMoves();
+        generateLegalMoves();
     }
 
     @Override
@@ -68,20 +70,47 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     @Override
-    public void generateTheoreticalMoves() {
-        if (getY() - 1 * movementSign >= 0) {
-            if (getX() + 1 <= 7) {
-                movementHandler.addMovement(getX() + 1, getY() - 1 * movementSign);
+    public void generateLegalMoves() {
+        generateMoveHelper(getX(), getY(), 0);
+    }
+
+    //TODO: Logic implementation for king status of checker
+    //TODO: decide if we want to mark pieces that can optionally be taken
+    private void generateMoveHelper(int xCell, int yCell, int numRecursions) {
+        int nextYPosition = yCell - 1 * movementSign;
+        if (nextYPosition >= 0) {
+            int leftX = xCell - 1;
+            if (leftX >= 0) {
+                if (pieces[leftX][nextYPosition] == null) {
+                    movementHandler.addMovement(leftX, nextYPosition);
+                    if (numRecursions % 2 != 0) {
+                        generateMoveHelper(leftX, nextYPosition, numRecursions + 1);
+                    }
+                } else if (numRecursions % 2 == 0) {
+                    generateMoveHelper(leftX, nextYPosition, numRecursions + 1);
+                } else {
+                    return;
+                }
+            } else if (numRecursions % 2 != 0) {
+                return;
             }
-            if (getX() - 1 >= 0) {
-                movementHandler.addMovement(getX() - 1, getY() - 1 * movementSign);
+            int rightX = xCell + 1;
+            if (rightX <= 7) {
+                if (pieces[rightX][nextYPosition] == null) {
+                    movementHandler.addMovement(rightX, nextYPosition);
+                    if (numRecursions % 2 != 0) {
+                        generateMoveHelper(rightX, nextYPosition, numRecursions + 1);
+                    }
+                } else if (numRecursions % 2 == 0) {
+                    generateMoveHelper(rightX, nextYPosition, numRecursions + 1);
+                }
             }
         }
     }
 
     @Override
-    public int[][] getTheoreticalMoves() {
-        return movementHandler.getTheoreticalMoves();
+    public int[][] getLegalMoves() {
+        return movementHandler.getLegalMoves();
     }
 
     @Override
