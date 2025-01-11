@@ -98,8 +98,11 @@ public class Checker extends Entity implements GameBoardPiece {
                     generateMoveHelper(leftX, nextY, numRecursions + 1);
                     return;
                 }
-            } else if (pieces[leftX][nextY] != null) {
+            } else if (pieces[leftX][nextY] != null) {  // Odd numbered recursive layer
+                generateMoveHelper(leftX, nextY, numRecursions + 1);
                 return;
+            } else {    // space is null; iteration is odd
+                generateMoveHelper(leftX, nextY, numRecursions + 1);
             }
 
             moveMgr.addMovement(leftX, nextY);
