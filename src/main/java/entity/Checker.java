@@ -75,14 +75,14 @@ public class Checker extends Entity implements GameBoardPiece {
 
     @Override
     public void generateLegalMoves() {
-        generateMoveHelper(getX(), getY(), 0);
+        generateMoveHelper(getX(), getY(), false);
     }
 
     //TODO: Logic implementation for king status of checker
     //TODO: decide if we want to mark pieces that can optionally be taken
 
     //TODO: likely want to eventually replace return calls with generateMoverHelper calls in the rightward direction
-    private void generateMoveHelper(int xCell, int yCell, int numRecursions) {
+    private void generateMoveHelper(int xCell, int yCell, boolean midJump) {
         int nextY = yCell - 1 * movementSign;
 
         if (nextY >= 0 && nextY < 8) {
@@ -93,19 +93,29 @@ public class Checker extends Entity implements GameBoardPiece {
                 return;
             }
 
-            if (numRecursions % 2 == 0) {
+            if (!midJump) {
                 if (pieces[leftX][nextY] != null) {
-                    generateMoveHelper(leftX, nextY, numRecursions + 1);
+                    generateMoveHelper(leftX, nextY, !midJump);
                     return;
                 }
             } else if (pieces[leftX][nextY] != null) {  // Odd numbered recursive layer
-                generateMoveHelper(leftX, nextY, numRecursions + 1);
+                generateMoveHelper(leftX, nextY, !midJump);
                 return;
             } else {    // space is null; iteration is odd
-                generateMoveHelper(leftX, nextY, numRecursions + 1);
+                generateMoveHelper(leftX, nextY, !midJump);
             }
 
-            moveMgr.addMovement(leftX, nextY);
+            moveMgr.addMovement(leftX, nextY);  // in-order algorithm
+
+//            int rightX = xCell + 1;
+//            if (rightX > 7) {
+//                return;
+//            }
+//            if (!midJump) {
+//                if (pieces[rightX][nextY] != null) {
+//
+//                }
+//            }
         }
     }
 
