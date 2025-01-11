@@ -80,7 +80,8 @@ public class Checker extends Entity implements GameBoardPiece {
 
     //TODO: Logic implementation for king status of checker
     //TODO: decide if we want to mark pieces that can optionally be taken
-    //TODO: HANDLE BEING ABLE TO MOVE (0, -2) IF ENEMY PIECE IS (+1, -2)
+
+    //TODO: likely want to eventually replace return calls with generateMoverHelper calls in the rightward direction
     private void generateMoveHelper(int xCell, int yCell, int numRecursions) {
         int nextY = yCell - 1 * movementSign;
 
@@ -100,13 +101,6 @@ public class Checker extends Entity implements GameBoardPiece {
             } else if (pieces[leftX][nextY] != null) {
                 return;
             }
-
-
-//            int rightX = xCell + 1;
-//
-//            if (rightX <= 7) {
-//
-//            }
 
             moveMgr.addMovement(leftX, nextY);
         }
