@@ -23,11 +23,6 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     @Override
-    public void clearMovementList() {
-        movementHandler.clearListOfMoves();
-    }
-
-    @Override
     public BufferedImage getSprite() {
         return super.getSprite();
     }
@@ -94,7 +89,7 @@ public class Checker extends Entity implements GameBoardPiece {
             if (leftX >= 0) {
                 if (pieces[leftX][nextYPosition] == null) {
                     movementHandler.addMovement(leftX, nextYPosition);
-                    System.out.println("Boundary check: [" + (leftX >= 0) + "] leftX movement: [" + (pieces[leftX][nextYPosition] == null) + "] numRecursions is even: [" + (numRecursions % 2 == 0) + "]");
+                    //System.out.println("Boundary check: [" + (leftX >= 0) + "] leftX movement: [" + (pieces[leftX][nextYPosition] == null) + "] numRecursions is even: [" + (numRecursions % 2 == 0) + "]");
                     if (numRecursions % 2 != 0) {
                         generateMoveHelper(leftX, nextYPosition, numRecursions + 1);
                     }

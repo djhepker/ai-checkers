@@ -18,8 +18,6 @@ public interface GameBoardPiece {
 
     Set<Point> getLegalMoves();
 
-    void clearMovementList();
-
     String getName();
 
     BufferedImage getSprite();

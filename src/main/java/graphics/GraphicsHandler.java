@@ -6,6 +6,8 @@ import main.java.utils.GameBoardPiece;
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
+import java.util.Set;
+import java.awt.Point;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -66,14 +68,34 @@ public class GraphicsHandler extends JPanel {
         drawBoard(g2d);
         drawPieces(g2d);
         if (inputHandler.hasSelectedPiece()) {
-            g2d.setColor(Color.BLUE);
-            g2d.setStroke(new BasicStroke(3));
-            int xCoordinate = inputHandler.getSelectedCol();
-            int yCoordinate = inputHandler.getSelectedRow();
-            highlightRectangleX = xCoordinate * (getWidth() / 8);
-            highlightRectangleY = yCoordinate * (getHeight()/ 8);
+
+            drawHighlightRectangles(g2d);
+        }
+    }
+
+    // TODO: FIX ADJASCENT HIGHLIGHT BOXES, NOT WORKING AT ALL
+    private void drawHighlightRectangles(Graphics2D g2d) {
+        g2d.setColor(Color.BLUE);
+        g2d.setStroke(new BasicStroke(3));
+        int xCoordinate = inputHandler.getSelectedCol();
+        int yCoordinate = inputHandler.getSelectedRow();
+        highlightRectangleX = getWidth() / 8 * xCoordinate;
+        highlightRectangleY = getHeight() / 8 * yCoordinate;
+
+        GameBoardPiece piece = pieces[xCoordinate][yCoordinate];
+        if (piece != null) {
             g2d.drawRect(highlightRectangleX, highlightRectangleY, getWidth() / 8, getHeight() / 8);
-            //pieces[xCoordinate][yCoordinate];
+            Set<Point> legalMoves = piece.getLegalMoves();
+
+            for (Point move : legalMoves) {
+                int x = getWidth() / 8 * (int) move.getX();
+                int y = getWidth() / 8 * (int) move.getY();
+                System.out.println("Point x: " + x);
+                System.out.println("Point y: " + y);
+                g2d.drawRect(x, y, getWidth() / 8, getHeight() / 8);
+            }
+        } else {
+            inputHandler.resetClicks();
         }
     }
 
@@ -101,6 +123,7 @@ public class GraphicsHandler extends JPanel {
                     int xPos = piece.getX() * entityWidth;
                     int yPos = piece.getY() * entityHeight;
                     g2d.drawImage(piece.getSprite(), xPos, yPos, entityWidth, entityHeight, null);
+                    Set<Point> legalMoves = piece.getLegalMoves();
                 }
             }
         }
