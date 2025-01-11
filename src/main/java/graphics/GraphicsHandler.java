@@ -1,6 +1,7 @@
 package main.java.graphics;
 
 import main.java.entity.Entity;
+import main.java.utils.GameBoardPiece;
 
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
@@ -17,7 +18,7 @@ import java.awt.event.MouseEvent;
 // TODO make border outline resizable
 public class GraphicsHandler extends JPanel {
     private Entity[][] cells;
-    private Entity[][] pieces;
+    private GameBoardPiece[][] pieces;
     private GameWindow gameWindow;
     private InputHandler inputHandler;
 
@@ -28,7 +29,7 @@ public class GraphicsHandler extends JPanel {
 
     private boolean windowResized;
 
-    public GraphicsHandler(Entity[][] cells, Entity[][] pieces) {
+    public GraphicsHandler(Entity[][] cells, GameBoardPiece[][] pieces) {
         this.cells = cells;
         this.pieces = pieces;
         this.gameWindow = new GameWindow(this);
@@ -67,9 +68,12 @@ public class GraphicsHandler extends JPanel {
         if (inputHandler.hasSelectedPiece()) {
             g2d.setColor(Color.BLUE);
             g2d.setStroke(new BasicStroke(3));
-            highlightRectangleX = inputHandler.getSelectedCol() * (getWidth() / 8);
-            highlightRectangleY = inputHandler.getSelectedRow() * (getHeight()/ 8);
+            int xCoordinate = inputHandler.getSelectedCol();
+            int yCoordinate = inputHandler.getSelectedRow();
+            highlightRectangleX = xCoordinate * (getWidth() / 8);
+            highlightRectangleY = yCoordinate * (getHeight()/ 8);
             g2d.drawRect(highlightRectangleX, highlightRectangleY, getWidth() / 8, getHeight() / 8);
+            //pieces[xCoordinate][yCoordinate];
         }
     }
 
@@ -93,10 +97,10 @@ public class GraphicsHandler extends JPanel {
         for (int j = 0; j < 8; j++) {
             for (int i = 0; i < 8; i++) {
                 if (pieces[i][j] != null) {
-                    Entity entity = pieces[i][j];
-                    int xPos = entity.getX() * entityWidth;
-                    int yPos = entity.getY() * entityHeight;
-                    g2d.drawImage(entity.getSprite(), xPos, yPos, entityWidth, entityHeight, null);
+                    GameBoardPiece piece = pieces[i][j];
+                    int xPos = piece.getX() * entityWidth;
+                    int yPos = piece.getY() * entityHeight;
+                    g2d.drawImage(piece.getSprite(), xPos, yPos, entityWidth, entityHeight, null);
                 }
             }
         }

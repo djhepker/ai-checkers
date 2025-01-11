@@ -10,10 +10,10 @@ import java.util.Set;
 public class Checker extends Entity implements GameBoardPiece {
     private final MovementHandler movementHandler;
     private final PieceColor color;
-    private Entity[][] pieces;
+    private GameBoardPiece[][] pieces;
     private final int movementSign;
 
-    public Checker(String name, int x, int y, BufferedImage image, Entity[][] pieces) {
+    public Checker(String name, int x, int y, BufferedImage image, GameBoardPiece[][] pieces) {
         super(name, x, y, image);
         this.movementHandler = new MovementHandler();
         this.color = PieceColor.valueOf(name.substring(0, 5));
@@ -25,6 +25,11 @@ public class Checker extends Entity implements GameBoardPiece {
     @Override
     public void clearMovementList() {
         movementHandler.clearListOfMoves();
+    }
+
+    @Override
+    public BufferedImage getSprite() {
+        return super.getSprite();
     }
 
     @Override
@@ -76,12 +81,12 @@ public class Checker extends Entity implements GameBoardPiece {
 
     @Override
     public void generateLegalMoves() {
-        System.out.println("generateLegalMoves() called");
         generateMoveHelper(getX(), getY(), 0);
     }
 
     //TODO: Logic implementation for king status of checker
     //TODO: decide if we want to mark pieces that can optionally be taken
+    //TODO: HANDLE BEING ABLE TO MOVE (0, -2) IF ENEMY PIECE IS (+1, -2)
     private void generateMoveHelper(int xCell, int yCell, int numRecursions) {
         int nextYPosition = yCell - 1 * movementSign;
         if (nextYPosition >= 0) {
@@ -89,13 +94,13 @@ public class Checker extends Entity implements GameBoardPiece {
             if (leftX >= 0) {
                 if (pieces[leftX][nextYPosition] == null) {
                     movementHandler.addMovement(leftX, nextYPosition);
-                    // System.out.println("Boundary check: [" + (leftX >= 0) + "] leftX movement: [" + (pieces[leftX][nextYPosition] == null) + "] numRecursions is even: [" + (numRecursions % 2 == 0) + "]");
+                    System.out.println("Boundary check: [" + (leftX >= 0) + "] leftX movement: [" + (pieces[leftX][nextYPosition] == null) + "] numRecursions is even: [" + (numRecursions % 2 == 0) + "]");
                     if (numRecursions % 2 != 0) {
                         generateMoveHelper(leftX, nextYPosition, numRecursions + 1);
                     }
                 } else if (numRecursions % 2 == 0) {
                     generateMoveHelper(leftX, nextYPosition, numRecursions + 1);
-                } else {
+                } else if (false) {
                     return;
                 }
             } else if (numRecursions % 2 != 0) {

@@ -17,10 +17,10 @@ public class GameEngine {
     private GameWindow window;
 
     private Entity[][] cells;
-    private Entity[][] pieces;
+    private GameBoardPiece[][] pieces;
 
     public GameEngine() {
-        this.pieces = new Entity[8][8];
+        this.pieces = new GameBoardPiece[8][8];
         this.cells = new Entity[8][8];
         this.creator = new EntityCreator(pieces);
         this.bMgr = new BoardManager(cells, creator);
@@ -36,7 +36,9 @@ public class GameEngine {
             int firstXPos = inputHandler.getFirstXPos();
             int firstYPos = inputHandler.getFirstYPos();
 
-            pMgr.movePiece(pieces[firstXPos][firstYPos]);
+            if (pMgr.movePiece(pieces[firstXPos][firstYPos])) {
+               pMgr.updateAllPieces();
+            }
             inputHandler.resetClicks();
             printSelectedPiece();
         }
@@ -48,8 +50,8 @@ public class GameEngine {
     }
 
     private void printSelectedPiece() {
-        Entity e = pieces[inputHandler.getFirstXPos()][inputHandler.getFirstYPos()];
-        if (e instanceof GameBoardPiece piece) {
+        GameBoardPiece piece = pieces[inputHandler.getFirstXPos()][inputHandler.getFirstYPos()];
+        if (piece != null) {
             piece.printData();
         }
     }

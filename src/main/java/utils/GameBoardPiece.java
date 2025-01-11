@@ -1,6 +1,7 @@
 package main.java.utils;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Set;
 
 public interface GameBoardPiece {
@@ -20,6 +21,8 @@ public interface GameBoardPiece {
     void clearMovementList();
 
     String getName();
+
+    BufferedImage getSprite();
 
     void setX(int x);
 

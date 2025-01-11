@@ -9,11 +9,11 @@ import java.awt.Point;
 import java.util.Set;
 
 public class PieceManager {
-    private Entity[][] pieces;
+    private GameBoardPiece[][] pieces;
     private EntityCreator creator;
     private InputHandler input;
 
-    public PieceManager(Entity[][] pieces, EntityCreator creator, InputHandler inputHandler) {
+    public PieceManager(GameBoardPiece[][] pieces, EntityCreator creator, InputHandler inputHandler) {
         this.pieces = pieces;
         this.creator = creator;
         this.input = inputHandler;
@@ -21,19 +21,22 @@ public class PieceManager {
     }
 
     public void updateAllPieces() {
-        for (Entity[] row : pieces) {
-            for (Entity gameBoardPiece : row) {
-                if (gameBoardPiece instanceof GameBoardPiece piece) {
+        for (GameBoardPiece[] row : pieces) {
+            for (GameBoardPiece piece : row) {
+                if (piece != null) {
                     piece.update();
                 }
             }
         }
     }
 
-    public void movePiece(Entity entity) {
-        if (entity instanceof GameBoardPiece piece && movePieceHelper(piece)) {
-            pieces[entity.getX()][entity.getY()] = entity;
+    public boolean movePiece(GameBoardPiece piece) {
+        if (movePieceHelper(piece)) {
+            pieces[piece.getX()][piece.getY()] = piece;
+        } else {
+            return false;
         }
+        return true;
     }
 
     private boolean movePieceHelper(GameBoardPiece entityToMove) {
@@ -59,7 +62,7 @@ public class PieceManager {
         return pieces[postX][postY] == null;
     }
 
-    public Entity getPiece(int x, int y) {
+    public GameBoardPiece getPiece(int x, int y) {
         return pieces[x][y];
     }
 
@@ -68,12 +71,9 @@ public class PieceManager {
     }
 
     public void printAllPiecesInPlay() {
-        for (Entity[] row : pieces) {
-            for (Entity col : row) {
-                if (col instanceof GameBoardPiece) {
-                    GameBoardPiece piece = (GameBoardPiece) col;
-                    piece.printData();
-                }
+        for (GameBoardPiece[] row : pieces) {
+            for (GameBoardPiece piece : row) {
+                piece.printData();
             }
         }
     }
