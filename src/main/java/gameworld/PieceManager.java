@@ -18,6 +18,7 @@ public class PieceManager {
         this.creator = creator;
         this.input = inputHandler;
         createBeginningCheckers();
+        updateAllPieces();
     }
 
     public void updateAllPieces() {

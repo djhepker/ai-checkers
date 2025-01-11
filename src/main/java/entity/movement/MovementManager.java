@@ -6,11 +6,11 @@ import java.awt.Point;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MovementHandler {
+public class MovementManager {
     private MovementNode cursor;
     private MovementList mList;
 
-    public MovementHandler() {
+    public MovementManager() {
         this.mList = new MovementList();
         this.cursor = null;
     }

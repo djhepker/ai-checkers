@@ -1,6 +1,6 @@
 package main.java.entity;
 
-import main.java.entity.movement.MovementHandler;
+import main.java.entity.movement.MovementManager;
 import main.java.utils.GameBoardPiece;
 
 import java.awt.Point;
@@ -8,18 +8,17 @@ import java.awt.image.BufferedImage;
 import java.util.Set;
 
 public class Checker extends Entity implements GameBoardPiece {
-    private final MovementHandler movementHandler;
+    private final MovementManager moveMgr;
     private final PieceColor color;
     private GameBoardPiece[][] pieces;
     private final int movementSign;
 
     public Checker(String name, int x, int y, BufferedImage image, GameBoardPiece[][] pieces) {
         super(name, x, y, image);
-        this.movementHandler = new MovementHandler();
+        this.moveMgr = new MovementManager();
         this.color = PieceColor.valueOf(name.substring(0, 5));
         this.movementSign = color == PieceColor.LIGHT ? 1 : -1;
         this.pieces = pieces;
-        generateLegalMoves();
     }
 
     @Override
@@ -50,7 +49,7 @@ public class Checker extends Entity implements GameBoardPiece {
 
     @Override
     public void update() {
-        movementHandler.clearListOfMoves();
+        moveMgr.clearListOfMoves();
         generateLegalMoves();
     }
 
@@ -83,41 +82,34 @@ public class Checker extends Entity implements GameBoardPiece {
     //TODO: decide if we want to mark pieces that can optionally be taken
     //TODO: HANDLE BEING ABLE TO MOVE (0, -2) IF ENEMY PIECE IS (+1, -2)
     private void generateMoveHelper(int xCell, int yCell, int numRecursions) {
-        int nextYPosition = yCell - 1 * movementSign;
-        if (nextYPosition >= 0) {
+        int nextY = yCell - 1 * movementSign;
+
+        if (nextY >= 0 && nextY < 8) {
+
             int leftX = xCell - 1;
-            if (leftX >= 0) {
-                if (pieces[leftX][nextYPosition] == null) {
-                    movementHandler.addMovement(leftX, nextYPosition);
-                    //System.out.println("Boundary check: [" + (leftX >= 0) + "] leftX movement: [" + (pieces[leftX][nextYPosition] == null) + "] numRecursions is even: [" + (numRecursions % 2 == 0) + "]");
-                    if (numRecursions % 2 != 0) {
-                        generateMoveHelper(leftX, nextYPosition, numRecursions + 1);
-                    }
-                } else if (numRecursions % 2 == 0) {
-                    generateMoveHelper(leftX, nextYPosition, numRecursions + 1);
-                } else if (false) {
-                    return;
-                }
-            } else if (numRecursions % 2 != 0) {
+
+            if (leftX < 0) {
                 return;
             }
-            int rightX = xCell + 1;
-            if (rightX <= 7) {
-                if (pieces[rightX][nextYPosition] == null) {
-                    movementHandler.addMovement(rightX, nextYPosition);
-                    if (numRecursions % 2 != 0) {
-                        generateMoveHelper(rightX, nextYPosition, numRecursions + 1);
-                    }
-                } else if (numRecursions % 2 == 0) {
-                    generateMoveHelper(rightX, nextYPosition, numRecursions + 1);
-                }
+
+            if (pieces[leftX][nextY] == null) {
+                generateMoveHelper(leftX, nextY, numRecursions + 1);
+                moveMgr.addMovement(leftX, nextY);
+            } else if (numRecursions % 2 == 0) {
+                generateMoveHelper(leftX, nextY, numRecursions + 1);
             }
+//
+//            int rightX = xCell + 1;
+//
+//            if (rightX <= 7) {
+//
+//            }
         }
     }
 
     @Override
     public Set<Point> getLegalMoves() {
-        return movementHandler.getLegalMoves();
+        return moveMgr.getLegalMoves();
     }
 
     @Override

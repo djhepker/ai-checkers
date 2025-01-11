@@ -85,13 +85,15 @@ public class GraphicsHandler extends JPanel {
         if (piece != null) {
             g2d.drawRect(highlightRectangleX, highlightRectangleY, getWidth() / 8, getHeight() / 8);
             Set<Point> legalMoves = piece.getLegalMoves();
-            System.out.println("highlightRectangleX: " + highlightRectangleX + " highlightRectangleY: " + highlightRectangleY);
-            for (Point move : legalMoves) {
-                int x = getWidth() / 8 * (int) move.getX();
-                int y = getHeight() / 8 * (int) move.getY();
-                System.out.println("Point x: " + x);
-                System.out.println("Point y: " + y);
-                g2d.drawRect(x, y, getWidth() / 8, getHeight() / 8);
+            // System.out.println("highlightRectangleX: " + highlightRectangleX + " highlightRectangleY: " + highlightRectangleY);
+            if (legalMoves != null) {
+                for (Point move : legalMoves) {
+                    int x = getWidth() / 8 * (int) move.getX();
+                    int y = getHeight() / 8 * (int) move.getY();
+                    System.out.println("Point x: " + x);
+                    System.out.println("Point y: " + y);
+                    g2d.drawRect(x, y, getWidth() / 8, getHeight() / 8);
+                }
             }
         } else {
             inputHandler.resetClicks();
