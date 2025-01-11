@@ -26,13 +26,13 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     @Override
-    public void printTheoreticalMoves() {
+    public void printLegalMoves() {
         int[][] moves = getLegalMoves();
         if (moves == null) {
             return;
         }
         for (int row = 0; row < moves[0].length; row++) {
-            System.out.print("Row: " + row + " (" + moves[row][0] + ", " + moves[row][1] + "); ");
+            System.out.print("Option " + row + ": (" + moves[row][0] + ", " + moves[row][1] + "); ");
         }
         System.out.println();
     }
@@ -45,8 +45,8 @@ public class Checker extends Entity implements GameBoardPiece {
     @Override
     public void update() {
         movementHandler.clearListOfMoves();
-        printTheoreticalMoves();
         generateLegalMoves();
+        printLegalMoves();
     }
 
     @Override
@@ -71,6 +71,7 @@ public class Checker extends Entity implements GameBoardPiece {
 
     @Override
     public void generateLegalMoves() {
+        System.out.println("generateLegalMoves() called");
         generateMoveHelper(getX(), getY(), 0);
     }
 
@@ -118,6 +119,6 @@ public class Checker extends Entity implements GameBoardPiece {
         System.out.print("Piece name: " + getName() + "; ");
         System.out.print("Piece coordinates: (" + getX() + ", " + getY() + "); ");
         System.out.print("Theoretical move choices: ");
-        printTheoreticalMoves();
+        printLegalMoves();
     }
 }

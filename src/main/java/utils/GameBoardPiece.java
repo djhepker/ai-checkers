@@ -10,7 +10,7 @@ public interface GameBoardPiece {
 
     void generateLegalMoves();
 
-    void printTheoreticalMoves();
+    void printLegalMoves();
 
     int[][] getLegalMoves();
 
