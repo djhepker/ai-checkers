@@ -1,15 +1,15 @@
 package main.java.engine;
 
 import main.java.entity.Checker;
+import main.java.entity.Entity;
 import main.java.gameworld.Cell;
 import main.java.utils.AssetManager;
-import main.java.utils.EntityArray;
 
 public class EntityCreator {
     private final AssetManager assetManager;
-    private EntityArray pieces;
+    private Entity[][] pieces;
 
-    public EntityCreator(EntityArray pieces) {
+    public EntityCreator(Entity[][] pieces) {
         assetManager = new AssetManager();
         this.pieces = pieces;
     }

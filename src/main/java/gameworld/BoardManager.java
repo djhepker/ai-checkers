@@ -1,27 +1,27 @@
 package main.java.gameworld;
 
-import main.java.utils.EntityArray;
 import main.java.engine.EntityCreator;
+import main.java.entity.Entity;
 
 public class BoardManager {
-    private EntityArray cells;
+    private Entity[][] cells;
     private EntityCreator creator;
 
-    public BoardManager(EntityArray cells, EntityCreator creator) {
+    public BoardManager(Entity[][] cells, EntityCreator creator) {
          this.cells = cells;
          this.creator = creator;
          createBoardCells();
     }
 
     private void createBoardCells() {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                cells.addEntity(creator.createCell(i, j));
+        for (int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
+                cells[i][j] = creator.createCell(i, j);
             }
         }
     }
 
     public void printNumCells() {
-        System.out.println("The number of Cells: " + cells.getLength());
+        System.out.println("The number of Cells: " + cells.length);
     }
 }

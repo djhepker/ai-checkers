@@ -1,7 +1,6 @@
 package main.java.entity;
 
 import main.java.entity.movement.MovementHandler;
-import main.java.utils.EntityArray;
 import main.java.utils.GameBoardPiece;
 
 import java.awt.image.BufferedImage;
@@ -11,7 +10,7 @@ public class Checker extends Entity implements GameBoardPiece {
     private final PieceColor color;
     private final int movementSign;
 
-    public Checker(String name, int x, int y, BufferedImage image, EntityArray pieces) {
+    public Checker(String name, int x, int y, BufferedImage image, Entity[][] pieces) {
         super(name, x, y, image);
         this.movementHandler = new MovementHandler();
         this.color = PieceColor.valueOf(name.substring(0, 5));

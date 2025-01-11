@@ -2,16 +2,15 @@ package main.java.gameworld;
 
 import main.java.entity.Entity;
 import main.java.graphics.InputHandler;
-import main.java.utils.EntityArray;
 import main.java.engine.EntityCreator;
 import main.java.utils.GameBoardPiece;
 
 public class PieceManager {
-    private EntityArray pieces;
+    private Entity[][] pieces;
     private EntityCreator creator;
     private InputHandler input;
 
-    public PieceManager(EntityArray pieces, EntityCreator creator, InputHandler inputHandler) {
+    public PieceManager(Entity[][] pieces, EntityCreator creator, InputHandler inputHandler) {
         this.pieces = pieces;
         this.creator = creator;
         this.input = inputHandler;
@@ -20,7 +19,7 @@ public class PieceManager {
 
     public void movePiece(Entity entity) {
         if (entity instanceof GameBoardPiece && movePieceHelper((GameBoardPiece) entity)) {
-            pieces.addEntity(entity);
+            pieces[entity.getX()][entity.getY()] = entity;
         }
     }
 
@@ -38,7 +37,7 @@ public class PieceManager {
                 entityToMove.setX(postX);
                 entityToMove.setY(postY);
                 entityToMove.update();
-                pieces.removeEntity(input.getFirstXPos(), input.getFirstYPos());
+                pieces[input.getFirstXPos()][input.getFirstYPos()] = null;
                 return true;
             }
         }
@@ -46,7 +45,7 @@ public class PieceManager {
     }
 
     private boolean spaceIsNull(int postX, int postY) {
-        return pieces.spaceIsNull(postX, postY);
+        return pieces[postX][postY] == null;
     }
 
     private void createBeginningCheckers() {
@@ -60,7 +59,7 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces.addEntity(creator.createChecker("DUSKYChecker", x, y));
+                pieces[x][y] = creator.createChecker("DUSKYChecker", x, y);
                 x += 2;
             }
         }
@@ -73,21 +72,28 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces.addEntity(creator.createChecker("LIGHTChecker", x, y));
+                pieces[x][y] = creator.createChecker("LIGHTChecker", x, y);
                 x += 2;
             }
         }
     }
 
     public Entity getPiece(int x, int y) {
-        return pieces.getEntity(x, y);
+        return pieces[x][y];
     }
 
     public void printNumPieces() {
-        System.out.println("The number of pieces: " + pieces.getLength());
+        System.out.println("The number of pieces: " + pieces.length);
     }
 
     public void printAllPiecesInPlay() {
-        pieces.printEntities();
+        for (Entity[] row : pieces) {
+            for (Entity col : row) {
+                if (col instanceof GameBoardPiece) {
+                    GameBoardPiece piece = (GameBoardPiece) col;
+                    piece.printData();
+                }
+            }
+        }
     }
 }
