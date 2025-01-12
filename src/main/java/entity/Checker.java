@@ -75,47 +75,51 @@ public class Checker extends Entity implements GameBoardPiece {
 
     @Override
     public void generateLegalMoves() {
-        generateMoveHelper(getX(), getY(), false);
+        generateMoveHelper(getX(), getY(), false, false);
     }
 
     //TODO: Logic implementation for king status of checker
     //TODO: decide if we want to mark pieces that can optionally be taken
 
     //TODO: likely want to eventually replace return calls with generateMoverHelper calls in the rightward direction
-    private void generateMoveHelper(int xCell, int yCell, boolean midJump) {
+    private void generateMoveHelper(int xCell, int yCell, boolean midJumpLeft, boolean midJumpRight) {
         int nextY = yCell - 1 * movementSign;
+        boolean isJumping = midJumpLeft || midJumpRight;
 
         if (nextY >= 0 && nextY < 8) {
 
             int leftX = xCell - 1;
 
-            if (leftX < 0) {
-                return;
-            }
-
-            if (!midJump) {
-                if (pieces[leftX][nextY] != null) {
-                    generateMoveHelper(leftX, nextY, !midJump);
+            if (leftX >= 0) {
+                if (!isJumping) { // stationary
+                    if (pieces[leftX][nextY] != null) { // stationary, check jumpLeft case
+                        generateMoveHelper(leftX, nextY, true, false);
+                    } else {    // stationary, next space not occupied
+                        moveMgr.addMovement(leftX, nextY);
+                    }
+                } else if (midJumpLeft) {  //  jumping left
+                    if (pieces[leftX][nextY] == null) { //  jumping left and next space is open
+                        moveMgr.addMovement(leftX, nextY);
+                        generateMoveHelper(leftX, nextY, false, false);
+                    }   // next space not open
                     return;
                 }
-            } else if (pieces[leftX][nextY] != null) {  // Odd numbered recursive layer
-                generateMoveHelper(leftX, nextY, !midJump);
-                return;
-            } else {    // space is null; iteration is odd
-                generateMoveHelper(leftX, nextY, !midJump);
             }
 
-            moveMgr.addMovement(leftX, nextY);  // in-order algorithm
+            int rightX = xCell + 1;
+            if (rightX > 7) {
+                return;
+            }
 
-//            int rightX = xCell + 1;
-//            if (rightX > 7) {
-//                return;
-//            }
-//            if (!midJump) {
-//                if (pieces[rightX][nextY] != null) {
-//
-//                }
-//            }
+            if (!isJumping) {   //  stationary
+                if (pieces[rightX][nextY] == null) {    // stationary, open (+1, +1) space
+                    moveMgr.addMovement(rightX, nextY);
+                } else {    // stationary, check jumpRight case
+                    generateMoveHelper(rightX, nextY, false, true);
+                }
+            } else if (midJumpRight && pieces[rightX][nextY] == null) {    //  jumping, open space
+                moveMgr.addMovement(rightX, nextY);
+            }
         }
     }
 
