@@ -32,7 +32,6 @@ public class MovementManager {
         return moves;
     }
 
-
     public void addMovement(int postX, int postY) {
         mList.addNode(new MovementNode(postX, postY));
     }
