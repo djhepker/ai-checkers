@@ -5,8 +5,9 @@ import main.java.utils.GameBoardPiece;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Set;
-import java.util.Stack;
 
 public class Checker extends Entity implements GameBoardPiece {
     private final MovementManager moveMgr;
@@ -86,11 +87,12 @@ public class Checker extends Entity implements GameBoardPiece {
      * */
     @Override
     public void generateLegalMoves() {
-        Stack<MoveState> taskStack = new Stack<>();
-        taskStack.push(new MoveState(getX(), getY(), 3));
+        Deque<MoveState> taskQueue = new ArrayDeque<>();
 
-        while (!taskStack.empty()) {
-            MoveState currState = taskStack.pop();
+        taskQueue.push(new MoveState(getX(), getY(), 3));
+
+        while (!taskQueue.isEmpty()) {
+            MoveState currState = taskQueue.pop();
             int stateCode = currState.stateCode;
             int [] xOffsets;
             if (stateCode > 1) {
@@ -104,16 +106,15 @@ public class Checker extends Entity implements GameBoardPiece {
                     int xNext = currState.xCell + xOffset;
                     if (0 <= xNext && xNext < 8) {
                         GameBoardPiece target = pieces[xNext][yNext];
-
                         if (target == null) {   // target open case
                             if (stateCode == 3) { // target open; stationary;
                                 moveMgr.addMovement(xNext, yNext);
                             } else if (stateCode < 2) {    //  target open; mid-jump;
                                 moveMgr.addMovement(xNext, yNext);
-                                taskStack.push(new MoveState(xNext, yNext, 2));
+                                taskQueue.push(new MoveState(xNext, yNext, 2));
                             }
                         } else if (stateCode > 1) {  // target not open; stationary;
-                            taskStack.push(new MoveState(xNext, yNext, xOffset));
+                            taskQueue.push(new MoveState(xNext, yNext, xOffset));
                         }
                     }
                 }
