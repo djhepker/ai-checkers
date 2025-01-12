@@ -78,8 +78,8 @@ public class Checker extends Entity implements GameBoardPiece {
     //TODO: decide if we want to mark pieces that can optionally be taken
     /*
      *   STATECODE:
-     *   Stationary: 2
-     *   Post-jump stationary: 3
+     *   Stationary: 3
+     *   Post-jump stationary: 2
      *   Left-jumping: -1
      *   Right-jumping: 1
      *
@@ -87,12 +87,13 @@ public class Checker extends Entity implements GameBoardPiece {
     @Override
     public void generateLegalMoves() {
         Stack<MoveState> taskStack = new Stack<>();
-        taskStack.push(new MoveState(getX(), getY(), 0));
+        taskStack.push(new MoveState(getX(), getY(), 3));
 
         while (!taskStack.empty()) {
             MoveState currState = taskStack.pop();
+            int stateCode = currState.stateCode;
             int [] xOffsets;
-            if (currState.stateCode > 1) {
+            if (stateCode > 1) {
                 xOffsets = new int[] {-1, 1};
             } else {
                 xOffsets = new int[] {currState.stateCode};
@@ -105,12 +106,15 @@ public class Checker extends Entity implements GameBoardPiece {
                         GameBoardPiece target = pieces[xNext][yNext];
 
                         if (target == null) {   // target open case
-                            if (currState.stateCode == 2) { // target open; stationary;
+                            if (stateCode == 3) { // target open; stationary;
                                 moveMgr.addMovement(xNext, yNext);
-                                taskStack.push(new MoveState(xNext, yNext, xOffset));
+                            } else if (stateCode < 2) {    //  target open; mid-jump;
+                                moveMgr.addMovement(xNext, yNext);
+                                taskStack.push(new MoveState(xNext, yNext, 2));
                             }
+                        } else if (stateCode > 1) {  // target not open; stationary;
+                            taskStack.push(new MoveState(xNext, yNext, xOffset));
                         }
-
                     }
                 }
             }
