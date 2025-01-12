@@ -6,6 +6,7 @@ import main.java.utils.GameBoardPiece;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.Set;
+import java.util.Stack;
 
 public class Checker extends Entity implements GameBoardPiece {
     private final MovementManager moveMgr;
@@ -73,52 +74,38 @@ public class Checker extends Entity implements GameBoardPiece {
         return super.getY();
     }
 
-    @Override
-    public void generateLegalMoves() {
-        generateMoveHelper(getX(), getY(), false, false);
-    }
-
     //TODO: Logic implementation for king status of checker
     //TODO: decide if we want to mark pieces that can optionally be taken
+    @Override
+    public void generateLegalMoves() {
+        Stack<MoveState> taskStack = new Stack<>();
+        taskStack.push(new MoveState(getX(), getY(), 0));
 
-    //TODO: likely want to eventually replace return calls with generateMoverHelper calls in the rightward direction
-    private void generateMoveHelper(int xCell, int yCell, boolean midJumpLeft, boolean midJumpRight) {
-        int nextY = yCell - 1 * movementSign;
-        boolean isJumping = midJumpLeft || midJumpRight;
-
-        if (nextY >= 0 && nextY < 8) {
-
-            int leftX = xCell - 1;
-
-            if (leftX >= 0) {
-                if (!isJumping) { // stationary
-                    if (pieces[leftX][nextY] != null) { // stationary, check jumpLeft case
-                        generateMoveHelper(leftX, nextY, true, false);
-                    } else {    // stationary, next space not occupied
-                        moveMgr.addMovement(leftX, nextY);
+        while (!taskStack.empty()) {
+            MoveState currState = taskStack.pop();
+            int [] xOffsets;
+            if (currState.jumpState == 0) {
+                xOffsets = new int[] {-1, 1};
+            } else {
+                xOffsets = new int[] {currState.jumpState};
+            }
+            int yNext = currState.yCell - movementSign;
+            if (0 <= yNext && yNext < 8) {
+                for (int xOffset : xOffsets) {
+                    int xNext = currState.xCell + xOffset;
+                    if (0 <= xNext && xNext < 8) {
+                        if (currState.jumpState == 0) { // stationary
+                            if (pieces[xNext][yNext] == null) { // next is clear
+                                moveMgr.addMovement(xNext, yNext);
+                            } else {    // check jump case
+                                taskStack.push(new MoveState(xNext, yNext, xOffset));
+                            }
+                        } else if (pieces[xNext][yNext] == null) {  // jumping; next is clear;
+                            moveMgr.addMovement(xNext, yNext);
+                            taskStack.push(new MoveState(xNext, yNext, 0));
+                        }
                     }
-                } else if (midJumpLeft) {  //  jumping left
-                    if (pieces[leftX][nextY] == null) { //  jumping left and next space is open
-                        moveMgr.addMovement(leftX, nextY);
-                        generateMoveHelper(leftX, nextY, false, false);
-                    }   // next space not open
-                    return;
                 }
-            }
-
-            int rightX = xCell + 1;
-            if (rightX > 7) {
-                return;
-            }
-
-            if (!isJumping) {   //  stationary
-                if (pieces[rightX][nextY] == null) {    // stationary, open (+1, +1) space
-                    moveMgr.addMovement(rightX, nextY);
-                } else {    // stationary, check jumpRight case
-                    generateMoveHelper(rightX, nextY, false, true);
-                }
-            } else if (midJumpRight && pieces[rightX][nextY] == null) {    //  jumping, open space
-                moveMgr.addMovement(rightX, nextY);
             }
         }
     }
@@ -134,5 +121,17 @@ public class Checker extends Entity implements GameBoardPiece {
         System.out.print("Piece coordinates: (" + getX() + ", " + getY() + "); ");
         System.out.print("Legal move choices: ");
         printLegalMoves();
+    }
+
+    private class MoveState {
+        int xCell;
+        int yCell;
+        int jumpState;
+
+        MoveState(int xCell, int yCell, int jumpState) {
+            this.xCell = xCell;
+            this.yCell = yCell;
+            this.jumpState = jumpState;
+        }
     }
 }
