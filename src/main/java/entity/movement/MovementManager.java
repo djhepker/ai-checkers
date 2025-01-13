@@ -1,23 +1,27 @@
 package main.java.entity.movement;
 
 public class MovementManager {
-    private MovementNode cursor;
-    private MovementList mList;
+    private LocationNode cursor;
+    private LocationList locList;
 
     public MovementManager() {
-        this.mList = new MovementList();
+        this.locList = new LocationList();
         this.cursor = null;
     }
 
     public void clearListOfMoves() {
-        mList.clearList();
+        locList.clearList();
     }
 
-    public MovementNode getPointerToMoveList() {
-        return mList.getHead();
+    public LocationNode getPointerToMoveList() {
+        return locList.getHead();
     }
 
     public void addMovement(int postX, int postY) {
-        mList.addNode(new MovementNode((short) postX, (short) postY));
+        locList.addNode(new LocationNode((short) postX, (short) postY));
+    }
+
+    public void addMovement(int postX, int postY, LocationList capturedList) {
+        locList.addNode(new LocationNode((short) postX, (short) postY, capturedList));
     }
 }

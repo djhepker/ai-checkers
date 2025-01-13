@@ -1,7 +1,8 @@
 package main.java.entity;
 
+import main.java.entity.movement.LocationList;
 import main.java.entity.movement.MovementManager;
-import main.java.entity.movement.MovementNode;
+import main.java.entity.movement.LocationNode;
 import main.java.utils.GameBoardPiece;
 
 import java.awt.image.BufferedImage;
@@ -28,13 +29,13 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     @Override
-    public MovementNode getMoveListPointer() {
+    public LocationNode getMoveListPointer() {
         return moveMgr.getPointerToMoveList();
     }
 
     @Override
     public void printLegalMoves() {
-        MovementNode cursor = moveMgr.getPointerToMoveList();
+        LocationNode cursor = moveMgr.getPointerToMoveList();
         int row = 0;
         while (cursor != null) {
             System.out.print("Option " + row + ": (" + cursor.getDataX() + ", " + cursor.getDataY() + "); ");
@@ -128,14 +129,23 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     private class MoveState {
-        private int xCell;
-        private int yCell;
-        private int stateCode;
+        private final int xCell;
+        private final int yCell;
+        private final int stateCode;
+        private LocationList capturedList;
 
         MoveState(int xCell, int yCell, int stateCode) {
             this.xCell = xCell;
             this.yCell = yCell;
             this.stateCode = stateCode;
+        }
+
+        MoveState(int xCell, int yCell, LocationNode pieceNode, int stateCode) {
+            this.xCell = xCell;
+            this.yCell = yCell;
+            this.stateCode = stateCode;
+            this.capturedList = new LocationList();
+            capturedList.addNode(pieceNode);
         }
     }
 }

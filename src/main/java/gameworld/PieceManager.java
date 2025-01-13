@@ -1,6 +1,6 @@
 package main.java.gameworld;
 
-import main.java.entity.movement.MovementNode;
+import main.java.entity.movement.LocationNode;
 import main.java.graphics.InputHandler;
 import main.java.engine.EntityCreator;
 import main.java.utils.GameBoardPiece;
@@ -41,7 +41,7 @@ public class PieceManager {
         int postX = input.getSelectedCol();
         int postY = input.getSelectedRow();
         if (spaceIsNull(postX, postY)) {
-            MovementNode cursor = entityToMove.getMoveListPointer();
+            LocationNode cursor = entityToMove.getMoveListPointer();
             while (cursor != null) {
                 if (cursor.getDataX() == postX && cursor.getDataY() == postY) {
                     entityToMove.setX(postX);

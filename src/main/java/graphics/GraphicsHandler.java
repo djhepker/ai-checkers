@@ -1,7 +1,7 @@
 package main.java.graphics;
 
 import main.java.entity.Entity;
-import main.java.entity.movement.MovementNode;
+import main.java.entity.movement.LocationNode;
 import main.java.utils.GameBoardPiece;
 
 import javax.swing.JPanel;
@@ -82,7 +82,7 @@ public class GraphicsHandler extends JPanel {
         GameBoardPiece piece = pieces[xCoordinate][yCoordinate];
         if (piece != null) {
             g2d.drawRect(highlightRectangleX, highlightRectangleY, getWidth() / 8, getHeight() / 8);
-            MovementNode cursor = piece.getMoveListPointer();
+            LocationNode cursor = piece.getMoveListPointer();
             while (cursor != null) {
                 int x = getWidth() / 8 * cursor.getDataX();
                 int y = getHeight() / 8 * cursor.getDataY();

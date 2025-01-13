@@ -1,16 +1,16 @@
 package main.java.entity.movement;
 
 //  Package-private scope
-class MovementList {
-    private MovementNode head;
+public class LocationList {
+    private LocationNode head;
     private short size;
 
-    public MovementList() {
+    public LocationList() {
         this.head = null;
         this.size = 0;
     }
 
-    public void addNode(MovementNode nodeToAdd) {
+    public void addNode(LocationNode nodeToAdd) {
         if (head != null) {
             nodeToAdd.setNext(head);
         }
@@ -27,7 +27,7 @@ class MovementList {
         size = 0;
     }
 
-    public MovementNode getHead() {
+    public LocationNode getHead() {
         return head;
     }
 }
