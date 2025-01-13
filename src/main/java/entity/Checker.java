@@ -43,7 +43,6 @@ public class Checker extends Entity implements GameBoardPiece {
         System.out.println();
     }
 
-
     @Override
     public String getName() {
         return super.getName();

@@ -10,11 +10,11 @@ class MovementNode {
         this.next = null;
     }
 
-    public int getDataX() {
+    public short getDataX() {
         return data.getPostX();
     }
 
-    public int getDataY() {
+    public short getDataY() {
         return data.getPostY();
     }
 

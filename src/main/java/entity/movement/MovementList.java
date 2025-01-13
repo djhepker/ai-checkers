@@ -3,7 +3,7 @@ package main.java.entity.movement;
 //  Package-private scope
 class MovementList {
     private MovementNode head;
-    private int size;
+    private short size;
 
     public MovementList() {
         this.head = null;
@@ -11,14 +11,11 @@ class MovementList {
     }
 
     public void addNode(MovementNode nodeToAdd) {
-        if (head == null) {
-            head = nodeToAdd;
-            size++;
-        } else {
+        if (head != null) {
             nodeToAdd.setNext(head);
-            head = nodeToAdd;
-            size++;
         }
+        head = nodeToAdd;
+        size++;
     }
 
     public int getSize() {
@@ -27,6 +24,7 @@ class MovementList {
 
     public void clearList() {
         head = null;
+        size = 0;
     }
 
     public MovementNode getHead() {
