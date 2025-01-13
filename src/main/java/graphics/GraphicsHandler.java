@@ -121,7 +121,6 @@ public class GraphicsHandler extends JPanel {
                     int xPos = piece.getX() * entityWidth;
                     int yPos = piece.getY() * entityHeight;
                     g2d.drawImage(piece.getSprite(), xPos, yPos, entityWidth, entityHeight, null);
-                    Set<Point> legalMoves = piece.getLegalMoves();
                 }
             }
         }

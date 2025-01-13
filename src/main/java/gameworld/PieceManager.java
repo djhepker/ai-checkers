@@ -47,11 +47,10 @@ public class PieceManager {
         }
         int postX = input.getSelectedCol();
         int postY = input.getSelectedRow();
-        Point targetMove = new Point(postX, postY);
+        Point targetMove = new Point(postX, postY); // move logic into mvmgr
         if (legalMoves.contains(targetMove) && spaceIsNull(postX, postY)) {
             entityToMove.setX(postX);
             entityToMove.setY(postY);
-            entityToMove.update();
             pieces[input.getFirstXPos()][input.getFirstYPos()] = null;
             return true;
         }
