@@ -35,8 +35,8 @@ public class GameEngine {
         if (inputHandler.movementChosen()) {
             int firstXPos = inputHandler.getFirstXPos();
             int firstYPos = inputHandler.getFirstYPos();
-
-            if (pMgr.movePiece(pieces[firstXPos][firstYPos])) {
+            GameBoardPiece piece = pieces[firstXPos][firstYPos];
+            if (piece != null && pMgr.movePiece(piece)) {
                pMgr.updateAllPieces();
             }
             inputHandler.resetClicks();

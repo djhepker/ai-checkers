@@ -1,13 +1,12 @@
 package main.java.graphics;
 
 import main.java.entity.Entity;
+import main.java.entity.movement.MovementNode;
 import main.java.utils.GameBoardPiece;
 
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
-import java.util.Set;
-import java.awt.Point;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -17,7 +16,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-// TODO make border outline resizable
 public class GraphicsHandler extends JPanel {
     private Entity[][] cells;
     private GameBoardPiece[][] pieces;
@@ -84,13 +82,12 @@ public class GraphicsHandler extends JPanel {
         GameBoardPiece piece = pieces[xCoordinate][yCoordinate];
         if (piece != null) {
             g2d.drawRect(highlightRectangleX, highlightRectangleY, getWidth() / 8, getHeight() / 8);
-            Set<Point> legalMoves = piece.getLegalMoves();
-            if (legalMoves != null) {
-                for (Point move : legalMoves) {
-                    int x = getWidth() / 8 * (int) move.getX();
-                    int y = getHeight() / 8 * (int) move.getY();
-                    g2d.drawRect(x, y, getWidth() / 8, getHeight() / 8);
-                }
+            MovementNode cursor = piece.getMoveListPointer();
+            while (cursor != null) {
+                int x = getWidth() / 8 * cursor.getDataX();
+                int y = getHeight() / 8 * cursor.getDataY();
+                g2d.drawRect(x, y, getWidth() / 8, getHeight() / 8);
+                cursor = cursor.getNext();
             }
         } else {
             inputHandler.resetClicks();
@@ -121,7 +118,6 @@ public class GraphicsHandler extends JPanel {
                     int xPos = piece.getX() * entityWidth;
                     int yPos = piece.getY() * entityHeight;
                     g2d.drawImage(piece.getSprite(), xPos, yPos, entityWidth, entityHeight, null);
-                    Set<Point> legalMoves = piece.getLegalMoves();
                 }
             }
         }
