@@ -1,19 +1,20 @@
 package main.java.entity.movement;
 
-public class Movement {
-    private final int postX;
-    private final int postY;
+//  Package-private scope
+class Movement {
+    private final short postX;
+    private final short postY;
 
-    protected Movement(int postX, int postY) {
+    protected Movement(short postX, short postY) {
         this.postX = postX;
         this.postY = postY;
     }
 
-    public int getpostX() {
+    protected short getPostX() {
         return postX;
     }
 
-    public int getpostY() {
+    protected short getPostY() {
         return postY;
     }
 }

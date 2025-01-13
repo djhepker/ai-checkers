@@ -1,7 +1,5 @@
 package main.java.entity.movement;
 
-import main.java.utils.MovementList;
-
 import java.awt.Point;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +31,6 @@ public class MovementManager {
     }
 
     public void addMovement(int postX, int postY) {
-        mList.addNode(new MovementNode(postX, postY));
+        mList.addNode(new MovementNode((short) postX, (short) postY));
     }
 }

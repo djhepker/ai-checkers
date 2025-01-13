@@ -76,7 +76,6 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     //TODO: Logic implementation for king status of checker
-    //TODO: decide if we want to mark pieces that can optionally be taken
     /*
      *   STATECODE:
      *   Stationary: 3
@@ -94,16 +93,16 @@ public class Checker extends Entity implements GameBoardPiece {
         while (!taskQueue.isEmpty()) {
             MoveState currState = taskQueue.pop();
             int stateCode = currState.stateCode;
-            int [] xOffsets;
+            int [] xDirrectionArray;    // possible directions to move
             if (stateCode > 1) {
-                xOffsets = new int[] {-1, 1};
+                xDirrectionArray = new int[] {-1, 1};
             } else {
-                xOffsets = new int[] {currState.stateCode};
+                xDirrectionArray = new int[] {currState.stateCode};
             }
             int yNext = currState.yCell - movementSign;
             if (0 <= yNext && yNext < 8) {
-                for (int xOffset : xOffsets) {
-                    int xNext = currState.xCell + xOffset;
+                for (int xDirection : xDirrectionArray) {
+                    int xNext = currState.xCell + xDirection;
                     if (0 <= xNext && xNext < 8) {
                         GameBoardPiece target = pieces[xNext][yNext];
                         if (target == null) {   // target open case
@@ -114,7 +113,7 @@ public class Checker extends Entity implements GameBoardPiece {
                                 taskQueue.push(new MoveState(xNext, yNext, 2));
                             }
                         } else if (stateCode > 1) {  // target not open; stationary;
-                            taskQueue.push(new MoveState(xNext, yNext, xOffset));
+                            taskQueue.push(new MoveState(xNext, yNext, xDirection));
                         }
                     }
                 }

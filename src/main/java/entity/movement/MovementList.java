@@ -1,8 +1,7 @@
-package main.java.utils;
+package main.java.entity.movement;
 
-import main.java.entity.movement.MovementNode;
-
-public class MovementList {
+//  Package-private scope
+class MovementList {
     private MovementNode head;
     private int size;
 
