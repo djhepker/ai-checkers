@@ -1,20 +1,21 @@
 package main.java.entity.movement;
 
-public class MovementNode {
+//  Package-private scope
+class MovementNode {
     private final Movement data;
     private MovementNode next;
 
-    public MovementNode(int postX, int postY) {
+    public MovementNode(short postX, short postY) {
         data = new Movement(postX, postY);
         this.next = null;
     }
 
-    public int getDataX() {
-        return data.getpostX();
+    public short getDataX() {
+        return data.getPostX();
     }
 
-    public int getDataY() {
-        return data.getpostY();
+    public short getDataY() {
+        return data.getPostY();
     }
 
     public MovementNode getNext() {

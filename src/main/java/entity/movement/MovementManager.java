@@ -1,12 +1,14 @@
 package main.java.entity.movement;
 
-import main.java.utils.MovementList;
+import java.awt.Point;
+import java.util.HashSet;
+import java.util.Set;
 
-public class MovementHandler {
+public class MovementManager {
     private MovementNode cursor;
     private MovementList mList;
 
-    public MovementHandler() {
+    public MovementManager() {
         this.mList = new MovementList();
         this.cursor = null;
     }
@@ -15,24 +17,20 @@ public class MovementHandler {
         mList.clearList();
     }
 
-    // creates Nx2 matrix
-    public int[][] getTheoreticalMoves() {
+    public Set<Point> getLegalMoves() {
         cursor = mList.getHead();
         if (cursor == null) {
             return null;
         }
-        int[][] moves = new int[mList.getSize()][2];
-        int row = 0;
+        Set<Point> moves = new HashSet<>();
         while (cursor != null) {
-            moves[row][0] = cursor.getDataX();
-            moves[row][1] = cursor.getDataY();
+            moves.add(new Point(cursor.getDataX(), cursor.getDataY()));
             cursor = cursor.getNext();
-            row++;
         }
         return moves;
     }
 
     public void addMovement(int postX, int postY) {
-        mList.addNode(new MovementNode(postX, postY));
+        mList.addNode(new MovementNode((short) postX, (short) postY));
     }
 }

@@ -1,5 +1,9 @@
 package main.java.utils;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.Set;
+
 public interface GameBoardPiece {
     enum PieceColor {
         LIGHT,
@@ -8,15 +12,15 @@ public interface GameBoardPiece {
 
     void update();
 
-    void generateTheoreticalMoves();
+    void generateLegalMoves();
 
-    void printTheoreticalMoves();
+    void printLegalMoves();
 
-    int[][] getTheoreticalMoves();
-
-    void clearMovementList();
+    Set<Point> getLegalMoves();
 
     String getName();
+
+    BufferedImage getSprite();
 
     void setX(int x);
 

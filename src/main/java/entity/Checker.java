@@ -1,36 +1,44 @@
 package main.java.entity;
 
-import main.java.entity.movement.MovementHandler;
+import main.java.entity.movement.MovementManager;
 import main.java.utils.GameBoardPiece;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Set;
 
 public class Checker extends Entity implements GameBoardPiece {
-    private final MovementHandler movementHandler;
+    private final MovementManager moveMgr;
     private final PieceColor color;
+    private GameBoardPiece[][] pieces;
     private final int movementSign;
 
-    public Checker(String name, int x, int y, BufferedImage image, Entity[][] pieces) {
+    public Checker(String name, int x, int y, BufferedImage image, GameBoardPiece[][] pieces) {
         super(name, x, y, image);
-        this.movementHandler = new MovementHandler();
+        this.moveMgr = new MovementManager();
         this.color = PieceColor.valueOf(name.substring(0, 5));
         this.movementSign = color == PieceColor.LIGHT ? 1 : -1;
-        generateTheoreticalMoves();
+        this.pieces = pieces;
     }
 
     @Override
-    public void clearMovementList() {
-        movementHandler.clearListOfMoves();
+    public BufferedImage getSprite() {
+        return super.getSprite();
     }
 
     @Override
-    public void printTheoreticalMoves() {
-        int[][] moves = getTheoreticalMoves();
-        if (moves == null) {
+    public void printLegalMoves() {
+        Set<Point> moves = getLegalMoves();
+        if (moves == null || moves.isEmpty()) {
+            System.out.println();
             return;
         }
-        for (int row = 0; row < moves[0].length; row++) {
-            System.out.print("Row: " + row + " (" + moves[row][0] + ", " + moves[row][1] + "); ");
+        int row = 0;
+        for (Point move : moves) {
+            System.out.print("Option " + row + ": (" + move.getX() + ", " + move.getY() + "); ");
+            row++;
         }
         System.out.println();
     }
@@ -42,9 +50,8 @@ public class Checker extends Entity implements GameBoardPiece {
 
     @Override
     public void update() {
-        movementHandler.clearListOfMoves();
-        printTheoreticalMoves();
-        generateTheoreticalMoves();
+        moveMgr.clearListOfMoves();
+        generateLegalMoves();
     }
 
     @Override
@@ -67,28 +74,74 @@ public class Checker extends Entity implements GameBoardPiece {
         return super.getY();
     }
 
+    //TODO: Logic implementation for king status of checker
+    /*
+     *   STATECODE:
+     *   Stationary: 3
+     *   Post-jump stationary: 2
+     *   Left-jumping: -1
+     *   Right-jumping: 1
+     *
+     * */
     @Override
-    public void generateTheoreticalMoves() {
-        if (getY() - 1 * movementSign >= 0) {
-            if (getX() + 1 <= 7) {
-                movementHandler.addMovement(getX() + 1, getY() - 1 * movementSign);
+    public void generateLegalMoves() {
+        Deque<MoveState> taskQueue = new ArrayDeque<>();
+
+        taskQueue.push(new MoveState(getX(), getY(), 3));
+
+        while (!taskQueue.isEmpty()) {
+            MoveState currState = taskQueue.pop();
+            int stateCode = currState.stateCode;
+            int [] xDirrectionArray;    // possible directions to move
+            if (stateCode > 1) {
+                xDirrectionArray = new int[] {-1, 1};
+            } else {
+                xDirrectionArray = new int[] {currState.stateCode};
             }
-            if (getX() - 1 >= 0) {
-                movementHandler.addMovement(getX() - 1, getY() - 1 * movementSign);
+            int yNext = currState.yCell - movementSign;
+            if (0 <= yNext && yNext < 8) {
+                for (int xDirection : xDirrectionArray) {
+                    int xNext = currState.xCell + xDirection;
+                    if (0 <= xNext && xNext < 8) {
+                        GameBoardPiece target = pieces[xNext][yNext];
+                        if (target == null) {   // target open case
+                            if (stateCode == 3) { // target open; stationary;
+                                moveMgr.addMovement(xNext, yNext);
+                            } else if (stateCode < 2) {    //  target open; mid-jump;
+                                moveMgr.addMovement(xNext, yNext);
+                                taskQueue.push(new MoveState(xNext, yNext, 2));
+                            }
+                        } else if (stateCode > 1) {  // target not open; stationary;
+                            taskQueue.push(new MoveState(xNext, yNext, xDirection));
+                        }
+                    }
+                }
             }
         }
     }
 
     @Override
-    public int[][] getTheoreticalMoves() {
-        return movementHandler.getTheoreticalMoves();
+    public Set<Point> getLegalMoves() {
+        return moveMgr.getLegalMoves();
     }
 
     @Override
     public void printData() {
         System.out.print("Piece name: " + getName() + "; ");
         System.out.print("Piece coordinates: (" + getX() + ", " + getY() + "); ");
-        System.out.print("Theoretical move choices: ");
-        printTheoreticalMoves();
+        System.out.print("Legal move choices: ");
+        printLegalMoves();
+    }
+
+    private class MoveState {
+        private int xCell;
+        private int yCell;
+        private int stateCode;
+
+        MoveState(int xCell, int yCell, int stateCode) {
+            this.xCell = xCell;
+            this.yCell = yCell;
+            this.stateCode = stateCode;
+        }
     }
 }
