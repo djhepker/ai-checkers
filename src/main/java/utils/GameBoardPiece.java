@@ -1,8 +1,8 @@
 package main.java.utils;
 
-import java.awt.*;
+import main.java.entity.movement.MovementNode;
+
 import java.awt.image.BufferedImage;
-import java.util.Set;
 
 public interface GameBoardPiece {
     enum PieceColor {
@@ -14,9 +14,9 @@ public interface GameBoardPiece {
 
     void generateLegalMoves();
 
-    void printLegalMoves();
+    MovementNode getMoveListPointer();
 
-    Set<Point> getLegalMoves();
+    void printLegalMoves();
 
     String getName();
 

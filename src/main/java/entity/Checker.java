@@ -1,13 +1,12 @@
 package main.java.entity;
 
 import main.java.entity.movement.MovementManager;
+import main.java.entity.movement.MovementNode;
 import main.java.utils.GameBoardPiece;
 
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Set;
 
 public class Checker extends Entity implements GameBoardPiece {
     private final MovementManager moveMgr;
@@ -29,15 +28,17 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     @Override
+    public MovementNode getMoveListPointer() {
+        return moveMgr.getPointerToMoveList();
+    }
+
+    @Override
     public void printLegalMoves() {
-        Set<Point> moves = getLegalMoves();
-        if (moves == null || moves.isEmpty()) {
-            System.out.println();
-            return;
-        }
+        MovementNode cursor = moveMgr.getPointerToMoveList();
         int row = 0;
-        for (Point move : moves) {
-            System.out.print("Option " + row + ": (" + move.getX() + ", " + move.getY() + "); ");
+        while (cursor != null) {
+            System.out.print("Option " + row + ": (" + cursor.getDataX() + ", " + cursor.getDataY() + "); ");
+            cursor = cursor.getNext();
             row++;
         }
         System.out.println();
@@ -86,9 +87,7 @@ public class Checker extends Entity implements GameBoardPiece {
     @Override
     public void generateLegalMoves() {
         Deque<MoveState> taskQueue = new ArrayDeque<>();
-
         taskQueue.push(new MoveState(getX(), getY(), 3));
-
         while (!taskQueue.isEmpty()) {
             MoveState currState = taskQueue.pop();
             int stateCode = currState.stateCode;
@@ -118,11 +117,6 @@ public class Checker extends Entity implements GameBoardPiece {
                 }
             }
         }
-    }
-
-    @Override
-    public Set<Point> getLegalMoves() {
-        return moveMgr.getLegalMoves();
     }
 
     @Override

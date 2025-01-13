@@ -1,12 +1,9 @@
 package main.java.gameworld;
 
-import main.java.entity.Entity;
+import main.java.entity.movement.MovementNode;
 import main.java.graphics.InputHandler;
 import main.java.engine.EntityCreator;
 import main.java.utils.GameBoardPiece;
-
-import java.awt.Point;
-import java.util.Set;
 
 public class PieceManager {
     private GameBoardPiece[][] pieces;
@@ -41,18 +38,19 @@ public class PieceManager {
     }
 
     private boolean movePieceHelper(GameBoardPiece entityToMove) {
-        Set<Point> legalMoves = entityToMove.getLegalMoves();
-        if (legalMoves == null || legalMoves.isEmpty()) {
-            return false;
-        }
         int postX = input.getSelectedCol();
         int postY = input.getSelectedRow();
-        Point targetMove = new Point(postX, postY); // move logic into mvmgr
-        if (legalMoves.contains(targetMove) && spaceIsNull(postX, postY)) {
-            entityToMove.setX(postX);
-            entityToMove.setY(postY);
-            pieces[input.getFirstXPos()][input.getFirstYPos()] = null;
-            return true;
+        if (spaceIsNull(postX, postY)) {
+            MovementNode cursor = entityToMove.getMoveListPointer();
+            while (cursor != null) {
+                if (cursor.getDataX() == postX && cursor.getDataY() == postY) {
+                    entityToMove.setX(postX);
+                    entityToMove.setY(postY);
+                    pieces[input.getFirstXPos()][input.getFirstYPos()] = null;
+                    return true;
+                }
+                cursor = cursor.getNext();
+            }
         }
         return false;
     }

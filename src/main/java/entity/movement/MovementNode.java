@@ -1,7 +1,6 @@
 package main.java.entity.movement;
 
-//  Package-private scope
-class MovementNode {
+public class MovementNode {
     private final Movement data;
     private MovementNode next;
 

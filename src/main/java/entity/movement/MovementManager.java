@@ -1,9 +1,5 @@
 package main.java.entity.movement;
 
-import java.awt.Point;
-import java.util.HashSet;
-import java.util.Set;
-
 public class MovementManager {
     private MovementNode cursor;
     private MovementList mList;
@@ -17,17 +13,8 @@ public class MovementManager {
         mList.clearList();
     }
 
-    public Set<Point> getLegalMoves() {
-        cursor = mList.getHead();
-        if (cursor == null) {
-            return null;
-        }
-        Set<Point> moves = new HashSet<>();
-        while (cursor != null) {
-            moves.add(new Point(cursor.getDataX(), cursor.getDataY()));
-            cursor = cursor.getNext();
-        }
-        return moves;
+    public MovementNode getPointerToMoveList() {
+        return mList.getHead();
     }
 
     public void addMovement(int postX, int postY) {
