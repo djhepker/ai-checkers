@@ -10,12 +10,17 @@ public class LocationList {
         this.size = 0;
     }
 
+    public LocationList(LocationNode initialNode) {
+        this.head = initialNode;
+        this.size = 1;
+    }
+
     public void addNode(LocationNode nodeToAdd) {
         if (head != null) {
             nodeToAdd.setNext(head);
         }
         head = nodeToAdd;
-        size++;
+        ++size;
     }
 
     public int getSize() {

@@ -66,7 +66,6 @@ public class GraphicsHandler extends JPanel {
         drawBoard(g2d);
         drawPieces(g2d);
         if (inputHandler.hasSelectedPiece()) {
-
             drawHighlightRectangles(g2d);
         }
     }
@@ -78,7 +77,6 @@ public class GraphicsHandler extends JPanel {
         int yCoordinate = inputHandler.getSelectedRow();
         highlightRectangleX = getWidth() / 8 * xCoordinate;
         highlightRectangleY = getHeight() / 8 * yCoordinate;
-
         GameBoardPiece piece = pieces[xCoordinate][yCoordinate];
         if (piece != null) {
             g2d.drawRect(highlightRectangleX, highlightRectangleY, getWidth() / 8, getHeight() / 8);

@@ -17,11 +17,11 @@ public class MovementManager {
         return locList.getHead();
     }
 
-    public void addMovement(int postX, int postY) {
+    public void addLocationNode(int postX, int postY) {
         locList.addNode(new LocationNode((short) postX, (short) postY));
     }
 
-    public void addMovement(int postX, int postY, LocationList capturedList) {
+    public void addLocationNode(int postX, int postY, LocationList capturedList) {
         locList.addNode(new LocationNode((short) postX, (short) postY, capturedList));
     }
 }

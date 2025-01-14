@@ -106,9 +106,9 @@ public class Checker extends Entity implements GameBoardPiece {
                         GameBoardPiece target = pieces[xNext][yNext];
                         if (target == null) {   // target open case
                             if (stateCode == 3) { // target open; stationary;
-                                moveMgr.addMovement(xNext, yNext);
+                                moveMgr.addLocationNode(xNext, yNext);
                             } else if (stateCode < 2) {    //  target open; mid-jump;
-                                moveMgr.addMovement(xNext, yNext);
+                                moveMgr.addLocationNode(xNext, yNext);
                                 taskQueue.push(new MoveState(xNext, yNext, 2));
                             }
                         } else if (stateCode > 1) {  // target not open; stationary;
@@ -140,12 +140,11 @@ public class Checker extends Entity implements GameBoardPiece {
             this.stateCode = stateCode;
         }
 
-        MoveState(int xCell, int yCell, LocationNode pieceNode, int stateCode) {
+        MoveState(int xCell, int yCell, LocationNode enemyNode, int stateCode) {
             this.xCell = xCell;
             this.yCell = yCell;
             this.stateCode = stateCode;
-            this.capturedList = new LocationList();
-            capturedList.addNode(pieceNode);
+            this.capturedList = new LocationList(enemyNode);
         }
     }
 }
