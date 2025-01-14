@@ -114,7 +114,7 @@ public class Checker extends Entity implements GameBoardPiece {
                                     taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
                                 } else {
                                     LocationNode attackNode = moveMgr.cloneNode(currState.attackNode);
-                                    attackNode.addCapturedEnemyNode(currState.xCell, currState.yCell);
+                                    attackNode.addCapturedEnemyNode(currState.xCell, currState.yCell);  // TODO: add labeling to the pieces I am storing in locationNode for point purposes
                                     taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
                                 }
                             }
