@@ -1,6 +1,5 @@
 package main.java.entity;
 
-import main.java.entity.movement.LocationList;
 import main.java.entity.movement.MovementManager;
 import main.java.entity.movement.LocationNode;
 import main.java.utils.GameBoardPiece;
@@ -30,12 +29,12 @@ public class Checker extends Entity implements GameBoardPiece {
 
     @Override
     public LocationNode getMoveListPointer() {
-        return moveMgr.getPointerToMoveList();
+        return moveMgr.getPointerToListHead();
     }
 
     @Override
     public void printLegalMoves() {
-        LocationNode cursor = moveMgr.getPointerToMoveList();
+        LocationNode cursor = moveMgr.getPointerToListHead();
         int row = 0;
         while (cursor != null) {
             System.out.print("Option " + row + ": (" + cursor.getDataX() + ", " + cursor.getDataY() + "); ");
@@ -108,8 +107,16 @@ public class Checker extends Entity implements GameBoardPiece {
                             if (stateCode == 3) { // target open; stationary;
                                 moveMgr.addLocationNode(xNext, yNext);
                             } else if (stateCode < 2) {    //  target open; mid-jump;
-                                moveMgr.addLocationNode(xNext, yNext);
-                                taskQueue.push(new MoveState(xNext, yNext, 2));
+                                if (currState.attackNode == null) {
+                                    moveMgr.addLocationNode(xNext, yNext);  // attackNode added
+                                    LocationNode attackNode = moveMgr.getPointerToListHead();   // retrieved
+                                    attackNode.addCapturedEnemyNode(currState.xCell, currState.yCell);
+                                    taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
+                                } else {
+                                    LocationNode attackNode = moveMgr.cloneNode(currState.attackNode);
+                                    attackNode.addCapturedEnemyNode(currState.xCell, currState.yCell);
+                                    taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
+                                }
                             }
                         } else if (stateCode > 1) {  // target not open; stationary;
                             taskQueue.push(new MoveState(xNext, yNext, xDirection));
@@ -132,19 +139,20 @@ public class Checker extends Entity implements GameBoardPiece {
         private final int xCell;
         private final int yCell;
         private final int stateCode;
-        private LocationList capturedList;
+        private LocationNode attackNode;
 
         MoveState(int xCell, int yCell, int stateCode) {
             this.xCell = xCell;
             this.yCell = yCell;
             this.stateCode = stateCode;
+            attackNode = null;
         }
 
-        MoveState(int xCell, int yCell, LocationNode enemyNode, int stateCode) {
+        MoveState(int xCell, int yCell, int stateCode, LocationNode attackNode) {
             this.xCell = xCell;
             this.yCell = yCell;
             this.stateCode = stateCode;
-            this.capturedList = new LocationList(enemyNode);
+            this.attackNode = attackNode;
         }
     }
 }

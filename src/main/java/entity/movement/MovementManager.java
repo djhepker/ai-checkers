@@ -1,19 +1,17 @@
 package main.java.entity.movement;
 
 public class MovementManager {
-    private LocationNode cursor;
     private LocationList locList;
 
     public MovementManager() {
         this.locList = new LocationList();
-        this.cursor = null;
     }
 
     public void clearListOfMoves() {
         locList.clearList();
     }
 
-    public LocationNode getPointerToMoveList() {
+    public LocationNode getPointerToListHead() {
         return locList.getHead();
     }
 
@@ -21,7 +19,13 @@ public class MovementManager {
         locList.addNode(new LocationNode((short) postX, (short) postY));
     }
 
-    public void addLocationNode(int postX, int postY, LocationList capturedList) {
-        locList.addNode(new LocationNode((short) postX, (short) postY, capturedList));
+    public LocationNode cloneNode(LocationNode originalNode) {
+        LocationNode nodeClone = new LocationNode(originalNode.getDataX(), originalNode.getDataY());
+        LocationNode cursor = originalNode.getCapturedEnemyNodes(); // place cursor on captured enemies
+        while (cursor != null) {
+            nodeClone.addCapturedEnemyNode(cloneNode(cursor));  // clone each potential capture
+            cursor = cursor.getNext();
+        }
+        return nodeClone;
     }
 }

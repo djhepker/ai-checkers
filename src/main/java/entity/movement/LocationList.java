@@ -3,16 +3,9 @@ package main.java.entity.movement;
 //  Package-private scope
 public class LocationList {
     private LocationNode head;
-    private short size;
 
     public LocationList() {
         this.head = null;
-        this.size = 0;
-    }
-
-    public LocationList(LocationNode initialNode) {
-        this.head = initialNode;
-        this.size = 1;
     }
 
     public void addNode(LocationNode nodeToAdd) {
@@ -20,16 +13,10 @@ public class LocationList {
             nodeToAdd.setNext(head);
         }
         head = nodeToAdd;
-        ++size;
-    }
-
-    public int getSize() {
-        return size;
     }
 
     public void clearList() {
         head = null;
-        size = 0;
     }
 
     public LocationNode getHead() {

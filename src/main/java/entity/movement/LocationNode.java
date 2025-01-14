@@ -2,18 +2,13 @@ package main.java.entity.movement;
 
 public class LocationNode {
     private final short[] data;
-    private LocationList capturedList;
+    private LocationNode capturedEnemies;
     private LocationNode next;
 
     public LocationNode(short postX, short postY) {
-        data = new short[] {postX, postY};
+        this.data = new short[] {postX, postY};
         this.next = null;
-    }
-
-    public LocationNode(short postX, short postY, LocationList capturedList) {
-        data = new short[] {postX, postY};
-        this.next = null;
-        this.capturedList = capturedList;
+        this.capturedEnemies = null;
     }
 
     public short getDataX() {
@@ -23,11 +18,31 @@ public class LocationNode {
     public short getDataY() {
         return data[1];
     }
-    // TODO: Implement logic to utilize our newly created capturedlist parameter
-    // TODO: ensure we don't have irrelevant logic or scope in our movement package
-    // TODO: create logic in checker movement such that capturedList is filled accordingly
-    public LocationNode getCapturedListPointer() {
-        return capturedList.getHead();
+
+    public LocationNode getCapturedEnemyNodes() {
+        return capturedEnemies;
+    }
+
+    public void addCapturedEnemyNode(LocationNode capturedNode) {
+        if (capturedEnemies == null) {
+            this.capturedEnemies = capturedNode;
+        } else {
+          capturedNode.setNext(capturedEnemies);
+          this.capturedEnemies = capturedNode;
+        }
+    }
+
+    public void addCapturedEnemyNode(int x, int y) {
+        LocationNode capturedNode = new LocationNode((short) x, (short) y);
+        if (capturedEnemies == null) {
+            this.capturedEnemies = capturedNode;
+        } else {
+            LocationNode cursor = capturedEnemies;
+            while (cursor.getNext() != null) {
+                cursor = cursor.getNext();
+            }
+            cursor.setNext(capturedNode);
+        }
     }
 
     public LocationNode getNext() {
