@@ -1,5 +1,6 @@
 package main.java.gameworld;
 
+import main.java.entity.movement.CapturedNode;
 import main.java.entity.movement.LocationNode;
 import main.java.graphics.InputHandler;
 import main.java.engine.EntityCreator;
@@ -22,31 +23,29 @@ public class PieceManager {
         for (GameBoardPiece[] row : pieces) {
             for (GameBoardPiece piece : row) {
                 if (piece != null) {
-                    piece.update();
+                    piece.update(pieces);
                 }
             }
         }
     }
 
     public boolean movePiece(GameBoardPiece piece) {
-        if (movePieceHelper(piece)) {
-            pieces[piece.getX()][piece.getY()] = piece;
-        } else {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean movePieceHelper(GameBoardPiece entityToMove) {
         int postX = input.getSelectedCol();
         int postY = input.getSelectedRow();
+
         if (spaceIsNull(postX, postY)) {
-            LocationNode cursor = entityToMove.getMoveListPointer();
+            LocationNode cursor = piece.getMoveListPointer();
             while (cursor != null) {
                 if (cursor.getDataX() == postX && cursor.getDataY() == postY) {
-                    entityToMove.setX(postX);
-                    entityToMove.setY(postY);
+                    CapturedNode capturedPiece = cursor.getCapturedNodes();
+                    while (capturedPiece != null) {
+                        pieces[capturedPiece.getDataX()][capturedPiece.getDataY()] = null;
+                        capturedPiece = capturedPiece.getNext();
+                    }
+                    piece.setX(postX);
+                    piece.setY(postY);
                     pieces[input.getFirstXPos()][input.getFirstYPos()] = null;
+                    pieces[piece.getX()][piece.getY()] = piece;
                     return true;
                 }
                 cursor = cursor.getNext();

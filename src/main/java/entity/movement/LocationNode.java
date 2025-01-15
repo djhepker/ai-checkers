@@ -19,7 +19,7 @@ public class LocationNode {
         return data[1];
     }
 
-    public CapturedNode getCapturedEnemyNodes() {
+    public CapturedNode getCapturedNodes() {
         return capturedEnemies;
     }
 

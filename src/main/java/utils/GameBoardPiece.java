@@ -10,9 +10,9 @@ public interface GameBoardPiece {
         DUSKY
     }
 
-    void update();
+    void update(GameBoardPiece[][] pieces);
 
-    void generateLegalMoves();
+    void generateLegalMoves(GameBoardPiece[][] pieces);
 
     LocationNode getMoveListPointer();
 

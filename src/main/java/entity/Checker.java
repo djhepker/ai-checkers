@@ -11,7 +11,6 @@ import java.util.Deque;
 public class Checker extends Entity implements GameBoardPiece {
     private final MovementManager moveMgr;
     private final PieceColor color;
-    private GameBoardPiece[][] pieces;
     private final int movementSign;
     private final short pieceValue;
 
@@ -21,7 +20,6 @@ public class Checker extends Entity implements GameBoardPiece {
         this.moveMgr = new MovementManager();
         this.color = PieceColor.valueOf(name.substring(0, 5));
         this.movementSign = color == PieceColor.LIGHT ? 1 : -1;
-        this.pieces = pieces;
     }
 
     @Override
@@ -62,9 +60,9 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     @Override
-    public void update() {
+    public void update(GameBoardPiece[][] pieces) {
         moveMgr.clearListOfMoves();
-        generateLegalMoves();
+        generateLegalMoves(pieces);
     }
 
     @Override
@@ -97,7 +95,7 @@ public class Checker extends Entity implements GameBoardPiece {
      *
      * */
     @Override
-    public void generateLegalMoves() {
+    public void generateLegalMoves(GameBoardPiece[][] pieces) {
         Deque<MoveState> taskQueue = new ArrayDeque<>();
         taskQueue.push(new MoveState(getX(), getY(), 3));
         while (!taskQueue.isEmpty()) {
