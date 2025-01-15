@@ -30,6 +30,11 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     @Override
+    public PieceColor getColor() {
+        return color;
+    }
+
+    @Override
     public LocationNode getMoveListPointer() {
         return moveMgr.getPointerToListHead();
     }
@@ -127,7 +132,9 @@ public class Checker extends Entity implements GameBoardPiece {
                                 }
                             }
                         } else if (stateCode > 1) {  // target not open; stationary;
-                            taskQueue.push(new MoveState(xNext, yNext, xDirection));
+                            if (target.getColor() != this.color) {
+                                taskQueue.push(new MoveState(xNext, yNext, xDirection));
+                            }
                         }
                     }
                 }

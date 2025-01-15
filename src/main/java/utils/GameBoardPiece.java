@@ -32,5 +32,7 @@ public interface GameBoardPiece {
 
     short getPieceValue();
 
+    PieceColor getColor();
+
     void printData();
 }
