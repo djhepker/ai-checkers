@@ -118,17 +118,19 @@ public class Checker extends Entity implements GameBoardPiece {
                                 moveMgr.addLocationNode(xNext, yNext);
                             } else if (stateCode < 2) {    //  target open; mid-jump;
                                 short captureValue = pieces[currState.xCell][currState.yCell].getPieceValue();
-                                if (currState.attackNode == null) {
-                                    moveMgr.addLocationNode(xNext, yNext);  // attackNode added
-                                    LocationNode attackNode = moveMgr.getPointerToListHead();   // retrieved
-                                    attackNode.addCapturedNode(currState.xCell, currState.yCell, captureValue);
-                                    taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
-                                }
+                                moveMgr.addLocationNode(xNext, yNext);  // attackNode added
+                                LocationNode attackNode = moveMgr.getPointerToListHead();   // retrieved
+                                attackNode.addCapturedNode(currState.xCell, currState.yCell, captureValue);
+                                taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
                             }
-                        } else if (stateCode > 1) {  // target not open; stationary;
-                            if (target.getColor() != this.color) {
-                                taskQueue.push(new MoveState(xNext, yNext, xDirection));
-                            }
+                        } else if (target.getColor() != this.color) {  // target not open; post-jump stationary;
+                            short captureValue = pieces[currState.xCell][currState.yCell].getPieceValue();
+                            LocationNode attackNode = moveMgr.cloneNode(currState.attackNode);
+                            attackNode.addCapturedNode(currState.xCell, currState.yCell, captureValue);
+                            taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
+
+
+                            taskQueue.push(new MoveState(xNext, yNext, xDirection));
                         }
                     }
                 }

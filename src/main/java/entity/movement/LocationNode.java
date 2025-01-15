@@ -23,22 +23,16 @@ public class LocationNode {
         return capturedEnemies;
     }
 
+    public void addCapturedNode(int x, int y, int pointValue) {
+        addCapturedNode(new CapturedNode((short) x, (short) y, (short) pointValue));
+    }
+
     public void addCapturedNode(CapturedNode capturedNode) {
         if (capturedEnemies == null) {
             this.capturedEnemies = capturedNode;
         } else {
           capturedNode.setNext(capturedEnemies);
           this.capturedEnemies = capturedNode;
-        }
-    }
-
-    public void addCapturedNode(int x, int y, int pointValue) {
-        CapturedNode capturedNode = new CapturedNode((short) x, (short) y, (short) pointValue);
-        if (capturedEnemies == null) {
-            this.capturedEnemies = capturedNode;
-        } else {
-            capturedNode.setNext(capturedEnemies);
-            capturedEnemies = capturedNode;
         }
     }
 
