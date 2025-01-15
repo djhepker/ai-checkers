@@ -118,19 +118,23 @@ public class Checker extends Entity implements GameBoardPiece {
                                 moveMgr.addLocationNode(xNext, yNext);
                             } else if (stateCode < 2) {    //  target open; mid-jump;
                                 short captureValue = pieces[currState.xCell][currState.yCell].getPieceValue();
-                                moveMgr.addLocationNode(xNext, yNext);  // attackNode added
-                                LocationNode attackNode = moveMgr.getPointerToListHead();   // retrieved
+                                LocationNode attackNode;
+                                if (currState.attackNode != null) { // multi-capture move;
+                                    attackNode = moveMgr.cloneNode(currState.attackNode);
+                                } else {
+                                    moveMgr.addLocationNode(xNext, yNext);  // attackNode added
+                                    attackNode = moveMgr.getPointerToListHead();   // retrieved
+                                }
                                 attackNode.addCapturedNode(currState.xCell, currState.yCell, captureValue);
                                 taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
                             }
-                        } else if (target.getColor() != this.color) {  // target not open; post-jump stationary;
-                            short captureValue = pieces[currState.xCell][currState.yCell].getPieceValue();
-                            LocationNode attackNode = moveMgr.cloneNode(currState.attackNode);
-                            attackNode.addCapturedNode(currState.xCell, currState.yCell, captureValue);
-                            taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
-
-
-                            taskQueue.push(new MoveState(xNext, yNext, xDirection));
+                        } else if (stateCode > 1 && target.getColor() != this.color) {  // target not open;
+                            if (stateCode == 2) { // post-jump; found new target;
+                                LocationNode nextAttackNode = moveMgr.cloneNode(currState.attackNode);
+                                taskQueue.push(new MoveState(xNext, yNext, xDirection, nextAttackNode));
+                            } else {    // beginning position
+                                taskQueue.push(new MoveState(xNext, yNext, xDirection));
+                            }
                         }
                     }
                 }
