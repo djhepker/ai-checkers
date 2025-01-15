@@ -123,10 +123,6 @@ public class Checker extends Entity implements GameBoardPiece {
                                     LocationNode attackNode = moveMgr.getPointerToListHead();   // retrieved
                                     attackNode.addCapturedNode(currState.xCell, currState.yCell, captureValue);
                                     taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
-                                } else {
-                                    LocationNode attackNode = moveMgr.cloneNode(currState.attackNode);
-                                    attackNode.addCapturedNode(currState.xCell, currState.yCell, captureValue);
-                                    taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
                                 }
                             }
                         } else if (stateCode > 1) {  // target not open; stationary;
