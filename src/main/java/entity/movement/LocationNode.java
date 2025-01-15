@@ -2,7 +2,7 @@ package main.java.entity.movement;
 
 public class LocationNode {
     private final short[] data;
-    private LocationNode capturedEnemies;
+    private CapturedNode capturedEnemies;
     private LocationNode next;
 
     public LocationNode(short postX, short postY) {
@@ -19,11 +19,11 @@ public class LocationNode {
         return data[1];
     }
 
-    public LocationNode getCapturedEnemyNodes() {
+    public CapturedNode getCapturedEnemyNodes() {
         return capturedEnemies;
     }
 
-    public void addCapturedEnemyNode(LocationNode capturedNode) {
+    public void addCapturedNode(CapturedNode capturedNode) {
         if (capturedEnemies == null) {
             this.capturedEnemies = capturedNode;
         } else {
@@ -32,16 +32,13 @@ public class LocationNode {
         }
     }
 
-    public void addCapturedEnemyNode(int x, int y) {
-        LocationNode capturedNode = new LocationNode((short) x, (short) y);
+    public void addCapturedNode(int x, int y, int pointValue) {
+        CapturedNode capturedNode = new CapturedNode((short) x, (short) y, (short) pointValue);
         if (capturedEnemies == null) {
             this.capturedEnemies = capturedNode;
         } else {
-            LocationNode cursor = capturedEnemies;
-            while (cursor.getNext() != null) {
-                cursor = cursor.getNext();
-            }
-            cursor.setNext(capturedNode);
+            capturedNode.setNext(capturedEnemies);
+            capturedEnemies = capturedNode;
         }
     }
 

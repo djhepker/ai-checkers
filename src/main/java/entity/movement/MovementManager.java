@@ -21,9 +21,9 @@ public class MovementManager {
 
     public LocationNode cloneNode(LocationNode originalNode) {
         LocationNode nodeClone = new LocationNode(originalNode.getDataX(), originalNode.getDataY());
-        LocationNode cursor = originalNode.getCapturedEnemyNodes(); // place cursor on captured enemies
+        CapturedNode cursor = originalNode.getCapturedEnemyNodes();
         while (cursor != null) {
-            nodeClone.addCapturedEnemyNode(cloneNode(cursor));  // clone each potential capture
+            nodeClone.addCapturedNode(new CapturedNode(cursor.getDataX(), cursor.getDataY(), cursor.getPointValue()));
             cursor = cursor.getNext();
         }
         return nodeClone;

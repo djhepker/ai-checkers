@@ -13,9 +13,11 @@ public class Checker extends Entity implements GameBoardPiece {
     private final PieceColor color;
     private GameBoardPiece[][] pieces;
     private final int movementSign;
+    private final short pieceValue;
 
     public Checker(String name, int x, int y, BufferedImage image, GameBoardPiece[][] pieces) {
         super(name, x, y, image);
+        this.pieceValue = 100;
         this.moveMgr = new MovementManager();
         this.color = PieceColor.valueOf(name.substring(0, 5));
         this.movementSign = color == PieceColor.LIGHT ? 1 : -1;
@@ -47,6 +49,11 @@ public class Checker extends Entity implements GameBoardPiece {
     @Override
     public String getName() {
         return super.getName();
+    }
+
+    @Override
+    public short getPieceValue() {
+        return pieceValue;
     }
 
     @Override
@@ -91,7 +98,7 @@ public class Checker extends Entity implements GameBoardPiece {
         while (!taskQueue.isEmpty()) {
             MoveState currState = taskQueue.pop();
             int stateCode = currState.stateCode;
-            int [] xDirrectionArray;    // possible directions to move
+            int[] xDirrectionArray;    // possible directions to move
             if (stateCode > 1) {
                 xDirrectionArray = new int[] {-1, 1};
             } else {
@@ -107,14 +114,15 @@ public class Checker extends Entity implements GameBoardPiece {
                             if (stateCode == 3) { // target open; stationary;
                                 moveMgr.addLocationNode(xNext, yNext);
                             } else if (stateCode < 2) {    //  target open; mid-jump;
+                                short captureValue = pieces[currState.xCell][currState.yCell].getPieceValue();
                                 if (currState.attackNode == null) {
                                     moveMgr.addLocationNode(xNext, yNext);  // attackNode added
                                     LocationNode attackNode = moveMgr.getPointerToListHead();   // retrieved
-                                    attackNode.addCapturedEnemyNode(currState.xCell, currState.yCell);
+                                    attackNode.addCapturedNode(currState.xCell, currState.yCell, captureValue);
                                     taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
                                 } else {
                                     LocationNode attackNode = moveMgr.cloneNode(currState.attackNode);
-                                    attackNode.addCapturedEnemyNode(currState.xCell, currState.yCell);  // TODO: add labeling to the pieces I am storing in locationNode for point purposes
+                                    attackNode.addCapturedNode(currState.xCell, currState.yCell, captureValue);
                                     taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
                                 }
                             }

@@ -30,5 +30,7 @@ public interface GameBoardPiece {
 
     int getY();
 
+    short getPieceValue();
+
     void printData();
 }
