@@ -1,6 +1,6 @@
 package main.java.utils;
 
-import main.java.entity.movement.MovementNode;
+import main.java.entity.movement.LocationNode;
 
 import java.awt.image.BufferedImage;
 
@@ -10,11 +10,11 @@ public interface GameBoardPiece {
         DUSKY
     }
 
-    void update();
+    void update(GameBoardPiece[][] pieces);
 
-    void generateLegalMoves();
+    void generateLegalMoves(GameBoardPiece[][] pieces);
 
-    MovementNode getMoveListPointer();
+    LocationNode getMoveListPointer();
 
     void printLegalMoves();
 
@@ -29,6 +29,10 @@ public interface GameBoardPiece {
     int getX();
 
     int getY();
+
+    short getPieceValue();
+
+    PieceColor getColor();
 
     void printData();
 }

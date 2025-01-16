@@ -1,7 +1,8 @@
 package main.java.entity;
 
+import main.java.entity.movement.CapturedNode;
 import main.java.entity.movement.MovementManager;
-import main.java.entity.movement.MovementNode;
+import main.java.entity.movement.LocationNode;
 import main.java.utils.GameBoardPiece;
 
 import java.awt.image.BufferedImage;
@@ -11,15 +12,15 @@ import java.util.Deque;
 public class Checker extends Entity implements GameBoardPiece {
     private final MovementManager moveMgr;
     private final PieceColor color;
-    private GameBoardPiece[][] pieces;
     private final int movementSign;
+    private final short pieceValue;
 
     public Checker(String name, int x, int y, BufferedImage image, GameBoardPiece[][] pieces) {
         super(name, x, y, image);
+        this.pieceValue = 100;
         this.moveMgr = new MovementManager();
         this.color = PieceColor.valueOf(name.substring(0, 5));
         this.movementSign = color == PieceColor.LIGHT ? 1 : -1;
-        this.pieces = pieces;
     }
 
     @Override
@@ -28,13 +29,18 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     @Override
-    public MovementNode getMoveListPointer() {
-        return moveMgr.getPointerToMoveList();
+    public PieceColor getColor() {
+        return color;
+    }
+
+    @Override
+    public LocationNode getMoveListPointer() {
+        return moveMgr.getPointerToListHead();
     }
 
     @Override
     public void printLegalMoves() {
-        MovementNode cursor = moveMgr.getPointerToMoveList();
+        LocationNode cursor = moveMgr.getPointerToListHead();
         int row = 0;
         while (cursor != null) {
             System.out.print("Option " + row + ": (" + cursor.getDataX() + ", " + cursor.getDataY() + "); ");
@@ -50,9 +56,14 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     @Override
-    public void update() {
+    public short getPieceValue() {
+        return pieceValue;
+    }
+
+    @Override
+    public void update(GameBoardPiece[][] pieces) {
         moveMgr.clearListOfMoves();
-        generateLegalMoves();
+        generateLegalMoves(pieces);
     }
 
     @Override
@@ -85,13 +96,14 @@ public class Checker extends Entity implements GameBoardPiece {
      *
      * */
     @Override
-    public void generateLegalMoves() {
+    public void generateLegalMoves(GameBoardPiece[][] pieces) {
         Deque<MoveState> taskQueue = new ArrayDeque<>();
         taskQueue.push(new MoveState(getX(), getY(), 3));
+
         while (!taskQueue.isEmpty()) {
             MoveState currState = taskQueue.pop();
             int stateCode = currState.stateCode;
-            int [] xDirrectionArray;    // possible directions to move
+            int[] xDirrectionArray;    // possible directions to move
             if (stateCode > 1) {
                 xDirrectionArray = new int[] {-1, 1};
             } else {
@@ -105,13 +117,23 @@ public class Checker extends Entity implements GameBoardPiece {
                         GameBoardPiece target = pieces[xNext][yNext];
                         if (target == null) {   // target open case
                             if (stateCode == 3) { // target open; stationary;
-                                moveMgr.addMovement(xNext, yNext);
-                            } else if (stateCode < 2) {    //  target open; mid-jump;
-                                moveMgr.addMovement(xNext, yNext);
-                                taskQueue.push(new MoveState(xNext, yNext, 2));
+                                moveMgr.addLocationNode(xNext, yNext);
+                            } else if (stateCode < 2) {    //  target open; mid-jump; direction acknowledged;
+                                short captureValue = pieces[currState.xCell][currState.yCell].getPieceValue();
+                                moveMgr.addLocationNode(xNext, yNext);
+                                LocationNode nextSpace = moveMgr.getPointerToListHead();
+                                nextSpace.addCapturedNode(currState.xCell, currState.yCell, captureValue);
+                                if (currState.capturedNode != null) { // handle prior captures this move
+                                    nextSpace.addCapturedNode(moveMgr.cloneCapturedNode(currState.capturedNode));
+                                }
+                                taskQueue.push(new MoveState(xNext, yNext, 2, nextSpace.getCapturedNodes()));
                             }
-                        } else if (stateCode > 1) {  // target not open; stationary;
-                            taskQueue.push(new MoveState(xNext, yNext, xDirection));
+                        } else if (stateCode > 1 && target.getColor() != this.color) {  // target not open;
+                            if (stateCode == 2) { // post-jump; target !null; stationary;
+                                taskQueue.push(new MoveState(xNext, yNext, xDirection, currState.capturedNode));
+                            } else {    // beginning position
+                                taskQueue.push(new MoveState(xNext, yNext, xDirection));
+                            }
                         }
                     }
                 }
@@ -128,14 +150,23 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     private class MoveState {
-        private int xCell;
-        private int yCell;
-        private int stateCode;
+        private final int xCell;
+        private final int yCell;
+        private final int stateCode;
+        private CapturedNode capturedNode;
 
         MoveState(int xCell, int yCell, int stateCode) {
             this.xCell = xCell;
             this.yCell = yCell;
             this.stateCode = stateCode;
+            capturedNode = null;
+        }
+
+        MoveState(int xCell, int yCell, int stateCode, CapturedNode capturedNode) {
+            this.xCell = xCell;
+            this.yCell = yCell;
+            this.stateCode = stateCode;
+            this.capturedNode = capturedNode;
         }
     }
 }

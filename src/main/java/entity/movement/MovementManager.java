@@ -1,23 +1,41 @@
 package main.java.entity.movement;
 
 public class MovementManager {
-    private MovementNode cursor;
-    private MovementList mList;
+    private LocationList locList;
 
     public MovementManager() {
-        this.mList = new MovementList();
-        this.cursor = null;
+        this.locList = new LocationList();
     }
 
     public void clearListOfMoves() {
-        mList.clearList();
+        locList.clearList();
     }
 
-    public MovementNode getPointerToMoveList() {
-        return mList.getHead();
+    public LocationNode getPointerToListHead() {
+        return locList.getHead();
     }
 
-    public void addMovement(int postX, int postY) {
-        mList.addNode(new MovementNode((short) postX, (short) postY));
+    public CapturedNode cloneCapturedNode(CapturedNode inputNode) {
+        if (inputNode == null) {
+            System.out.println("Input node is null in getCloneOfCapturedNodeList()");
+            return null;
+        }
+        CapturedNode cursor = inputNode;
+        if (cursor == null) {
+            System.out.println("inputNode.getCapturedNodes() is null in getCloneOfCapturedNodeList()");
+            return null;
+        }
+        CapturedNode listHead = new CapturedNode(cursor.getDataX(), cursor.getDataY(), cursor.getPointValue());
+        CapturedNode capturedNode = listHead;
+        while (cursor.getNext() != null) {
+            cursor = cursor.getNext();
+            capturedNode.setNext(new CapturedNode(cursor.getDataX(), cursor.getDataY(), cursor.getPointValue()));
+            capturedNode = capturedNode.getNext();
+        }
+        return listHead;
+    }
+
+    public void addLocationNode(int postX, int postY) {
+        locList.addNode(new LocationNode((short) postX, (short) postY));
     }
 }
