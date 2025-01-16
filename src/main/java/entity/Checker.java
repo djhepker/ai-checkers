@@ -1,5 +1,6 @@
 package main.java.entity;
 
+import main.java.entity.movement.CapturedNode;
 import main.java.entity.movement.MovementManager;
 import main.java.entity.movement.LocationNode;
 import main.java.utils.GameBoardPiece;
@@ -98,6 +99,7 @@ public class Checker extends Entity implements GameBoardPiece {
     public void generateLegalMoves(GameBoardPiece[][] pieces) {
         Deque<MoveState> taskQueue = new ArrayDeque<>();
         taskQueue.push(new MoveState(getX(), getY(), 3));
+
         while (!taskQueue.isEmpty()) {
             MoveState currState = taskQueue.pop();
             int stateCode = currState.stateCode;
@@ -116,22 +118,19 @@ public class Checker extends Entity implements GameBoardPiece {
                         if (target == null) {   // target open case
                             if (stateCode == 3) { // target open; stationary;
                                 moveMgr.addLocationNode(xNext, yNext);
-                            } else if (stateCode < 2) {    //  target open; mid-jump;
+                            } else if (stateCode < 2) {    //  target open; mid-jump; direction acknowledged;
                                 short captureValue = pieces[currState.xCell][currState.yCell].getPieceValue();
-                                LocationNode attackNode;
-                                if (currState.attackNode != null) { // multi-capture move;
-                                    attackNode = moveMgr.cloneNode(currState.attackNode);
-                                } else {
-                                    moveMgr.addLocationNode(xNext, yNext);  // attackNode added
-                                    attackNode = moveMgr.getPointerToListHead();   // retrieved
+                                moveMgr.addLocationNode(xNext, yNext);
+                                LocationNode nextSpace = moveMgr.getPointerToListHead();
+                                nextSpace.addCapturedNode(currState.xCell, currState.yCell, captureValue);
+                                if (currState.capturedNode != null) { // handle prior captures this move
+                                    nextSpace.addCapturedNode(moveMgr.cloneCapturedNode(currState.capturedNode));
                                 }
-                                attackNode.addCapturedNode(currState.xCell, currState.yCell, captureValue);
-                                taskQueue.push(new MoveState(xNext, yNext, 2, attackNode));
+                                taskQueue.push(new MoveState(xNext, yNext, 2, nextSpace.getCapturedNodes()));
                             }
                         } else if (stateCode > 1 && target.getColor() != this.color) {  // target not open;
-                            if (stateCode == 2) { // post-jump; found new target;
-                                LocationNode nextAttackNode = moveMgr.cloneNode(currState.attackNode);
-                                taskQueue.push(new MoveState(xNext, yNext, xDirection, nextAttackNode));
+                            if (stateCode == 2) { // post-jump; target !null; stationary;
+                                taskQueue.push(new MoveState(xNext, yNext, xDirection, currState.capturedNode));
                             } else {    // beginning position
                                 taskQueue.push(new MoveState(xNext, yNext, xDirection));
                             }
@@ -154,20 +153,20 @@ public class Checker extends Entity implements GameBoardPiece {
         private final int xCell;
         private final int yCell;
         private final int stateCode;
-        private LocationNode attackNode;
+        private CapturedNode capturedNode;
 
         MoveState(int xCell, int yCell, int stateCode) {
             this.xCell = xCell;
             this.yCell = yCell;
             this.stateCode = stateCode;
-            attackNode = null;
+            capturedNode = null;
         }
 
-        MoveState(int xCell, int yCell, int stateCode, LocationNode attackNode) {
+        MoveState(int xCell, int yCell, int stateCode, CapturedNode capturedNode) {
             this.xCell = xCell;
             this.yCell = yCell;
             this.stateCode = stateCode;
-            this.attackNode = attackNode;
+            this.capturedNode = capturedNode;
         }
     }
 }

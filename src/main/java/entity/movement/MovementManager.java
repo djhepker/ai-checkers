@@ -15,17 +15,27 @@ public class MovementManager {
         return locList.getHead();
     }
 
-    public void addLocationNode(int postX, int postY) {
-        locList.addNode(new LocationNode((short) postX, (short) postY));
+    public CapturedNode cloneCapturedNode(CapturedNode inputNode) {
+        if (inputNode == null) {
+            System.out.println("Input node is null in getCloneOfCapturedNodeList()");
+            return null;
+        }
+        CapturedNode cursor = inputNode;
+        if (cursor == null) {
+            System.out.println("inputNode.getCapturedNodes() is null in getCloneOfCapturedNodeList()");
+            return null;
+        }
+        CapturedNode listHead = new CapturedNode(cursor.getDataX(), cursor.getDataY(), cursor.getPointValue());
+        CapturedNode capturedNode = listHead;
+        while (cursor.getNext() != null) {
+            cursor = cursor.getNext();
+            capturedNode.setNext(new CapturedNode(cursor.getDataX(), cursor.getDataY(), cursor.getPointValue()));
+            capturedNode = capturedNode.getNext();
+        }
+        return listHead;
     }
 
-    public LocationNode cloneNode(LocationNode originalNode) {
-        LocationNode nodeClone = new LocationNode(originalNode.getDataX(), originalNode.getDataY());
-        CapturedNode cursor = originalNode.getCapturedNodes();
-        while (cursor != null) {
-            nodeClone.addCapturedNode(new CapturedNode(cursor.getDataX(), cursor.getDataY(), cursor.getPointValue()));
-            cursor = cursor.getNext();
-        }
-        return nodeClone;
+    public void addLocationNode(int postX, int postY) {
+        locList.addNode(new LocationNode((short) postX, (short) postY));
     }
 }
