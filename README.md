@@ -1,10 +1,3 @@
-This is a personal student project for practice & skillbuilding
+Custom game of Checkers with optimized algorithms & Data Structures. AI to play against will learn optimal moves with discerned gamestates.
 
-Contributions will only be approved if they:
-
-  › Optimize previously made algorithms  
-  › Processes  
-  › Graphical detail  
-  › Or are bug fixes  
-  
-  Graphics are most welcome
+This is a personal student project for practice & skillbuilding 
