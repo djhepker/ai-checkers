@@ -1,6 +1,5 @@
 package main.java.graphics;
 
-import main.java.entity.Entity;
 import main.java.entity.movement.LocationNode;
 import main.java.utils.GameBoardPiece;
 

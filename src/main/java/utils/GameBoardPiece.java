@@ -10,6 +10,8 @@ public interface GameBoardPiece {
         DUSKY
     }
 
+    boolean isLight();
+
     void update(GameBoardPiece[][] pieces);
 
     void generateLegalMoves(GameBoardPiece[][] pieces);

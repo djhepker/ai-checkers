@@ -18,8 +18,11 @@ public class GameEngine {
     private GameWindow window;
 
     private GameBoardPiece[][] pieces;
+
     private final int[][] tilePattern;
     private final Image[] cachedTiles;
+
+    private boolean lightChoice;
 
     public GameEngine() {
         this.pieces = new GameBoardPiece[8][8];
@@ -31,6 +34,8 @@ public class GameEngine {
         this.inputHandler = graphicsHandler.getInputHandler();
         this.pMgr = new PieceManager(pieces, creator, inputHandler);
         this.window = graphicsHandler.getGameWindow();
+        this.lightChoice = window.lightChosen();
+        System.out.println(lightChoice);    //TODO FIX TIMING FOR POPUP WINDOW & THIS BOOLEAN
     }
 
     public void updateGame() {
@@ -39,7 +44,7 @@ public class GameEngine {
             int firstXPos = inputHandler.getFirstXPos();
             int firstYPos = inputHandler.getFirstYPos();
             GameBoardPiece piece = pieces[firstXPos][firstYPos];
-            if (piece != null && pMgr.movePiece(piece)) {
+            if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
                pMgr.updateAllPieces();
             }
             inputHandler.resetClicks();

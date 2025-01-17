@@ -13,7 +13,7 @@ public class InputHandler {
     private enum InputState {
         NO_CLICK,
         FIRST_CLICK,
-        SECOND_CLICK;
+        SECOND_CLICK
     }
 
     public InputHandler(GraphicsHandler gHandler) {

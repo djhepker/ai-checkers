@@ -28,12 +28,10 @@ public class LocationNode {
     }
 
     public void addCapturedNode(CapturedNode capturedNode) {
-        if (capturedEnemies == null) {
-            this.capturedEnemies = capturedNode;
-        } else {
-          capturedNode.setNext(capturedEnemies);
-          this.capturedEnemies = capturedNode;
+        if (capturedEnemies != null) {
+            capturedNode.setNext(capturedEnemies);
         }
+        this.capturedEnemies = capturedNode;
     }
 
     public LocationNode getNext() {

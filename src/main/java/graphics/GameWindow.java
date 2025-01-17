@@ -1,12 +1,15 @@
 package main.java.graphics;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class GameWindow {
     private GraphicsHandler graphicsHandler;
     private boolean windowOpen;
+    private boolean lightChosen;
 
     public GameWindow(GraphicsHandler graphicsHandler) {
         this.graphicsHandler = graphicsHandler;
@@ -18,6 +21,7 @@ public class GameWindow {
         frame.setLocationRelativeTo(null); // centered
         frame.setVisible(true);
         this.windowOpen = true;
+        this.lightChosen = false;
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -30,13 +34,21 @@ public class GameWindow {
     }
 
     private void showPopUpColorDialog() {
-        String[] colors = {"White", "Black"};
-        String selectedColor = (String) JOptionPane.showInputDialog(
-                graphicsHandler, "Choose color", "Checkers", JOptionPane.QUESTION_MESSAGE,
-                null, colors, colors[0]);
-        if (selectedColor != null) {
-            // potential start logic, could just use window open
+        try {
+            String[] colors = {"White", "Black"};
+            String selectedColor = (String) JOptionPane.showInputDialog(
+                    graphicsHandler, "Choose your battle color", "Checkers", JOptionPane.QUESTION_MESSAGE,
+                    null, colors, colors[0]);
+            lightChosen = selectedColor.equals("White");
+        } catch (Exception e) {
+            System.out.println("Color dialog was closed");
+            System.exit(0);
         }
+    }
+
+    public boolean lightChosen() {
+        System.out.println(lightChosen);
+        return lightChosen;
     }
 
     public boolean isOpen() {
