@@ -1,0 +1,244 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > InputHandler</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">main.java.graphics</a>
+</div>
+
+<h1>Coverage Summary for Class: InputHandler (main.java.graphics)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InputHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.9%
+  </span>
+  <span class="absValue">
+    (10/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.6%
+  </span>
+  <span class="absValue">
+    (22/26)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">InputHandler$InputState</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    92.3%
+  </span>
+  <span class="absValue">
+    (12/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    86.7%
+  </span>
+  <span class="absValue">
+    (26/30)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package main.java.graphics;
+&nbsp;
+&nbsp;import java.awt.event.MouseEvent;
+&nbsp;
+&nbsp;public class InputHandler {
+&nbsp;    private GraphicsHandler gHandler;
+&nbsp;    private int selectedRow;
+&nbsp;    private int selectedCol;
+&nbsp;    private int firstXPos;
+&nbsp;    private int firstYPos;
+&nbsp;    private InputState inputState;
+&nbsp;
+<b class="fc">&nbsp;    private enum InputState {</b>
+<b class="fc">&nbsp;        NO_CLICK,</b>
+<b class="fc">&nbsp;        FIRST_CLICK,</b>
+<b class="fc">&nbsp;        SECOND_CLICK;</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public InputHandler(GraphicsHandler gHandler) {</b>
+<b class="fc">&nbsp;        this.gHandler = gHandler;</b>
+<b class="fc">&nbsp;        this.selectedCol = -1;</b>
+<b class="fc">&nbsp;        this.selectedRow = -1;</b>
+<b class="fc">&nbsp;        this.firstXPos = -1;</b>
+<b class="fc">&nbsp;        this.firstYPos = -1;</b>
+<b class="fc">&nbsp;        inputState = InputState.NO_CLICK;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void update() {
+<b class="pc">&nbsp;        switch (inputState) {</b>
+&nbsp;            case NO_CLICK:
+&nbsp;                return;
+&nbsp;            case FIRST_CLICK:
+<b class="fc">&nbsp;                firstXPos = selectedCol;</b>
+<b class="fc">&nbsp;                firstYPos = selectedRow;</b>
+&nbsp;                return;
+&nbsp;            case SECOND_CLICK:
+&nbsp;                return;
+&nbsp;            default:
+<b class="nc">&nbsp;                System.out.println(&quot;Invalid input state&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void handleMouseClick(MouseEvent e) {
+<b class="pc">&nbsp;        switch (inputState) {</b>
+&nbsp;            case NO_CLICK:
+<b class="fc">&nbsp;                inputState = InputState.FIRST_CLICK;</b>
+&nbsp;                break;
+&nbsp;            case FIRST_CLICK:
+<b class="fc">&nbsp;                inputState = InputState.SECOND_CLICK;</b>
+&nbsp;                break;
+&nbsp;            case SECOND_CLICK:
+<b class="nc">&nbsp;                System.out.println(&quot;Slow down there, partner. We have two second clicks.&quot;);</b>
+&nbsp;                return;
+&nbsp;            default:
+<b class="nc">&nbsp;                System.out.println(&quot;Invalid input state&quot;);</b>
+&nbsp;                return;
+&nbsp;        }
+<b class="fc">&nbsp;        selectedCol = e.getX() / (gHandler.getWidth() / 8);</b>
+<b class="fc">&nbsp;        selectedRow = e.getY() / (gHandler.getHeight() / 8);</b>
+&nbsp;        // System.out.println(&quot;Mouse clicked with selection of: (&quot; + selectedCol + &quot;, &quot; + selectedRow + &quot;)&quot;);
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getInputState() {
+<b class="nc">&nbsp;        return String.valueOf(inputState);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void resetClicks() {
+<b class="fc">&nbsp;        inputState = InputState.NO_CLICK;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean hasSelectedPiece() {
+<b class="fc">&nbsp;        return inputState == InputState.FIRST_CLICK;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean movementChosen() {
+<b class="fc">&nbsp;        return inputState == InputState.SECOND_CLICK;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getFirstXPos() {
+<b class="fc">&nbsp;        return firstXPos;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getFirstYPos() {
+<b class="fc">&nbsp;        return firstYPos;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getSelectedRow() {
+<b class="fc">&nbsp;        return selectedRow;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getSelectedCol() {
+<b class="fc">&nbsp;        return selectedCol;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-16 18:06</div>
+</div>
+</body>
+</html>

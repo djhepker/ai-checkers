@@ -1,27 +1,39 @@
 package main.java.gameworld;
 
 import main.java.engine.EntityCreator;
-import main.java.entity.Entity;
+
+import java.awt.Image;
 
 public class BoardManager {
-    private Entity[][] cells;
     private EntityCreator creator;
+    private final int[][] tilePattern;
+    private final Image[] cachedTiles;
 
-    public BoardManager(Entity[][] cells, EntityCreator creator) {
-         this.cells = cells;
+    public BoardManager(EntityCreator creator) {
          this.creator = creator;
-         createBoardCells();
+         this.cachedTiles = creator.getCachedCells();
+         this.tilePattern = getBoardPattern();
     }
 
-    private void createBoardCells() {
+    public int[][] getTilePattern() {
+        return tilePattern;
+    }
+
+    public Image[] getCachedTiles() {
+        return cachedTiles;
+    }
+
+    private int[][] getBoardPattern() {
+        int[][] boardPattern = new int[8][8];
         for (int j = 0; j < 8; j++) {
             for (int i = 0; i < 8; i++) {
-                cells[i][j] = creator.createCell(i, j);
+                boardPattern[i][j] = (i + j) & 1;
             }
         }
+        return boardPattern;
     }
 
     public void printNumCells() {
-        System.out.println("The number of Cells: " + cells.length);
+        System.out.println("The number of Cells: " + tilePattern.length);
     }
 }

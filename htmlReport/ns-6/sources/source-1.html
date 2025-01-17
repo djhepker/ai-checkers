@@ -1,0 +1,164 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GameWindow</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">main.java.graphics</a>
+</div>
+
+<h1>Coverage Summary for Class: GameWindow (main.java.graphics)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GameWindow</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GameWindow$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/14)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package main.java.graphics;
+&nbsp;
+&nbsp;import javax.swing.*;
+&nbsp;import java.awt.event.WindowAdapter;
+&nbsp;import java.awt.event.WindowEvent;
+&nbsp;
+&nbsp;public class GameWindow {
+&nbsp;    private GraphicsHandler graphicsHandler;
+&nbsp;    private boolean windowOpen;
+&nbsp;
+<b class="fc">&nbsp;    public GameWindow(GraphicsHandler graphicsHandler) {</b>
+<b class="fc">&nbsp;        this.graphicsHandler = graphicsHandler;</b>
+&nbsp;
+<b class="fc">&nbsp;        JFrame frame = new JFrame(&quot;Checkers dev&quot;);</b>
+<b class="fc">&nbsp;        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</b>
+<b class="fc">&nbsp;        frame.add(graphicsHandler);</b>
+<b class="fc">&nbsp;        frame.setSize(800,800);</b>
+<b class="fc">&nbsp;        frame.setLocationRelativeTo(null); // centered</b>
+<b class="fc">&nbsp;        frame.setVisible(true);</b>
+<b class="fc">&nbsp;        this.windowOpen = true;</b>
+&nbsp;
+<b class="fc">&nbsp;        frame.addWindowListener(new WindowAdapter() {</b>
+&nbsp;            @Override
+&nbsp;            public void windowClosing(WindowEvent e) {
+<b class="fc">&nbsp;                super.windowClosing(e);</b>
+<b class="fc">&nbsp;                windowOpen = false;</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isOpen() {
+<b class="fc">&nbsp;        return windowOpen;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-16 18:06</div>
+</div>
+</body>
+</html>

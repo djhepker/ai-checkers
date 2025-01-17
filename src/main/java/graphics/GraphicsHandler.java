@@ -7,6 +7,7 @@ import main.java.utils.GameBoardPiece;
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
+import java.awt.Image;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -17,10 +18,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class GraphicsHandler extends JPanel {
-    private Entity[][] cells;
     private GameBoardPiece[][] pieces;
     private GameWindow gameWindow;
     private InputHandler inputHandler;
+
+    private final Image[] cachedTiles;
+    private final int[][] tilePattern;
 
     private int entityWidth;
     private int entityHeight;
@@ -29,11 +32,12 @@ public class GraphicsHandler extends JPanel {
 
     private boolean windowResized;
 
-    public GraphicsHandler(Entity[][] cells, GameBoardPiece[][] pieces) {
-        this.cells = cells;
+    public GraphicsHandler(int[][] tilePattern, Image[] cachedTiles, GameBoardPiece[][] pieces) {
+        this.inputHandler = new InputHandler(this);
+        this.cachedTiles = cachedTiles;
+        this.tilePattern = tilePattern;
         this.pieces = pieces;
         this.gameWindow = new GameWindow(this);
-        this.inputHandler = new InputHandler(this);
         this.entityWidth = 0;
         this.entityHeight = 0;
         this.highlightRectangleX = 0;
@@ -103,7 +107,8 @@ public class GraphicsHandler extends JPanel {
             for (int i = 0; i < 8; i++) {
                 int xPos = i * entityWidth;
                 int yPos = j * entityHeight;
-                g2d.drawImage(cells[i][j].getSprite(), xPos, yPos, entityWidth, entityHeight, null);
+                int tileIndex = (i + j) & 1;
+                g2d.drawImage(cachedTiles[tileIndex], xPos, yPos, entityWidth, entityHeight, null);
             }
         }
     }
