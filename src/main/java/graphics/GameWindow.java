@@ -26,6 +26,17 @@ public class GameWindow {
                 windowOpen = false;
             }
         });
+        SwingUtilities.invokeLater(() -> showPopUpColorDialog());
+    }
+
+    private void showPopUpColorDialog() {
+        String[] colors = {"White", "Black"};
+        String selectedColor = (String) JOptionPane.showInputDialog(
+                graphicsHandler, "Choose color", "Checkers", JOptionPane.QUESTION_MESSAGE,
+                null, colors, colors[0]);
+        if (selectedColor != null) {
+            // potential start logic, could just use window open
+        }
     }
 
     public boolean isOpen() {
