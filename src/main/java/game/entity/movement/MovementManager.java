@@ -8,10 +8,10 @@ public class MovementManager {
     }
 
     public void addLocationNode(int postX, int postY) {
-        locList.addNode(new LocationNode((short) postX, (short) postY));
+        locList.addNode(new ActionNode((short) postX, (short) postY));
     }
 
-    public void addLocationNode(LocationNode node) {
+    public void addLocationNode(ActionNode node) {
         locList.addNode(node);
     }
 
@@ -19,7 +19,7 @@ public class MovementManager {
         locList.clearList();
     }
 
-    public LocationNode getPointerToListHead() {
+    public ActionNode getPointerToListHead() {
         return locList.getHead();
     }
 

@@ -1,6 +1,6 @@
 package main.java.game.utils;
 
-import main.java.game.entity.movement.LocationNode;
+import main.java.game.entity.movement.ActionNode;
 
 import java.awt.image.BufferedImage;
 
@@ -16,7 +16,7 @@ public interface GameBoardPiece {
 
     void generateLegalMoves(GameBoardPiece[][] pieces);
 
-    LocationNode getMoveListPointer();
+    ActionNode getMoveListPointer();
 
     void printLegalMoves();
 

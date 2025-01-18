@@ -1,13 +1,13 @@
 package main.java.game.entity.movement;
 
 class LocationList {
-    private LocationNode head;
+    private ActionNode head;
 
     public LocationList() {
         this.head = null;
     }
 
-    public void addNode(LocationNode nodeToAdd) {
+    public void addNode(ActionNode nodeToAdd) {
         if (head != null) {
             nodeToAdd.setNext(head);
         }
@@ -18,7 +18,7 @@ class LocationList {
         head = null;
     }
 
-    public LocationNode getHead() {
+    public ActionNode getHead() {
         return head;
     }
 }

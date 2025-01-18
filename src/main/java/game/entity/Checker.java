@@ -2,7 +2,7 @@ package main.java.game.entity;
 
 import main.java.game.entity.movement.CapturedNode;
 import main.java.game.entity.movement.MovementManager;
-import main.java.game.entity.movement.LocationNode;
+import main.java.game.entity.movement.ActionNode;
 import main.java.game.utils.GameBoardPiece;
 
 import java.awt.image.BufferedImage;
@@ -39,13 +39,13 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     @Override
-    public LocationNode getMoveListPointer() {
+    public ActionNode getMoveListPointer() {
         return moveMgr.getPointerToListHead();
     }
 
     @Override
     public void printLegalMoves() {
-        LocationNode cursor = moveMgr.getPointerToListHead();
+        ActionNode cursor = moveMgr.getPointerToListHead();
         int row = 0;
         while (cursor != null) {
             System.out.print("Option " + row + ": (" + cursor.getDataX() + ", " + cursor.getDataY() + "); ");
@@ -98,7 +98,6 @@ public class Checker extends Entity implements GameBoardPiece {
      *   Post-jump stationary: 2
      *   Left-jumping: -1
      *   Right-jumping: 1
-     *
      * */
     @Override
     public void generateLegalMoves(GameBoardPiece[][] pieces) {
@@ -125,7 +124,7 @@ public class Checker extends Entity implements GameBoardPiece {
                                 moveMgr.addLocationNode(xNext, yNext);
                             } else if (stateCode < 2) {    //  target open; mid-jump; direction acknowledged;
                                 short captureValue = pieces[currState.xCell][currState.yCell].getPieceValue();
-                                LocationNode nextSpace = new LocationNode(xNext, yNext);
+                                ActionNode nextSpace = new ActionNode(xNext, yNext);
                                 nextSpace.addCapturedNode(currState.xCell, currState.yCell, captureValue);
                                 moveMgr.addLocationNode(nextSpace);
                                 if (currState.capturedNode != null) { // handle prior captures this move
