@@ -2,6 +2,14 @@ package main.java.ai;
 
 import main.java.game.utils.GameBoardPiece;
 
+/*
+* STATE: Will be identified as pieces[][]
+* ACTION: Moving pieces when it is Agent's turn
+* REWARD: Positive & Negative
+* EPISODE: GameEngine calls updateGame()
+* Q-Value: Metrics used to evaluate actions at specific states
+* */
+
 public class Agent {
     private GameBoardPiece[][] pieces;
 
@@ -13,15 +21,22 @@ public class Agent {
     private double gamma;
     // instantaneous reward the agent received for taking action a from state s
     private double rInstant;
-    // Q(s,a) Q-value for action a given state s
-    // TODO: map states s for the above
+    /*
+    * Q(s,a) Q-value for action a given state
+    * TODO: map states s for the above
+    * */
     private double qValue;
     // max(a') [ Q(s',a') ], maximum qValue for the next state, s', representing the best possible future outcome
     private double maxQ;
     // learning rate
     private final double alpha = 0.84;
-    // greed policy
-    private final double epselon = 0.0;
+    /*
+    * greed policy, exploitation P(max) = 1 - epselon -> optimal decision
+    * In this instance of exploitation, the agent chooses
+    * the course of action that, given its current understanding, it feels is optimal
+    * epselon = exploration chance
+    */
+    private final double epselon = 0.84;
 
     public Agent (GameBoardPiece[][] pieces) {
         this.pieces = pieces;
