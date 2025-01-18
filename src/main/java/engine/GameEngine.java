@@ -43,7 +43,7 @@ public class GameEngine {
         this.lightChoice = window.lightChosen();
         this.playerTurn = true;
 
-        this.zero = new Agent(pieces);
+        this.zero = new Agent(pieces, lightChoice);
     }
 
     public void updateGame() {

@@ -1,6 +1,6 @@
 package main.java.ai;
 
-import main.java.ai.agentutils.ActionNode;
+import main.java.ai.agentutils.ActionTree;
 import main.java.game.utils.GameBoardPiece;
 
 /*
@@ -18,6 +18,7 @@ import main.java.game.utils.GameBoardPiece;
 * */
 
 public class Agent {
+    private final boolean isDusky;
     private GameBoardPiece[][] pieces;
 
     /*
@@ -47,11 +48,12 @@ public class Agent {
 
     private double sig = 0.0;
 
-    public Agent (GameBoardPiece[][] pieces) {
+    public Agent (GameBoardPiece[][] pieces, boolean playerLight) {
+        this.isDusky = playerLight;
         this.pieces = pieces;
     }
 
-    private ActionNode chooseAction() {
+    private ActionTree chooseAction() {
         if (Math.random() < EPSELON) {
             return explore();
         } else {
@@ -60,13 +62,13 @@ public class Agent {
     }
 
     // random moves
-    private ActionNode explore() {
-        return new ActionNode();
+    private ActionTree explore() {
+        return null;
     }
 
     // choosing which move is the most appropriate based on past experiences
-    private ActionNode exploit() {
-        return new ActionNode();
+    private ActionTree exploit() {
+        return null;
     }
 
     /*
