@@ -18,19 +18,26 @@ public class GameEngine {
     private GameWindow window;
 
     private GameBoardPiece[][] pieces;
-    private final int[][] tilePattern;
+
     private final Image[] cachedTiles;
+
+    private final boolean lightChoice;
 
     public GameEngine() {
         this.pieces = new GameBoardPiece[8][8];
         this.creator = new EntityCreator(pieces);
         this.bMgr = new BoardManager(creator);
-        this.tilePattern = bMgr.getTilePattern();
         this.cachedTiles = bMgr.getCachedTiles();
-        this.graphicsHandler = new GraphicsHandler(tilePattern, cachedTiles, pieces);
-        this.inputHandler = graphicsHandler.getInputHandler();
+
+        this.inputHandler = new InputHandler();
+        this.graphicsHandler = new GraphicsHandler(cachedTiles, pieces, inputHandler);
+        this.inputHandler.setGraphicsHandler(graphicsHandler);
         this.pMgr = new PieceManager(pieces, creator, inputHandler);
-        this.window = graphicsHandler.getGameWindow();
+
+        this.window = new GameWindow(graphicsHandler);
+        this.window.showPopUpColorDialog();
+
+        this.lightChoice = window.lightChosen();
     }
 
     public void updateGame() {
@@ -39,7 +46,7 @@ public class GameEngine {
             int firstXPos = inputHandler.getFirstXPos();
             int firstYPos = inputHandler.getFirstYPos();
             GameBoardPiece piece = pieces[firstXPos][firstYPos];
-            if (piece != null && pMgr.movePiece(piece)) {
+            if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
                pMgr.updateAllPieces();
             }
             inputHandler.resetClicks();

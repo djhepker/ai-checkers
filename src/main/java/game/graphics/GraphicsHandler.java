@@ -1,7 +1,7 @@
-package main.java.game.graphics;
+package main.java.graphics;
 
-import main.java.game.entity.movement.LocationNode;
-import main.java.game.utils.GameBoardPiece;
+import main.java.entity.movement.LocationNode;
+import main.java.utils.GameBoardPiece;
 
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
@@ -18,11 +18,9 @@ import java.awt.event.MouseEvent;
 
 public class GraphicsHandler extends JPanel {
     private GameBoardPiece[][] pieces;
-    private GameWindow gameWindow;
     private InputHandler inputHandler;
 
     private final Image[] cachedTiles;
-    private final int[][] tilePattern;
 
     private int entityWidth;
     private int entityHeight;
@@ -31,12 +29,11 @@ public class GraphicsHandler extends JPanel {
 
     private boolean windowResized;
 
-    public GraphicsHandler(int[][] tilePattern, Image[] cachedTiles, GameBoardPiece[][] pieces) {
-        this.inputHandler = new InputHandler(this);
+    public GraphicsHandler(Image[] cachedTiles,
+                           GameBoardPiece[][] pieces, InputHandler inputHandler) {
+        this.inputHandler = inputHandler;
         this.cachedTiles = cachedTiles;
-        this.tilePattern = tilePattern;
         this.pieces = pieces;
-        this.gameWindow = new GameWindow(this);
         this.entityWidth = 0;
         this.entityHeight = 0;
         this.highlightRectangleX = 0;
@@ -123,13 +120,5 @@ public class GraphicsHandler extends JPanel {
                 }
             }
         }
-    }
-
-    public InputHandler getInputHandler() {
-        return inputHandler;
-    }
-
-    public GameWindow getGameWindow() {
-        return gameWindow;
     }
 }
