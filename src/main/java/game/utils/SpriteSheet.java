@@ -1,4 +1,4 @@
-package main.java.utils;
+package main.java.game.utils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

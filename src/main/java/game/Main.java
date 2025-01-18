@@ -1,4 +1,4 @@
-package main.java;
+package main.java.game;
 
 import main.java.engine.GameEngine;
 import main.java.engine.GameLoop;

@@ -1,4 +1,4 @@
-package main.java.graphics;
+package main.java.game.graphics;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
