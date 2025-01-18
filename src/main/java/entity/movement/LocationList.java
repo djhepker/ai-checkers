@@ -1,7 +1,6 @@
 package main.java.entity.movement;
 
-//  Package-private scope
-public class LocationList {
+class LocationList {
     private LocationNode head;
 
     public LocationList() {

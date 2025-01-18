@@ -1,15 +1,18 @@
 package main.java.graphics;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class GameWindow {
     private GraphicsHandler graphicsHandler;
     private boolean windowOpen;
+    private boolean lightChosen;
 
     public GameWindow(GraphicsHandler graphicsHandler) {
         this.graphicsHandler = graphicsHandler;
+        this.lightChosen = false;
 
         JFrame frame = new JFrame("Checkers dev");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -26,6 +29,24 @@ public class GameWindow {
                 windowOpen = false;
             }
         });
+    }
+
+    public void showPopUpColorDialog() {
+        try {
+            String[] colors = {"White", "Black"};
+            String selectedColor = (String) JOptionPane.showInputDialog(
+                    graphicsHandler, "Choose your battle color", "Checkers", JOptionPane.QUESTION_MESSAGE,
+                    null, colors, colors[0]);
+            lightChosen = selectedColor.equals("White");
+        } catch (Exception e) {
+            System.out.println("Color dialog was closed");
+            System.exit(0);
+        }
+    }
+
+    public boolean lightChosen() {
+        System.out.println(lightChosen);
+        return lightChosen;
     }
 
     public boolean isOpen() {
