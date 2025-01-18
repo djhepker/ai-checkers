@@ -48,7 +48,7 @@ public class Checker extends Entity implements GameBoardPiece {
         ActionNode cursor = moveMgr.getPointerToListHead();
         int row = 0;
         while (cursor != null) {
-            System.out.print("Option " + row + ": (" + cursor.getoDataX() + ", " + cursor.getoDataY() + "); ");
+            System.out.print("Option " + row + ": (" + cursor.getfDataX() + ", " + cursor.getfDataY() + "); ");
             cursor = cursor.getRight();
             row++;
         }
@@ -121,10 +121,10 @@ public class Checker extends Entity implements GameBoardPiece {
                         GameBoardPiece target = pieces[xNext][yNext];
                         if (target == null) {   // target open case
                             if (stateCode == 3) { // target open; stationary;
-                                moveMgr.addLocationNode(xNext, yNext);
+                                moveMgr.addLocationNode(getX(), getY(), xNext, yNext);
                             } else if (stateCode < 2) {    //  target open; mid-jump; direction acknowledged;
                                 short captureValue = pieces[currState.xCell][currState.yCell].getPieceValue();
-                                ActionNode nextSpace = new ActionNode(xNext, yNext);
+                                ActionNode nextSpace = new ActionNode(getX(), getY(), xNext, yNext);
                                 nextSpace.addCapturedNode(currState.xCell, currState.yCell, captureValue);
                                 if (currState.capturedNode != null) { // handle prior captures this move
                                     nextSpace.addCapturedNode(moveMgr.cloneCapturedNode(currState.capturedNode));

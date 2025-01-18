@@ -82,8 +82,8 @@ public class GraphicsHandler extends JPanel {
             g2d.drawRect(highlightRectangleX, highlightRectangleY, getWidth() / 8, getHeight() / 8);
             ActionNode cursor = piece.getMoveListPointer();
             while (cursor != null) {
-                int x = getWidth() / 8 * cursor.getoDataX();
-                int y = getHeight() / 8 * cursor.getoDataY();
+                int x = getWidth() / 8 * cursor.getfDataX();
+                int y = getHeight() / 8 * cursor.getfDataY();
                 g2d.drawRect(x, y, getWidth() / 8, getHeight() / 8);
                 cursor = cursor.getRight();
             }

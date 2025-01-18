@@ -7,8 +7,8 @@ public class MovementManager {
         this.locList = new ActionList();
     }
 
-    public void addLocationNode(int postX, int postY) {
-        locList.addNode(new ActionNode((short) postX, (short) postY));
+    public void addLocationNode(int preX, int preY, int postX, int postY) {
+        locList.addNode(new ActionNode((short) preX, (short) preY, (short) postX, (short) postY));
     }
 
     public void addLocationNode(ActionNode node) {
