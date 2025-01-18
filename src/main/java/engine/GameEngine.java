@@ -1,5 +1,6 @@
 package main.java.engine;
 
+import main.java.ai.Agent;
 import main.java.game.gameworld.BoardManager;
 import main.java.game.graphics.GameWindow;
 import main.java.game.graphics.GraphicsHandler;
@@ -16,12 +17,14 @@ public class GameEngine {
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
     private GameWindow window;
+    private Agent zero;
 
     private GameBoardPiece[][] pieces;
 
     private final Image[] cachedTiles;
 
     private final boolean lightChoice;
+    private boolean playerTurn;
 
     public GameEngine() {
         this.pieces = new GameBoardPiece[8][8];
@@ -38,16 +41,20 @@ public class GameEngine {
         this.window.showPopUpColorDialog();
 
         this.lightChoice = window.lightChosen();
+        this.playerTurn = true;
+
+        this.zero = new Agent(pieces);
     }
 
     public void updateGame() {
         inputHandler.update();
-        if (inputHandler.movementChosen()) {
+        if (playerTurn && inputHandler.movementChosen()) {
             int firstXPos = inputHandler.getFirstXPos();
             int firstYPos = inputHandler.getFirstYPos();
             GameBoardPiece piece = pieces[firstXPos][firstYPos];
             if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
                pMgr.updateAllPieces();
+               playerTurn = !playerTurn;
             }
             inputHandler.resetClicks();
             printSelectedPiece();
