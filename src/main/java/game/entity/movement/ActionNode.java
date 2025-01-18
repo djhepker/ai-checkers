@@ -51,4 +51,8 @@ public class ActionNode {
     public void setNext(ActionNode next) {
         this.next = next;
     }
+
+    public int getReward() {
+        return reward;
+    }
 }

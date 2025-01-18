@@ -17,7 +17,7 @@ public class Checker extends Entity implements GameBoardPiece {
 
     public Checker(String name, int x, int y, BufferedImage image) {
         super(name, x, y, image, name.startsWith("LIGHT"));
-        this.pieceValue = 100;
+        this.pieceValue = 10;
         this.moveMgr = new MovementManager();
         this.color = super.isLight() ? PieceColor.LIGHT : PieceColor.DUSKY;
         this.movementSign = super.isLight() ? 1 : -1;
@@ -107,15 +107,15 @@ public class Checker extends Entity implements GameBoardPiece {
         while (!taskQueue.isEmpty()) {
             MoveState currState = taskQueue.pop();
             int stateCode = currState.stateCode;
-            int[] xDirrectionArray;    // possible directions to move
+            int[] xDirectionArray;    // possible directions to move
             if (stateCode > 1) {
-                xDirrectionArray = new int[] {-1, 1};
+                xDirectionArray = new int[] {-1, 1};
             } else {
-                xDirrectionArray = new int[] {currState.stateCode};
+                xDirectionArray = new int[] {currState.stateCode};
             }
             int yNext = currState.yCell - movementSign;
             if (0 <= yNext && yNext < 8) {
-                for (int xDirection : xDirrectionArray) {
+                for (int xDirection : xDirectionArray) {
                     int xNext = currState.xCell + xDirection;
                     if (0 <= xNext && xNext < 8) {
                         GameBoardPiece target = pieces[xNext][yNext];
@@ -126,10 +126,10 @@ public class Checker extends Entity implements GameBoardPiece {
                                 short captureValue = pieces[currState.xCell][currState.yCell].getPieceValue();
                                 ActionNode nextSpace = new ActionNode(xNext, yNext);
                                 nextSpace.addCapturedNode(currState.xCell, currState.yCell, captureValue);
-                                moveMgr.addLocationNode(nextSpace);
                                 if (currState.capturedNode != null) { // handle prior captures this move
                                     nextSpace.addCapturedNode(moveMgr.cloneCapturedNode(currState.capturedNode));
                                 }
+                                moveMgr.addLocationNode(nextSpace);
                                 taskQueue.push(new MoveState(xNext, yNext, 2, nextSpace.getCapturedNodes()));
                             }
                         } else if (stateCode > 1 && target.getColor() != this.color) {  // target not open;
