@@ -6,17 +6,11 @@ import java.awt.Image;
 
 public class BoardManager {
     private EntityCreator creator;
-    private final int[][] tilePattern;
     private final Image[] cachedTiles;
 
     public BoardManager(EntityCreator creator) {
          this.creator = creator;
          this.cachedTiles = creator.getCachedCells();
-         this.tilePattern = getBoardPattern();
-    }
-
-    public int[][] getTilePattern() {
-        return tilePattern;
     }
 
     public Image[] getCachedTiles() {
@@ -31,9 +25,5 @@ public class BoardManager {
             }
         }
         return boardPattern;
-    }
-
-    public void printNumCells() {
-        System.out.println("The number of Cells: " + tilePattern.length);
     }
 }

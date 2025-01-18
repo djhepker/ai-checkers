@@ -2,7 +2,6 @@ package main.java.graphics;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -13,6 +12,7 @@ public class GameWindow {
 
     public GameWindow(GraphicsHandler graphicsHandler) {
         this.graphicsHandler = graphicsHandler;
+        this.lightChosen = false;
 
         JFrame frame = new JFrame("Checkers dev");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -21,7 +21,6 @@ public class GameWindow {
         frame.setLocationRelativeTo(null); // centered
         frame.setVisible(true);
         this.windowOpen = true;
-        this.lightChosen = false;
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -30,10 +29,9 @@ public class GameWindow {
                 windowOpen = false;
             }
         });
-        SwingUtilities.invokeLater(() -> showPopUpColorDialog());
     }
 
-    private void showPopUpColorDialog() {
+    public void showPopUpColorDialog() {
         try {
             String[] colors = {"White", "Black"};
             String selectedColor = (String) JOptionPane.showInputDialog(

@@ -19,23 +19,25 @@ public class GameEngine {
 
     private GameBoardPiece[][] pieces;
 
-    private final int[][] tilePattern;
     private final Image[] cachedTiles;
 
-    private boolean lightChoice;
+    private final boolean lightChoice;
 
     public GameEngine() {
         this.pieces = new GameBoardPiece[8][8];
         this.creator = new EntityCreator(pieces);
         this.bMgr = new BoardManager(creator);
-        this.tilePattern = bMgr.getTilePattern();
         this.cachedTiles = bMgr.getCachedTiles();
-        this.graphicsHandler = new GraphicsHandler(tilePattern, cachedTiles, pieces);
-        this.inputHandler = graphicsHandler.getInputHandler();
+
+        this.inputHandler = new InputHandler();
+        this.graphicsHandler = new GraphicsHandler(cachedTiles, pieces, inputHandler);
+        this.inputHandler.setGraphicsHandler(graphicsHandler);
         this.pMgr = new PieceManager(pieces, creator, inputHandler);
-        this.window = graphicsHandler.getGameWindow();
+
+        this.window = new GameWindow(graphicsHandler);
+        this.window.showPopUpColorDialog();
+
         this.lightChoice = window.lightChosen();
-        System.out.println(lightChoice);    //TODO FIX TIMING FOR POPUP WINDOW & THIS BOOLEAN
     }
 
     public void updateGame() {

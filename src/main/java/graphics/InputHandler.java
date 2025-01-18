@@ -16,8 +16,7 @@ public class InputHandler {
         SECOND_CLICK
     }
 
-    public InputHandler(GraphicsHandler gHandler) {
-        this.gHandler = gHandler;
+    public InputHandler() {
         this.selectedCol = -1;
         this.selectedRow = -1;
         this.firstXPos = -1;
@@ -60,8 +59,8 @@ public class InputHandler {
         // System.out.println("Mouse clicked with selection of: (" + selectedCol + ", " + selectedRow + ")");
     }
 
-    public String getInputState() {
-        return String.valueOf(inputState);
+    public void setGraphicsHandler(GraphicsHandler gHandler) {
+        this.gHandler = gHandler;
     }
 
     public void resetClicks() {
