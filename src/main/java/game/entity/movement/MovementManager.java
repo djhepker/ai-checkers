@@ -7,6 +7,14 @@ public class MovementManager {
         this.locList = new LocationList();
     }
 
+    public void addLocationNode(int postX, int postY) {
+        locList.addNode(new LocationNode((short) postX, (short) postY));
+    }
+
+    public void addLocationNode(LocationNode node) {
+        locList.addNode(node);
+    }
+
     public void clearListOfMoves() {
         locList.clearList();
     }
@@ -33,9 +41,5 @@ public class MovementManager {
             capturedNode = capturedNode.getNext();
         }
         return listHead;
-    }
-
-    public void addLocationNode(int postX, int postY) {
-        locList.addNode(new LocationNode((short) postX, (short) postY));
     }
 }

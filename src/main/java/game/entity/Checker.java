@@ -125,9 +125,9 @@ public class Checker extends Entity implements GameBoardPiece {
                                 moveMgr.addLocationNode(xNext, yNext);
                             } else if (stateCode < 2) {    //  target open; mid-jump; direction acknowledged;
                                 short captureValue = pieces[currState.xCell][currState.yCell].getPieceValue();
-                                moveMgr.addLocationNode(xNext, yNext);
-                                LocationNode nextSpace = moveMgr.getPointerToListHead();
+                                LocationNode nextSpace = new LocationNode(xNext, yNext);
                                 nextSpace.addCapturedNode(currState.xCell, currState.yCell, captureValue);
+                                moveMgr.addLocationNode(nextSpace);
                                 if (currState.capturedNode != null) { // handle prior captures this move
                                     nextSpace.addCapturedNode(moveMgr.cloneCapturedNode(currState.capturedNode));
                                 }

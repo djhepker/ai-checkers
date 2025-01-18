@@ -11,6 +11,12 @@ public class LocationNode {
         this.capturedEnemies = null;
     }
 
+    public LocationNode(int postX, int postY) {
+        this.data = new short[]{(short) postX, (short) postY};
+        this.next = null;
+        this.capturedEnemies = null;
+    }
+
     public short getDataX() {
         return data[0];
     }
