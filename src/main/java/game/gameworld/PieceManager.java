@@ -36,7 +36,7 @@ public class PieceManager {
         if (spaceIsNull(postX, postY)) {
             ActionNode cursor = piece.getMoveListPointer();
             while (cursor != null) {
-                if (cursor.getDataX() == postX && cursor.getDataY() == postY) {
+                if (cursor.getoDataX() == postX && cursor.getoDataY() == postY) {
                     CapturedNode capturedPiece = cursor.getCapturedNodes();
                     while (capturedPiece != null) {
                         pieces[capturedPiece.getDataX()][capturedPiece.getDataY()] = null;
@@ -48,7 +48,7 @@ public class PieceManager {
                     pieces[piece.getX()][piece.getY()] = piece;
                     return true;
                 }
-                cursor = cursor.getNext();
+                cursor = cursor.getRight();
             }
         }
         return false;

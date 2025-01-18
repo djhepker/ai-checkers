@@ -1,31 +1,39 @@
 package main.java.game.entity.movement;
 
 public class ActionNode {
-    private final short[] data;
+    private final short[][] data;
     private CapturedNode capturedEnemies;
-    private ActionNode next;
+    private ActionNode right;
     private int reward;
 
-    public ActionNode(short postX, short postY) {
-        this.data = new short[] {postX, postY};
-        this.next = null;
+    public ActionNode(short preX, short preY, short postX, short postY) {
+        this.data = new short[][]{{preX, preY}, {postX, postY}};
+        this.right = null;
         this.capturedEnemies = null;
         this.reward = 0;
     }
 
-    public ActionNode(int postX, int postY) {
-        this.data = new short[]{(short) postX, (short) postY};
-        this.next = null;
+    public ActionNode(int preX, int preY, int postX, int postY) {
+        this.data = new short[][]{{(short) preX, (short) preY}, {(short) postX, (short) postY}};
+        this.right = null;
         this.capturedEnemies = null;
         this.reward = 0;
     }
 
-    public short getDataX() {
-        return data[0];
+    public short getoDataX() {
+        return data[0][0];
     }
 
-    public short getDataY() {
-        return data[1];
+    public short getoDataY() {
+        return data[0][1];
+    }
+
+    public short getfDataX() {
+        return data[1][0];
+    }
+
+    public short getfDataY() {
+        return data[1][1];
     }
 
     public CapturedNode getCapturedNodes() {
@@ -33,7 +41,7 @@ public class ActionNode {
     }
 
     public void addCapturedNode(int x, int y, int pointValue) {
-        reward += pointValue;
+        this.reward += pointValue;
         addCapturedNode(new CapturedNode((short) x, (short) y, (short) pointValue));
     }
 
@@ -41,15 +49,16 @@ public class ActionNode {
         if (capturedEnemies != null) {
             capturedNode.setNext(capturedEnemies);
         }
+        this.reward += capturedNode.getPointValue();
         this.capturedEnemies = capturedNode;
     }
 
-    public ActionNode getNext() {
-        return next;
+    public ActionNode getRight() {
+        return right;
     }
 
-    public void setNext(ActionNode next) {
-        this.next = next;
+    public void setRight(ActionNode right) {
+        this.right = right;
     }
 
     public int getReward() {

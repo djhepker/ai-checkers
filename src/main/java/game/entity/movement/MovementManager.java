@@ -1,10 +1,10 @@
 package main.java.game.entity.movement;
 
 public class MovementManager {
-    private LocationList locList;
+    private ActionList locList;
 
     public MovementManager() {
-        this.locList = new LocationList();
+        this.locList = new ActionList();
     }
 
     public void addLocationNode(int postX, int postY) {

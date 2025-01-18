@@ -48,8 +48,8 @@ public class Checker extends Entity implements GameBoardPiece {
         ActionNode cursor = moveMgr.getPointerToListHead();
         int row = 0;
         while (cursor != null) {
-            System.out.print("Option " + row + ": (" + cursor.getDataX() + ", " + cursor.getDataY() + "); ");
-            cursor = cursor.getNext();
+            System.out.print("Option " + row + ": (" + cursor.getoDataX() + ", " + cursor.getoDataY() + "); ");
+            cursor = cursor.getRight();
             row++;
         }
         System.out.println();
@@ -144,7 +144,10 @@ public class Checker extends Entity implements GameBoardPiece {
             }
         }
     }
-
+/*
+* TODO: create movestate logic where movestate holds an instance of movestate. this way, initial moves can
+*  maintain the original (x,y) and its captured node list more efficiently for storage of individual ActionNode
+* */
     @Override
     public void printData() {
         System.out.print("Piece name: " + getName() + "; ");

@@ -1,15 +1,15 @@
 package main.java.game.entity.movement;
 
-class LocationList {
+class ActionList {
     private ActionNode head;
 
-    public LocationList() {
+    public ActionList() {
         this.head = null;
     }
 
     public void addNode(ActionNode nodeToAdd) {
         if (head != null) {
-            nodeToAdd.setNext(head);
+            nodeToAdd.setRight(head);
         }
         head = nodeToAdd;
     }

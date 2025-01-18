@@ -1,6 +1,5 @@
 package main.java.ai;
 
-import main.java.ai.agentutils.ActionTree;
 import main.java.game.utils.GameBoardPiece;
 
 /*
@@ -46,6 +45,7 @@ public class Agent {
     */
     private final double EPSELON = 0.92;
 
+    // may or may not need or use sig
     private double sig = 0.0;
 
     public Agent (GameBoardPiece[][] pieces, boolean playerLight) {
@@ -53,7 +53,7 @@ public class Agent {
         this.pieces = pieces;
     }
 
-    private ActionTree chooseAction() {
+    private AIActionList chooseAction() {
         if (Math.random() < EPSELON) {
             return explore();
         } else {
@@ -62,12 +62,12 @@ public class Agent {
     }
 
     // random moves
-    private ActionTree explore() {
+    private AIActionList explore() {
         return null;
     }
 
     // choosing which move is the most appropriate based on past experiences
-    private ActionTree exploit() {
+    private AIActionList exploit() {
         return null;
     }
 
