@@ -1,4 +1,4 @@
-package main.java.entity.movement;
+package main.java.game.entity.movement;
 
 public class MovementManager {
     private LocationList locList;

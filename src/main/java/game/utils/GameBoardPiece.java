@@ -1,6 +1,6 @@
-package main.java.utils;
+package main.java.game.utils;
 
-import main.java.entity.movement.LocationNode;
+import main.java.game.entity.movement.LocationNode;
 
 import java.awt.image.BufferedImage;
 

@@ -1,9 +1,9 @@
-package main.java.entity;
+package main.java.game.entity;
 
-import main.java.entity.movement.CapturedNode;
-import main.java.entity.movement.MovementManager;
-import main.java.entity.movement.LocationNode;
-import main.java.utils.GameBoardPiece;
+import main.java.game.entity.movement.CapturedNode;
+import main.java.game.entity.movement.MovementManager;
+import main.java.game.entity.movement.LocationNode;
+import main.java.game.utils.GameBoardPiece;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;

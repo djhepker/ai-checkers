@@ -1,4 +1,4 @@
-package main.java.utils;
+package main.java.game.utils;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;

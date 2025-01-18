@@ -1,6 +1,6 @@
-package main.java.gameworld;
+package main.java.game.gameworld;
 
-import main.java.entity.Entity;
+import main.java.game.entity.Entity;
 
 import java.awt.image.BufferedImage;
 

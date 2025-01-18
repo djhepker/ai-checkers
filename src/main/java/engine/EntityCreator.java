@@ -1,8 +1,8 @@
 package main.java.engine;
 
-import main.java.entity.Checker;
-import main.java.utils.AssetManager;
-import main.java.utils.GameBoardPiece;
+import main.java.game.entity.Checker;
+import main.java.game.utils.AssetManager;
+import main.java.game.utils.GameBoardPiece;
 
 import java.awt.Image;
 

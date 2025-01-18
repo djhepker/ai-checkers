@@ -1,4 +1,4 @@
-package main.java.gameworld;
+package main.java.game.gameworld;
 
 import main.java.engine.EntityCreator;
 

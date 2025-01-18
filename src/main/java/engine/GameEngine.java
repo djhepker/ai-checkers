@@ -1,11 +1,11 @@
 package main.java.engine;
 
-import main.java.gameworld.BoardManager;
-import main.java.graphics.GameWindow;
-import main.java.graphics.GraphicsHandler;
-import main.java.gameworld.PieceManager;
-import main.java.graphics.InputHandler;
-import main.java.utils.GameBoardPiece;
+import main.java.game.gameworld.BoardManager;
+import main.java.game.graphics.GameWindow;
+import main.java.game.graphics.GraphicsHandler;
+import main.java.game.gameworld.PieceManager;
+import main.java.game.graphics.InputHandler;
+import main.java.game.utils.GameBoardPiece;
 
 import java.awt.Image;
 

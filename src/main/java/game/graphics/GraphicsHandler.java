@@ -1,8 +1,7 @@
-package main.java.graphics;
+package main.java.game.graphics;
 
-import main.java.entity.Entity;
-import main.java.entity.movement.LocationNode;
-import main.java.utils.GameBoardPiece;
+import main.java.game.entity.movement.LocationNode;
+import main.java.game.utils.GameBoardPiece;
 
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;

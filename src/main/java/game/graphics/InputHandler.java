@@ -1,4 +1,4 @@
-package main.java.graphics;
+package main.java.game.graphics;
 
 import java.awt.event.MouseEvent;
 
