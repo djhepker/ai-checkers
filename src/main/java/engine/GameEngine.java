@@ -56,6 +56,7 @@ public class GameEngine {
             GameBoardPiece piece = pieces[firstXPos][firstYPos];
             if (DEBUG && piece != null && pMgr.movePiece(piece)) {
                 pMgr.updateAllPieces();
+                zero.printQueue();
             } else if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
                pMgr.updateAllPieces();
                playerTurn = !playerTurn;

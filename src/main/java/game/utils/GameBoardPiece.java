@@ -3,12 +3,15 @@ package main.java.game.utils;
 import main.java.game.entity.movement.ActionNode;
 
 import java.awt.image.BufferedImage;
+import java.util.stream.Stream;
 
 public interface GameBoardPiece {
     enum PieceColor {
         LIGHT,
         DUSKY
     }
+
+    Stream<ActionNode> getMoveListAsStream();
 
     boolean isLight();
 

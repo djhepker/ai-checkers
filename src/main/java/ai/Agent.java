@@ -19,6 +19,7 @@ import main.java.game.utils.GameBoardPiece;
 public class Agent {
     private final boolean isDusky;
     private GameBoardPiece[][] pieces;
+    private AgentActionQueue actions;
 
     /*
     * Discounting Factor for Future Rewards. Future rewards are less valuable
@@ -53,7 +54,12 @@ public class Agent {
         this.pieces = pieces;
     }
 
-    private AIActionList chooseAction() {
+    public void update() {
+        this.actions = new AgentActionQueue(pieces, isDusky);
+
+    }
+
+    private AgentActionQueue chooseAction() {
         if (Math.random() < EPSELON) {
             return explore();
         } else {
@@ -62,12 +68,12 @@ public class Agent {
     }
 
     // random moves
-    private AIActionList explore() {
+    private AgentActionQueue explore() {
         return null;
     }
 
     // choosing which move is the most appropriate based on past experiences
-    private AIActionList exploit() {
+    private AgentActionQueue exploit() {
         return null;
     }
 
@@ -102,5 +108,10 @@ public class Agent {
 
     double calculateReward(GameBoardPiece piece) {
         return 0.0;
+    }
+
+    public void printQueue() {
+        actions = new AgentActionQueue(pieces, isDusky);
+        actions.printQueue();
     }
 }

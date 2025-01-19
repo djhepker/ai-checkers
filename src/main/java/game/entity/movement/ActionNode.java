@@ -41,7 +41,6 @@ public class ActionNode {
     }
 
     public void addCapturedNode(int x, int y, int pointValue) {
-        this.reward += pointValue;
         addCapturedNode(new CapturedNode((short) x, (short) y, (short) pointValue));
     }
 
@@ -63,5 +62,10 @@ public class ActionNode {
 
     public int getReward() {
         return reward;
+    }
+
+    public void printData() {
+        System.out.println("Node: (" + getoDataX() + ", " + getoDataY() +
+                "); With a reward of: " + getReward());
     }
 }

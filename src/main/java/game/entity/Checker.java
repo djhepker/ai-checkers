@@ -8,6 +8,7 @@ import main.java.game.utils.GameBoardPiece;
 import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.stream.Stream;
 
 public class Checker extends Entity implements GameBoardPiece {
     private final MovementManager moveMgr;
@@ -21,6 +22,17 @@ public class Checker extends Entity implements GameBoardPiece {
         this.moveMgr = new MovementManager();
         this.color = super.isLight() ? PieceColor.LIGHT : PieceColor.DUSKY;
         this.movementSign = super.isLight() ? 1 : -1;
+    }
+
+    @Override
+    public Stream<ActionNode> getMoveListAsStream() {
+        Stream.Builder<ActionNode> streamBuilder = Stream.builder();
+        ActionNode cursor = getMoveListPointer();
+        while (cursor != null) {
+            streamBuilder.accept(cursor);
+            cursor = cursor.getNext();
+        }
+        return streamBuilder.build();
     }
 
     @Override
