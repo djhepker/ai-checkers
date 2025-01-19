@@ -57,7 +57,13 @@ class AgentTools {
         return gameState;
     }
 
-    public long encodedLong
+    public String getHexadecimalEncodingOfArr(int[] gameState) {
+        long longState = 0L;
+        for (int i = 0; i < gameState.length; ++i) {
+            longState |= (long) gameState[i] << i;
+        }
+        return Long.toHexString(longState);
+    }
 
     private int pieceToInt(GameBoardPiece piece) {
         if (piece == null) {
