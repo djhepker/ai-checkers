@@ -6,10 +6,10 @@ import main.java.game.utils.GameBoardPiece;
 import java.util.PriorityQueue;
 
 /*
-* STATE: Will be identified as pieces[][]; Each state represents a board configuration
+* STATE: pieces[][] converted to a hexadecimal String
 * ACTION: Moving pieces when it is Agent's turn
-* REWARD: Positive & Negative
-* EPISODE: GameEngine calls updateGame()
+* REWARD: Positive, Negative, & Neutral
+* EPISODE: GameEngine calls updateGame() in-between episodes
 * Q-VALUE: Metrics used to evaluate actions at specific states
 * MODEL: Q(S,a,S') ─► Model "Q" is action "a" given state "S" results in "S'"
 * └► P(S'|S,a) = Probability of reaching a state "S'" if action "a" is taken in state "S"
@@ -59,7 +59,6 @@ public class Agent {
 
     public void update() {
         this.actions = new AgentTools(pieces, isDusky);
-        actions.generateGameState();
         PriorityQueue<ActionNode> queue = actions.getQueueOfActions();
     }
 
@@ -87,7 +86,9 @@ public class Agent {
     * Negative reward for a worse position
     * A large positive reward should be awarded if the Agent wins the game
     * */
-    double calculateReward() { return 0.0; }
+    double calculateReward() {
+        return 0.0;
+    }
 
     /*
     * Updates our Q value to its newest value

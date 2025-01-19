@@ -11,8 +11,7 @@ import static main.java.game.utils.GameBoardPiece.PieceColor.DUSKY;
 import static main.java.game.utils.GameBoardPiece.PieceColor.LIGHT;
 
 /*
-* STATE REPRESENTATION: int[][]
-* maybe more compact like a feature vector or reduction
+* STATE REPRESENTATION: Hexadecimal String
 * ACTION REPRESENTATION: Organize the priority queue by
 * (x,y); prioritizing x and then y
 * Q-TABLE: Must export Q-values for each state-action pair
@@ -44,10 +43,17 @@ class AgentTools {
                 .filter(piece -> piece != null && piece.getColor() == pieceColor)
                 .flatMap(GameBoardPiece::getMoveListAsStream)
                 .collect(Collectors.toCollection(() -> new PriorityQueue<>(
-                        (a, b) -> Integer.compare(b.getReward(), a.getReward()))));
+                        (a, b) -> Integer.compare(b.getReward(), a.getReward())
+                )));
     }
 
-    public int[] getIntArrState() {
+    public String getEncodedGameState() {
+        int[] arrState = getIntArrState();
+        String encodedState = getHexadecimalEncodingOfArr(arrState);
+        return encodedState;
+    }
+
+    private int[] getIntArrState() {
         int[] gameState = new int[64];
         for (int j = 0; j < 8; ++j) {
             for (int i = 0; i < 8; ++i) {
@@ -57,12 +63,11 @@ class AgentTools {
         return gameState;
     }
 
-    public String getHexadecimalEncodingOfArr(int[] gameState) {
-        long longState = 0L;
-        for (int i = 0; i < gameState.length; ++i) {
-            longState |= (long) gameState[i] << i;
-        }
-        return Long.toHexString(longState);
+    private String getHexadecimalEncodingOfArr(int[] gameState) {
+        String encodedState = Arrays.stream(gameState)
+                .mapToObj(Integer::toHexString)
+                .collect(Collectors.joining());
+        return encodedState;
     }
 
     private int pieceToInt(GameBoardPiece piece) {
