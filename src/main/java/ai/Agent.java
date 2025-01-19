@@ -1,9 +1,6 @@
 package main.java.ai;
 
-import main.java.game.entity.movement.ActionNode;
 import main.java.game.utils.GameBoardPiece;
-
-import java.util.PriorityQueue;
 
 /*
 * STATE: pieces[][] converted to a hexadecimal String
@@ -22,7 +19,8 @@ import java.util.PriorityQueue;
 public class Agent {
     private final boolean isDusky;
     private GameBoardPiece[][] pieces;
-    private AgentTools actions;
+    private AgentTools toolBox;
+    private QTableManager qTable;
 
     /*
     * Discounting Factor for Future Rewards. Future rewards are less valuable
@@ -55,11 +53,12 @@ public class Agent {
     public Agent (GameBoardPiece[][] pieces, boolean playerLight) {
         this.isDusky = playerLight;
         this.pieces = pieces;
+        this.toolBox = new AgentTools(pieces, isDusky);
+        this.qTable = new QTableManager(toolBox);
     }
 
     public void update() {
-        this.actions = new AgentTools(pieces, isDusky);
-        PriorityQueue<ActionNode> queue = actions.getQueueOfActions();
+
     }
 
     private AgentTools chooseAction() {
@@ -116,7 +115,7 @@ public class Agent {
     }
 
     public void printQueue() {
-        actions = new AgentTools(pieces, isDusky);
-        actions.printQueue();
+        toolBox = new AgentTools(pieces, isDusky);
+        toolBox.printQueue();
     }
 }

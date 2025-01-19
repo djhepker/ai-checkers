@@ -4,7 +4,7 @@ import main.java.game.entity.movement.ActionNode;
 import main.java.game.utils.GameBoardPiece;
 
 import java.util.Arrays;
-import java.util.PriorityQueue;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import static main.java.game.utils.GameBoardPiece.PieceColor.DUSKY;
@@ -16,35 +16,32 @@ import static main.java.game.utils.GameBoardPiece.PieceColor.LIGHT;
 * (x,y); prioritizing x and then y
 * Q-TABLE: Must export Q-values for each state-action pair
 * WIN-LOSS-DRAW: Result of the game
-* AVERGAE REWARD PER-GAME: Average points
+* AVERAGE REWARD PER-GAME: Average points
 * */
 
 class AgentTools {
     private final GameBoardPiece[][] pieces;
     private final GameBoardPiece.PieceColor pieceColor;
-    private PriorityQueue<ActionNode> actionQueue;
 
     public AgentTools(GameBoardPiece[][] pieces, boolean isDusky) {
         this.pieces = pieces;
         this.pieceColor = isDusky ? DUSKY : LIGHT;
-        this.actionQueue = getQueueOfActions();
     }
 
     public void printQueue() {
-        ActionNode[] printable = getQueueOfActions().toArray(new ActionNode[0]);
+        ActionNode[] printable = getActionsArray();
         for (ActionNode node : printable) {
             node.printData();
         }
     }
 
-    public PriorityQueue<ActionNode> getQueueOfActions() {
+    public ActionNode[] getActionsArray() {
         return Arrays.stream(pieces)
                 .flatMap(Arrays::stream)
                 .filter(piece -> piece != null && piece.getColor() == pieceColor)
                 .flatMap(GameBoardPiece::getMoveListAsStream)
-                .collect(Collectors.toCollection(() -> new PriorityQueue<>(
-                        (a, b) -> Integer.compare(b.getReward(), a.getReward())
-                )));
+                .sorted(Comparator.comparingInt(ActionNode::getoDataX).thenComparing(ActionNode::getoDataY))
+                .toArray(ActionNode[]::new);
     }
 
     public String getEncodedGameState() {

@@ -33,18 +33,14 @@ public class GameEngine {
         this.creator = new EntityCreator(pieces);
         this.bMgr = new BoardManager(creator);
         this.cachedTiles = bMgr.getCachedTiles();
-
         this.inputHandler = new InputHandler();
         this.graphicsHandler = new GraphicsHandler(cachedTiles, pieces, inputHandler);
         this.inputHandler.setGraphicsHandler(graphicsHandler);
         this.pMgr = new PieceManager(pieces, creator, inputHandler);
-
         this.window = new GameWindow(graphicsHandler);
         this.window.showPopUpColorDialog();
-
         this.lightChoice = window.lightChosen();
         this.playerTurn = true;
-
         this.zero = new Agent(pieces, lightChoice);
     }
 
