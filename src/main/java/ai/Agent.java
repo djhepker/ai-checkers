@@ -1,6 +1,9 @@
 package main.java.ai;
 
+import main.java.game.entity.movement.ActionNode;
 import main.java.game.utils.GameBoardPiece;
+
+import java.util.PriorityQueue;
 
 /*
 * STATE: Will be identified as pieces[][]; Each state represents a board configuration
@@ -19,7 +22,7 @@ import main.java.game.utils.GameBoardPiece;
 public class Agent {
     private final boolean isDusky;
     private GameBoardPiece[][] pieces;
-    private AgentActionQueue actions;
+    private AgentTools actions;
 
     /*
     * Discounting Factor for Future Rewards. Future rewards are less valuable
@@ -55,11 +58,12 @@ public class Agent {
     }
 
     public void update() {
-        this.actions = new AgentActionQueue(pieces, isDusky);
+        this.actions = new AgentTools(pieces, isDusky);
+        PriorityQueue<ActionNode> queue = actions.getQueueOfActions();
 
     }
 
-    private AgentActionQueue chooseAction() {
+    private AgentTools chooseAction() {
         if (Math.random() < EPSELON) {
             return explore();
         } else {
@@ -68,12 +72,12 @@ public class Agent {
     }
 
     // random moves
-    private AgentActionQueue explore() {
+    private AgentTools explore() {
         return null;
     }
 
     // choosing which move is the most appropriate based on past experiences
-    private AgentActionQueue exploit() {
+    private AgentTools exploit() {
         return null;
     }
 
@@ -111,7 +115,7 @@ public class Agent {
     }
 
     public void printQueue() {
-        actions = new AgentActionQueue(pieces, isDusky);
+        actions = new AgentTools(pieces, isDusky);
         actions.printQueue();
     }
 }

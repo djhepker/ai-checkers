@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 import static main.java.game.utils.GameBoardPiece.PieceColor.DUSKY;
 import static main.java.game.utils.GameBoardPiece.PieceColor.LIGHT;
 
-class AgentActionQueue {
+class AgentTools {
     private final GameBoardPiece[][] pieces;
     private final GameBoardPiece.PieceColor pieceColor;
     private PriorityQueue<ActionNode> actionQueue;
 
-    public AgentActionQueue(GameBoardPiece[][] pieces, boolean isDusky) {
+    public AgentTools(GameBoardPiece[][] pieces, boolean isDusky) {
         this.pieces = pieces;
         this.pieceColor = isDusky ? DUSKY : LIGHT;
         this.actionQueue = getQueueOfActions();
@@ -28,7 +28,7 @@ class AgentActionQueue {
         }
     }
 
-    private PriorityQueue<ActionNode> getQueueOfActions() {
+    public PriorityQueue<ActionNode> getQueueOfActions() {
         return Arrays.stream(pieces)
                 .flatMap(Arrays::stream)
                 .filter(piece -> piece != null && piece.getColor() == pieceColor)
