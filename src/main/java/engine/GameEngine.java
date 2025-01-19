@@ -24,6 +24,8 @@ public class GameEngine {
     private final Image[] cachedTiles;
 
     private final boolean lightChoice;
+    private final boolean DEBUG = true;
+
     private boolean playerTurn;
 
     public GameEngine() {
@@ -52,7 +54,10 @@ public class GameEngine {
             int firstXPos = inputHandler.getFirstXPos();
             int firstYPos = inputHandler.getFirstYPos();
             GameBoardPiece piece = pieces[firstXPos][firstYPos];
-            if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
+            if (DEBUG && piece != null && pMgr.movePiece(piece)) {
+                pMgr.updateAllPieces();
+                zero.printQueue();
+            } else if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
                pMgr.updateAllPieces();
                playerTurn = !playerTurn;
             }

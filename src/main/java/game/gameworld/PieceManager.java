@@ -1,7 +1,7 @@
 package main.java.game.gameworld;
 
 import main.java.game.entity.movement.CapturedNode;
-import main.java.game.entity.movement.LocationNode;
+import main.java.game.entity.movement.ActionNode;
 import main.java.game.graphics.InputHandler;
 import main.java.engine.EntityCreator;
 import main.java.game.utils.GameBoardPiece;
@@ -34,9 +34,9 @@ public class PieceManager {
         int postY = input.getSelectedRow();
 
         if (spaceIsNull(postX, postY)) {
-            LocationNode cursor = piece.getMoveListPointer();
+            ActionNode cursor = piece.getMoveListPointer();
             while (cursor != null) {
-                if (cursor.getDataX() == postX && cursor.getDataY() == postY) {
+                if (cursor.getfDataX() == postX && cursor.getfDataY() == postY) {
                     CapturedNode capturedPiece = cursor.getCapturedNodes();
                     while (capturedPiece != null) {
                         pieces[capturedPiece.getDataX()][capturedPiece.getDataY()] = null;

@@ -1,7 +1,9 @@
 package main.java.ai;
 
-import main.java.ai.agentutils.ActionTree;
+import main.java.game.entity.movement.ActionNode;
 import main.java.game.utils.GameBoardPiece;
+
+import java.util.PriorityQueue;
 
 /*
 * STATE: Will be identified as pieces[][]; Each state represents a board configuration
@@ -20,6 +22,7 @@ import main.java.game.utils.GameBoardPiece;
 public class Agent {
     private final boolean isDusky;
     private GameBoardPiece[][] pieces;
+    private AgentTools actions;
 
     /*
     * Discounting Factor for Future Rewards. Future rewards are less valuable
@@ -46,6 +49,7 @@ public class Agent {
     */
     private final double EPSELON = 0.92;
 
+    // may or may not need or use sig
     private double sig = 0.0;
 
     public Agent (GameBoardPiece[][] pieces, boolean playerLight) {
@@ -53,7 +57,13 @@ public class Agent {
         this.pieces = pieces;
     }
 
-    private ActionTree chooseAction() {
+    public void update() {
+        this.actions = new AgentTools(pieces, isDusky);
+        PriorityQueue<ActionNode> queue = actions.getQueueOfActions();
+
+    }
+
+    private AgentTools chooseAction() {
         if (Math.random() < EPSELON) {
             return explore();
         } else {
@@ -62,12 +72,12 @@ public class Agent {
     }
 
     // random moves
-    private ActionTree explore() {
+    private AgentTools explore() {
         return null;
     }
 
     // choosing which move is the most appropriate based on past experiences
-    private ActionTree exploit() {
+    private AgentTools exploit() {
         return null;
     }
 
@@ -102,5 +112,10 @@ public class Agent {
 
     double calculateReward(GameBoardPiece piece) {
         return 0.0;
+    }
+
+    public void printQueue() {
+        actions = new AgentTools(pieces, isDusky);
+        actions.printQueue();
     }
 }

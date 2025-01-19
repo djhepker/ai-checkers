@@ -1,8 +1,9 @@
 package main.java.game.utils;
 
-import main.java.game.entity.movement.LocationNode;
+import main.java.game.entity.movement.ActionNode;
 
 import java.awt.image.BufferedImage;
+import java.util.stream.Stream;
 
 public interface GameBoardPiece {
     enum PieceColor {
@@ -10,13 +11,15 @@ public interface GameBoardPiece {
         DUSKY
     }
 
+    Stream<ActionNode> getMoveListAsStream();
+
     boolean isLight();
 
     void update(GameBoardPiece[][] pieces);
 
     void generateLegalMoves(GameBoardPiece[][] pieces);
 
-    LocationNode getMoveListPointer();
+    ActionNode getMoveListPointer();
 
     void printLegalMoves();
 

@@ -1,18 +1,26 @@
 package main.java.game.entity.movement;
 
 public class MovementManager {
-    private LocationList locList;
+    private ActionList actList;
 
     public MovementManager() {
-        this.locList = new LocationList();
+        this.actList = new ActionList();
+    }
+
+    public void addLocationNode(int preX, int preY, int postX, int postY) {
+        actList.addNode(new ActionNode((short) preX, (short) preY, (short) postX, (short) postY));
+    }
+
+    public void addLocationNode(ActionNode node) {
+        actList.addNode(node);
     }
 
     public void clearListOfMoves() {
-        locList.clearList();
+        actList.clearList();
     }
 
-    public LocationNode getPointerToListHead() {
-        return locList.getHead();
+    public ActionNode getPointerToListHead() {
+        return actList.getHead();
     }
 
     public CapturedNode cloneCapturedNode(CapturedNode inputNode) {
@@ -33,9 +41,5 @@ public class MovementManager {
             capturedNode = capturedNode.getNext();
         }
         return listHead;
-    }
-
-    public void addLocationNode(int postX, int postY) {
-        locList.addNode(new LocationNode((short) postX, (short) postY));
     }
 }
