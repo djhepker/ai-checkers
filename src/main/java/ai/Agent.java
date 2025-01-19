@@ -59,8 +59,8 @@ public class Agent {
 
     public void update() {
         this.actions = new AgentTools(pieces, isDusky);
+        actions.generateGameState();
         PriorityQueue<ActionNode> queue = actions.getQueueOfActions();
-
     }
 
     private AgentTools chooseAction() {
