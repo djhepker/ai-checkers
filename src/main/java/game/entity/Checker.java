@@ -49,7 +49,7 @@ public class Checker extends Entity implements GameBoardPiece {
         int row = 0;
         while (cursor != null) {
             System.out.print("Option " + row + ": (" + cursor.getfDataX() + ", " + cursor.getfDataY() + "); ");
-            cursor = cursor.getRight();
+            cursor = cursor.getNext();
             row++;
         }
         System.out.println();
@@ -103,7 +103,6 @@ public class Checker extends Entity implements GameBoardPiece {
     public void generateLegalMoves(GameBoardPiece[][] pieces) {
         Deque<MoveState> taskQueue = new ArrayDeque<>();
         taskQueue.push(new MoveState(getX(), getY(), 3));
-
         while (!taskQueue.isEmpty()) {
             MoveState currState = taskQueue.pop();
             int stateCode = currState.stateCode;
@@ -144,10 +143,7 @@ public class Checker extends Entity implements GameBoardPiece {
             }
         }
     }
-/*
-* TODO: create movestate logic where movestate holds an instance of movestate. this way, initial moves can
-*  maintain the original (x,y) and its captured node list more efficiently for storage of individual ActionNode
-* */
+
     @Override
     public void printData() {
         System.out.print("Piece name: " + getName() + "; ");

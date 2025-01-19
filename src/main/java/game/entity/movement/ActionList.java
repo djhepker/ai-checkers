@@ -9,7 +9,7 @@ class ActionList {
 
     public void addNode(ActionNode nodeToAdd) {
         if (head != null) {
-            nodeToAdd.setRight(head);
+            nodeToAdd.setNext(head);
         }
         head = nodeToAdd;
     }

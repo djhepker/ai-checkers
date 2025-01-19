@@ -85,7 +85,7 @@ public class GraphicsHandler extends JPanel {
                 int x = getWidth() / 8 * cursor.getfDataX();
                 int y = getHeight() / 8 * cursor.getfDataY();
                 g2d.drawRect(x, y, getWidth() / 8, getHeight() / 8);
-                cursor = cursor.getRight();
+                cursor = cursor.getNext();
             }
         } else {
             inputHandler.resetClicks();

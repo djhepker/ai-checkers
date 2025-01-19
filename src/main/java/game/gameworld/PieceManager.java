@@ -48,7 +48,7 @@ public class PieceManager {
                     pieces[piece.getX()][piece.getY()] = piece;
                     return true;
                 }
-                cursor = cursor.getRight();
+                cursor = cursor.getNext();
             }
         }
         return false;

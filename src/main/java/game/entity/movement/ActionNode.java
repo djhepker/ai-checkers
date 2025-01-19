@@ -3,19 +3,19 @@ package main.java.game.entity.movement;
 public class ActionNode {
     private final short[][] data;
     private CapturedNode capturedEnemies;
-    private ActionNode right;
+    private ActionNode next;
     private int reward;
 
     public ActionNode(short preX, short preY, short postX, short postY) {
         this.data = new short[][]{{preX, preY}, {postX, postY}};
-        this.right = null;
+        this.next = null;
         this.capturedEnemies = null;
         this.reward = 0;
     }
 
     public ActionNode(int preX, int preY, int postX, int postY) {
         this.data = new short[][]{{(short) preX, (short) preY}, {(short) postX, (short) postY}};
-        this.right = null;
+        this.next = null;
         this.capturedEnemies = null;
         this.reward = 0;
     }
@@ -53,12 +53,12 @@ public class ActionNode {
         this.capturedEnemies = capturedNode;
     }
 
-    public ActionNode getRight() {
-        return right;
+    public ActionNode getNext() {
+        return next;
     }
 
-    public void setRight(ActionNode right) {
-        this.right = right;
+    public void setNext(ActionNode next) {
+        this.next = next;
     }
 
     public int getReward() {
