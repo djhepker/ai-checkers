@@ -28,13 +28,13 @@ class AgentTools {
     }
 
     public void printQueue(PieceManager pMgr) {
-        ActionNode[] printable = getActionsArray(pMgr);
+        ActionNode[] printable = getDecisionArray(pMgr);
         for (ActionNode node : printable) {
             node.printData();
         }
     }
 
-    public ActionNode[] getActionsArray(PieceManager pMgr) {
+    public ActionNode[] getDecisionArray(PieceManager pMgr) {
         return Arrays.stream(pMgr.getPieces())
                 .flatMap(Arrays::stream)
                 .filter(piece -> piece != null && piece.getColor() == pieceColor)
@@ -43,29 +43,14 @@ class AgentTools {
                 .toArray(ActionNode[]::new);
     }
 
-    public String getEncodedGameState(PieceManager pMgr) {
-        int[] arrState = getIntArrState(pMgr);
-        return getHexadecimalEncodingOfArr(arrState);
-    }
-
-    private int[] getIntArrState(PieceManager pMgr) {
-        int[] gameState = new int[64];
-        for (int j = 0; j < 8; ++j) {
-            for (int i = 0; i < 8; ++i) {
-                gameState[j * 8 + i] = pieceToInt(pMgr.getPiece(i, j));
-            }
-        }
-        return gameState;
-    }
-
-    private String getHexadecimalEncodingOfArr(int[] gameState) {
+    public String getHexadecimalEncodingOfArr(int[] gameState) {
         String encodedState = Arrays.stream(gameState)
                 .mapToObj(Integer::toHexString)
                 .collect(Collectors.joining());
         return encodedState;
     }
 
-    private int pieceToInt(GameBoardPiece piece) {
+    public int pieceToInt(GameBoardPiece piece) {
         if (piece == null) {
             return 0;
         }

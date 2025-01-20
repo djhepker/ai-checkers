@@ -1,7 +1,6 @@
 package main.java.game.ai;
 
 import main.java.game.gameworld.PieceManager;
-import main.java.game.utils.GameBoardPiece;
 
 import java.util.Random;
 
@@ -24,7 +23,8 @@ public class Agent {
 
     private AgentTools toolbox;
     private QTableManager qTableMgr;
-    private AgentChoiceHandler choiceHandler;
+    private AgentDecisionHandler decisionHandler;
+    private Environment environment;
     private PieceManager pMgr;
 
 
@@ -35,11 +35,8 @@ public class Agent {
     // instantaneous reward the agent received for taking action "a" from state "S"
     private double RHO;
     private double currentQ;
-    // max(a') [ Q(s',a') ], maximum qValue for the next state, s', representing the best possible future outcome
-    private double maxQ;
     private double maxQPrime;
 
-    private double[] qValues;
     private String stateKey;
 
     public Agent (PieceManager pMgr, boolean playerLight) {
@@ -47,25 +44,21 @@ public class Agent {
         this.pMgr = pMgr;
         this.toolbox = new AgentTools(isDusky);
         this.qTableMgr = new QTableManager(toolbox);
-        this.choiceHandler = new AgentChoiceHandler(pMgr, toolbox);
+        this.decisionHandler = new AgentDecisionHandler(pMgr, toolbox);
         this.currentQ = 0.0;
-        this.maxQ = 0.0;
         this.maxQPrime = 0.0;
         this.RHO = 0.0;
     }
 
     public void update() {
-        // Identify state s
-        this.stateKey = toolbox.getEncodedGameState(pMgr);
-        this.qValues = qTableMgr.getQValuesOfState(stateKey);
-        getMaxQ(stateKey);
-        // choose action a
+        this.environment = new Environment(toolbox, pMgr);
+        this.stateKey = environment.getEncodedGameState(pMgr);
+        qTableMgr.updateQValues(stateKey);
+        decisionHandler.updateDecisionArray();
         int moveChoice = getMoveChoice();
-        // perform action
-        choiceHandler.fulfillDecision(moveChoice);
-        // game now in s'
-        // calculate reward rho for action a
-        calculateReward();
+        decisionHandler.fulfillDecision(moveChoice);
+        environment.generateStatePrime();
+        calculateReward(); // calculate reward rho for action a`
 
         calculateMaxQPrime();
         updateQValue(moveChoice);
@@ -80,6 +73,15 @@ public class Agent {
         }
     }
 
+    private int exploit() {
+        return qTableMgr.getMaxQIndex();
+    }
+
+    // random moves
+    private int explore() {
+        return new Random().nextInt(decisionHandler.getNumDecisions());
+    }
+
     /*
      * After an action is taken, the reward is calculated based on the change in game state
      * Positive reward for a better position
@@ -87,35 +89,12 @@ public class Agent {
      * A large positive reward should be awarded if the Agent wins the game
      * */
     double calculateReward() {
+
         return 0.0;
     }
 
     public double getQValue() {
         return 0.0;
-    }
-
-    public void getMaxQ(String stringKey) {
-        this.maxQ = qTableMgr.getMaxQOfState(stringKey);
-    }
-
-    double calculateReward(GameBoardPiece piece) {
-        return 0.0;
-    }
-
-    // random moves
-    private int explore() {
-        return new Random().nextInt(qTableMgr.getTableSize());
-    }
-
-    // choosing which move is the most appropriate based on past experience
-    private int exploit() {
-        for (int i = 0; i < qValues.length; ++i) {
-            if (qValues[i] == maxQ) {
-                return i;
-            }
-        }
-        System.out.println("Max not found, random default is being returned");
-        return explore();
     }
 
     private void calculateMaxQPrime() {
@@ -125,12 +104,16 @@ public class Agent {
     private void updateQValue(int moveChoice) {
         double nextQMax = 0.0;
         // this will grow over time; may need to research;
-        qValues[moveChoice] += ALPHA * (RHO + GAMMA * nextQMax - qValues[moveChoice]);
+        //qValues[moveChoice] += ALPHA * (RHO + GAMMA * nextQMax - qValues[moveChoice]);
     }
 
-    private void getAvailableMoves() {}
+    private void getAvailableMoves() {
 
-    private void decayEpsilon() {}
+    }
+
+    private void decayEpsilon() {
+
+    }
 
     public void printQueue() {
         toolbox.printQueue(pMgr);

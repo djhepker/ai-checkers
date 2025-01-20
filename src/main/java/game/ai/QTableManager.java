@@ -6,6 +6,7 @@ import java.util.HashMap;
 class QTableManager {
     private AgentTools toolbox;
     private HashMap<String, double[]> qTable;
+    private double[] qValues;
 
     /*
     * qTable contains a hexadecimal serialized String of the gamestate which
@@ -18,30 +19,31 @@ class QTableManager {
         this.qTable = initializeQTable();
     }
 
-    public double getMaxQOfState(String serialKey) {
-        if (qTable.containsKey(serialKey)) {
-            double[] qValues = qTable.get(serialKey);
-            return Arrays.stream(qValues).max().getAsDouble();
-        }
-        System.out.println("Error, key not found");
-        System.exit(0);
-        return 0.0;
-    }
-
-    public double[] getQValuesOfState(String stateKey) {
+    public void updateQValues(String stateKey) {
         if (!qTable.containsKey(stateKey)) {
             System.exit(2);
-        } else {
-            return qTable.get(stateKey);
         }
-        return new double[0];
+        qValues = qTable.get(stateKey);
     }
 
-    public int getTableSize() {
-        return qTable.size();
+    public int getMaxQIndex() {
+        int maxQIndex = 0;
+        double maxQValue = Double.MIN_VALUE;
+        for (int i = 0; i < qValues.length; i++) {
+            if (maxQValue < qValues[i]) {
+                maxQValue = qValues[i];
+                maxQIndex = i;
+            }
+        }
+        return maxQIndex;
+    }
+
+    public double getQValue(int qIndex) {
+        return qValues[qIndex];
     }
 
     public HashMap<String, double[]> initializeQTable() {
+        // TODO: logic to import table
         return null;
     }
 }
