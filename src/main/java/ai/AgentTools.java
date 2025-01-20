@@ -20,22 +20,20 @@ import static main.java.game.utils.GameBoardPiece.PieceColor.LIGHT;
 * */
 
 class AgentTools {
-    private final GameBoardPiece[][] pieces;
     private final GameBoardPiece.PieceColor pieceColor;
 
     public AgentTools(GameBoardPiece[][] pieces, boolean isDusky) {
-        this.pieces = pieces;
         this.pieceColor = isDusky ? DUSKY : LIGHT;
     }
 
-    public void printQueue() {
-        ActionNode[] printable = getActionsArray();
+    public void printQueue(GameBoardPiece[][] pieces) {
+        ActionNode[] printable = getActionsArray(pieces);
         for (ActionNode node : printable) {
             node.printData();
         }
     }
 
-    public ActionNode[] getActionsArray() {
+    public ActionNode[] getActionsArray(GameBoardPiece[][] pieces) {
         return Arrays.stream(pieces)
                 .flatMap(Arrays::stream)
                 .filter(piece -> piece != null && piece.getColor() == pieceColor)
@@ -44,13 +42,12 @@ class AgentTools {
                 .toArray(ActionNode[]::new);
     }
 
-    public String getEncodedGameState() {
-        int[] arrState = getIntArrState();
-        String encodedState = getHexadecimalEncodingOfArr(arrState);
-        return encodedState;
+    public String getEncodedGameState(GameBoardPiece[][] pieces) {
+        int[] arrState = getIntArrState(pieces);
+        return getHexadecimalEncodingOfArr(arrState);
     }
 
-    private int[] getIntArrState() {
+    private int[] getIntArrState(GameBoardPiece[][] pieces) {
         int[] gameState = new int[64];
         for (int j = 0; j < 8; ++j) {
             for (int i = 0; i < 8; ++i) {

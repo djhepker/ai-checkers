@@ -2,6 +2,8 @@ package main.java.ai;
 
 import main.java.game.utils.GameBoardPiece;
 
+import java.util.Random;
+
 /*
 * STATE: pieces[][] converted to a hexadecimal String
 * ACTION: Moving pieces when it is Agent's turn
@@ -19,8 +21,8 @@ import main.java.game.utils.GameBoardPiece;
 public class Agent {
     private final boolean isDusky;
     private GameBoardPiece[][] pieces;
-    private AgentTools toolBox;
-    private QTableManager qTable;
+    private AgentTools toolbox;
+    private QTableManager qTableMgr;
 
     /*
     * Discounting Factor for Future Rewards. Future rewards are less valuable
@@ -28,15 +30,6 @@ public class Agent {
     * estimation of expected rewards from a state, discounting rule applies here as well
     * */
     private final double GAMMA = 0.80;
-    // instantaneous reward the agent received for taking action "a" from state "S"
-    private double rInstant;
-    /*
-    * Q(s,a) Q-value for action a given state
-    * TODO: map states s for the above
-    * */
-    private double qValue;
-    // max(a') [ Q(s',a') ], maximum qValue for the next state, s', representing the best possible future outcome
-    private double maxQ;
     // learning rate
     private final double ALPHA = 0.84;
     /*
@@ -46,47 +39,75 @@ public class Agent {
     * epselon = exploration chance
     */
     private final double EPSELON = 0.92;
-
     // may or may not need or use sig
-    private double sig = 0.0;
+    private double SIGMA = 0.0;
+    // instantaneous reward the agent received for taking action "a" from state "S"
+    private double RHO;
+    /*
+     * Q(s,a) Q-value for action a given state
+     * TODO: map states s for the above
+     * */
+    private double currentQ;
+    // max(a') [ Q(s',a') ], maximum qValue for the next state, s', representing the best possible future outcome
+    private double maxQ;
+
+    private double[] qValues;
+    private String stateKey;
 
     public Agent (GameBoardPiece[][] pieces, boolean playerLight) {
         this.isDusky = playerLight;
         this.pieces = pieces;
-        this.toolBox = new AgentTools(pieces, isDusky);
-        this.qTable = new QTableManager(toolBox);
+        this.toolbox = new AgentTools(pieces, isDusky);
+        this.qTableMgr = new QTableManager(toolbox);
+        this.currentQ = 0.0;
+        this.maxQ = 0.0;
     }
 
     public void update() {
-
+        this.stateKey = toolbox.getEncodedGameState(pieces);
+        this.qValues = qTableMgr.getQValuesOfState(stateKey);
     }
 
-    private AgentTools chooseAction() {
-        if (Math.random() < EPSELON) {
-            return explore();
+    /*
+     * After an action is taken, the reward is calculated based on the change in game state
+     * Positive reward for a better position
+     * Negative reward for a worse position
+     * A large positive reward should be awarded if the Agent wins the game
+     * */
+    double calculateReward() {
+        return 0.0;
+    }
+
+    public double getQValue() {
+        return 0.0;
+    }
+
+    public void updateMaxKappa(String stringKey) {
+        this.maxQ = qTableMgr.getMaxQOfState(stringKey);
+    }
+
+    double calculateReward(GameBoardPiece piece) {
+        return 0.0;
+    }
+
+    private int getActionChoice() {
+        Random random = new Random();
+        if (random.nextDouble() < EPSELON) {
+            return explore(random);
         } else {
             return exploit();
         }
     }
 
     // random moves
-    private AgentTools explore() {
-        return null;
+    private int explore(Random random) {
+        return random.nextInt(qTableMgr.getTableSize());
     }
 
     // choosing which move is the most appropriate based on past experiences
-    private AgentTools exploit() {
-        return null;
-    }
+    private int exploit() {
 
-    /*
-    * After an action is taken, the reward is calculated based on the change in game state
-    * Positive reward for a better position
-    * Negative reward for a worse position
-    * A large positive reward should be awarded if the Agent wins the game
-    * */
-    double calculateReward() {
-        return 0.0;
+        return 0;
     }
 
     /*
@@ -94,28 +115,15 @@ public class Agent {
     * Q = Q(s,a) + alpha*( R(s,a) + gamma*Q(s',a') - Q(s,a) )
     * */
     private void updateQValue() {
-        qValue = qValue + ALPHA * (rInstant + GAMMA * maxQ - qValue);
+        currentQ = currentQ + ALPHA * (RHO + GAMMA * maxQ - currentQ);
     }
 
     private void getAvailableMoves() {}
 
     private void decayEpsilon() {}
 
-    double getQValue() {
-        return 0.0;
-    }
-
-    double getMaxQ() {
-        // calculates maximum Q value of all possible actions in next state, a''
-        return 0.0;
-    }
-
-    double calculateReward(GameBoardPiece piece) {
-        return 0.0;
-    }
-
     public void printQueue() {
-        toolBox = new AgentTools(pieces, isDusky);
-        toolBox.printQueue();
+        toolbox = new AgentTools(pieces, isDusky);
+        toolbox.printQueue(pieces);
     }
 }
