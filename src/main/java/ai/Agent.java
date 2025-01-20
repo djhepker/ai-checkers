@@ -66,6 +66,16 @@ public class Agent {
     public void update() {
         this.stateKey = toolbox.getEncodedGameState(pieces);
         this.qValues = qTableMgr.getQValuesOfState(stateKey);
+        updateMaxQ(stateKey);
+
+    }
+
+    private int getActionChoice() {
+        if (Math.random() < EPSELON) {
+            return explore();
+        } else {
+            return exploit();
+        }
     }
 
     /*
@@ -82,7 +92,7 @@ public class Agent {
         return 0.0;
     }
 
-    public void updateMaxKappa(String stringKey) {
+    public void updateMaxQ(String stringKey) {
         this.maxQ = qTableMgr.getMaxQOfState(stringKey);
     }
 
@@ -90,24 +100,20 @@ public class Agent {
         return 0.0;
     }
 
-    private int getActionChoice() {
-        Random random = new Random();
-        if (random.nextDouble() < EPSELON) {
-            return explore(random);
-        } else {
-            return exploit();
-        }
-    }
-
     // random moves
-    private int explore(Random random) {
-        return random.nextInt(qTableMgr.getTableSize());
+    private int explore() {
+        return new Random().nextInt(qTableMgr.getTableSize());
     }
 
     // choosing which move is the most appropriate based on past experiences
     private int exploit() {
-
-        return 0;
+        for (int i = 0; i < qValues.length; ++i) {
+            if (qValues[i] == maxQ) {
+                return i;
+            }
+        }
+        System.out.println("Max not found, random default is being returned");
+        return explore();
     }
 
     /*
