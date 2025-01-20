@@ -23,7 +23,7 @@ public class PieceManager {
         for (GameBoardPiece[] row : pieces) {
             for (GameBoardPiece piece : row) {
                 if (piece != null) {
-                    piece.update(pieces);
+                    piece.update(this);
                 }
             }
         }
@@ -40,7 +40,6 @@ public class PieceManager {
     public boolean movePiece(GameBoardPiece piece) {
         int postX = input.getSelectedCol();
         int postY = input.getSelectedRow();
-
         if (spaceIsNull(postX, postY)) {
             ActionNode cursor = piece.getMoveListPointer();
             while (cursor != null) {
@@ -61,6 +60,22 @@ public class PieceManager {
         }
         return false;
     }
+
+    public void movePiece(ActionNode actionNode) {
+        int xNaught = actionNode.getoDataX();
+        int yNaught = actionNode.getoDataY();
+        CapturedNode capturedPiece = actionNode.getCapturedNodes();
+        while (capturedPiece != null) {
+            pieces[capturedPiece.getDataX()][capturedPiece.getDataY()] = null;
+            capturedPiece = capturedPiece.getNext();
+        }
+        GameBoardPiece piece = pieces[actionNode.getoDataX()][actionNode.getoDataY()];
+        piece.setX(actionNode.getfDataX());
+        piece.setY(actionNode.getfDataY());
+        pieces[xNaught][yNaught] = null;
+        pieces[piece.getX()][piece.getY()] = piece;
+    }
+
 
     public boolean spaceIsNull(int inputX, int inputY) {
         return pieces[inputX][inputY] == null;

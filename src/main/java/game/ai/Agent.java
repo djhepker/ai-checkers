@@ -24,6 +24,7 @@ public class Agent {
 
     private AgentTools toolbox;
     private QTableManager qTableMgr;
+    private AgentChoiceHandler choiceHandler;
     private PieceManager pMgr;
 
     /*
@@ -60,15 +61,16 @@ public class Agent {
     public Agent (PieceManager pMgr, boolean playerLight) {
         this.isDusky = playerLight;
         this.pMgr = pMgr;
-        this.toolbox = new AgentTools(pMgr.getPieces(), isDusky);
+        this.toolbox = new AgentTools(isDusky);
         this.qTableMgr = new QTableManager(toolbox);
+        this.choiceHandler = new AgentChoiceHandler(pMgr, toolbox);
         this.currentQ = 0.0;
         this.maxQ = 0.0;
         this.maxQPrime = 0.0;
     }
 
     public void update() {
-        this.stateKey = toolbox.getEncodedGameState(pMgr.getPieces());
+        this.stateKey = toolbox.getEncodedGameState(pMgr);
         this.qValues = qTableMgr.getQValuesOfState(stateKey);
         updateMaxQ(stateKey);
         int moveChoice = getMoveChoice();
@@ -141,7 +143,6 @@ public class Agent {
     private void decayEpsilon() {}
 
     public void printQueue() {
-        toolbox = new AgentTools(pMgr.getPieces(), isDusky);
-        toolbox.printQueue(pMgr.getPieces());
+        toolbox.printQueue(pMgr);
     }
 }

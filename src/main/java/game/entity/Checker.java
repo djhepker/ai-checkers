@@ -3,6 +3,7 @@ package main.java.game.entity;
 import main.java.game.entity.movement.CapturedNode;
 import main.java.game.entity.movement.MovementManager;
 import main.java.game.entity.movement.ActionNode;
+import main.java.game.gameworld.PieceManager;
 import main.java.game.utils.GameBoardPiece;
 
 import java.awt.image.BufferedImage;
@@ -78,9 +79,9 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     @Override
-    public void update(GameBoardPiece[][] pieces) {
+    public void update(PieceManager pMgr) {
         moveMgr.clearListOfMoves();
-        generateLegalMoves(pieces);
+        generateLegalMoves(pMgr);
     }
 
     @Override
@@ -112,7 +113,7 @@ public class Checker extends Entity implements GameBoardPiece {
      *   Right-jumping: 1
      * */
     @Override
-    public void generateLegalMoves(GameBoardPiece[][] pieces) {
+    public void generateLegalMoves(PieceManager pMgr) {
         Deque<MoveState> taskQueue = new ArrayDeque<>();
         taskQueue.push(new MoveState(getX(), getY(), 3));
         while (!taskQueue.isEmpty()) {
@@ -129,12 +130,12 @@ public class Checker extends Entity implements GameBoardPiece {
                 for (int xDirection : xDirectionArray) {
                     int xNext = currState.xCell + xDirection;
                     if (0 <= xNext && xNext < 8) {
-                        GameBoardPiece target = pieces[xNext][yNext];
+                        GameBoardPiece target = pMgr.getPiece(xNext, yNext);
                         if (target == null) {   // target open case
                             if (stateCode == 3) { // target open; stationary;
                                 moveMgr.addLocationNode(getX(), getY(), xNext, yNext);
                             } else if (stateCode < 2) {    //  target open; mid-jump; direction acknowledged;
-                                short captureValue = pieces[currState.xCell][currState.yCell].getPieceValue();
+                                short captureValue = pMgr.getPiece(currState.xCell, currState.yCell).getPieceValue();
                                 ActionNode nextSpace = new ActionNode(getX(), getY(), xNext, yNext);
                                 nextSpace.addCapturedNode(currState.xCell, currState.yCell, captureValue);
                                 if (currState.capturedNode != null) { // handle prior captures this move

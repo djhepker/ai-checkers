@@ -8,8 +8,6 @@ import main.java.game.gameworld.PieceManager;
 import main.java.game.graphics.InputHandler;
 import main.java.game.utils.GameBoardPiece;
 
-import java.awt.Image;
-
 public class GameEngine {
     private EntityCreator creator;
     private BoardManager bMgr;
@@ -19,56 +17,59 @@ public class GameEngine {
     private GameWindow window;
     private Agent zero;
 
-    private final Image[] cachedTiles;
-
     private final boolean lightChoice;
     private final boolean DEBUG = true;
 
     private boolean playerTurn;
 
     public GameEngine() {
-        this.creator = new EntityCreator();
-
-        this.bMgr = new BoardManager(creator);
-        this.cachedTiles = bMgr.getCachedTiles();
-
-        this.inputHandler = new InputHandler();
-
-        this.pMgr = new PieceManager(creator, inputHandler);
-
-        this.graphicsHandler = new GraphicsHandler(cachedTiles, pMgr, inputHandler);
-
-        this.inputHandler.setGraphicsHandler(graphicsHandler);
-
-
-        this.window = new GameWindow(graphicsHandler);
-        this.window.showPopUpColorDialog();
+        loadGameWorld();
+        renderUI();
         this.lightChoice = window.lightChosen();
-        this.playerTurn = true;
         this.zero = new Agent(pMgr, lightChoice);
+        this.playerTurn = lightChoice;
     }
 
     public void updateGame() {
         inputHandler.update();
-        if (playerTurn && inputHandler.movementChosen()) {
-            int firstXPos = inputHandler.getFirstXPos();
-            int firstYPos = inputHandler.getFirstYPos();
-            GameBoardPiece piece = pMgr.getPiece(firstXPos, firstYPos);
-            if (DEBUG && piece != null && pMgr.movePiece(piece)) {
-                pMgr.updateAllPieces();
-                zero.printQueue();
-            } else if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
-               pMgr.updateAllPieces();
-               playerTurn = !playerTurn;
-            }
-            inputHandler.resetClicks();
-            printSelectedPiece();
+        if (playerTurn) {
+            handleInput();
         }
         graphicsHandler.repaint();
     }
 
     public boolean isOpen() {
         return window.isOpen();
+    }
+
+    private void handleInput() {
+        if (inputHandler.movementChosen()) {
+            int firstXPos = inputHandler.getFirstXPos();
+            int firstYPos = inputHandler.getFirstYPos();
+            GameBoardPiece piece = pMgr.getPiece(firstXPos, firstYPos);
+            if (DEBUG && piece != null && pMgr.movePiece(piece)) {
+                pMgr.updateAllPieces();
+            } else if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
+                pMgr.updateAllPieces();
+                // playerTurn = !playerTurn;
+            }
+            inputHandler.resetClicks();
+            printSelectedPiece();
+        }
+    }
+
+    private void loadGameWorld() {
+        this.inputHandler = new InputHandler();
+        this.creator = new EntityCreator();
+        this.pMgr = new PieceManager(creator, inputHandler);
+    }
+
+    private void renderUI() {
+        this.bMgr = new BoardManager(creator);
+        this.graphicsHandler = new GraphicsHandler(bMgr.getCachedTiles(), pMgr, inputHandler);
+        this.inputHandler.setGraphicsHandler(graphicsHandler);
+        this.window = new GameWindow(graphicsHandler);
+        this.window.showPopUpColorDialog();
     }
 
     private void printSelectedPiece() {
