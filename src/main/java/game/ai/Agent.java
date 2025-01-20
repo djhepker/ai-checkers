@@ -1,5 +1,6 @@
-package main.java.ai;
+package main.java.game.ai;
 
+import main.java.game.gameworld.PieceManager;
 import main.java.game.utils.GameBoardPiece;
 
 import java.util.Random;
@@ -20,16 +21,17 @@ import java.util.Random;
 
 public class Agent {
     private final boolean isDusky;
-    private GameBoardPiece[][] pieces;
+
     private AgentTools toolbox;
     private QTableManager qTableMgr;
+    private PieceManager pMgr;
 
     /*
     * Discounting Factor for Future Rewards. Future rewards are less valuable
     * than current rewards so they must be discounted. Since Q-value is an
     * estimation of expected rewards from a state, discounting rule applies here as well
     * */
-    private final double GAMMA = 0.80;
+    private final double GAMMA = 0.75;
     // learning rate
     private final double ALPHA = 0.84;
     /*
@@ -50,27 +52,36 @@ public class Agent {
     private double currentQ;
     // max(a') [ Q(s',a') ], maximum qValue for the next state, s', representing the best possible future outcome
     private double maxQ;
+    private double maxQPrime;
 
     private double[] qValues;
     private String stateKey;
 
-    public Agent (GameBoardPiece[][] pieces, boolean playerLight) {
+    public Agent (PieceManager pMgr, boolean playerLight) {
         this.isDusky = playerLight;
-        this.pieces = pieces;
-        this.toolbox = new AgentTools(pieces, isDusky);
+        this.pMgr = pMgr;
+        this.toolbox = new AgentTools(pMgr.getPieces(), isDusky);
         this.qTableMgr = new QTableManager(toolbox);
         this.currentQ = 0.0;
         this.maxQ = 0.0;
+        this.maxQPrime = 0.0;
     }
 
     public void update() {
-        this.stateKey = toolbox.getEncodedGameState(pieces);
+        this.stateKey = toolbox.getEncodedGameState(pMgr.getPieces());
         this.qValues = qTableMgr.getQValuesOfState(stateKey);
         updateMaxQ(stateKey);
-
+        int moveChoice = getMoveChoice();
+        /*
+        * TODO: calculate maxQPrime after AI makes a move decision
+        *  need to create a controller class for the AI to manipulate
+        *  game world
+        * */
+        calculateMaxQPrime();
+        updateQValue(moveChoice);
     }
 
-    private int getActionChoice() {
+    private int getMoveChoice() {
         if (Math.random() < EPSELON) {
             return explore();
         } else {
@@ -105,7 +116,7 @@ public class Agent {
         return new Random().nextInt(qTableMgr.getTableSize());
     }
 
-    // choosing which move is the most appropriate based on past experiences
+    // choosing which move is the most appropriate based on past experience
     private int exploit() {
         for (int i = 0; i < qValues.length; ++i) {
             if (qValues[i] == maxQ) {
@@ -116,12 +127,13 @@ public class Agent {
         return explore();
     }
 
-    /*
-    * Updates our Q value to its newest value
-    * Q = Q(s,a) + alpha*( R(s,a) + gamma*Q(s',a') - Q(s,a) )
-    * */
-    private void updateQValue() {
-        currentQ = currentQ + ALPHA * (RHO + GAMMA * maxQ - currentQ);
+    private void calculateMaxQPrime() {
+
+    }
+
+    private void updateQValue(int moveChoice) {
+        double nextQMax = 0.0;
+        qValues[moveChoice]+= ALPHA * (RHO + GAMMA * nextQMax - qValues[moveChoice]);
     }
 
     private void getAvailableMoves() {}
@@ -129,7 +141,7 @@ public class Agent {
     private void decayEpsilon() {}
 
     public void printQueue() {
-        toolbox = new AgentTools(pieces, isDusky);
-        toolbox.printQueue(pieces);
+        toolbox = new AgentTools(pMgr.getPieces(), isDusky);
+        toolbox.printQueue(pMgr.getPieces());
     }
 }

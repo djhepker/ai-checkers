@@ -29,6 +29,10 @@ public class PieceManager {
         }
     }
 
+    public GameBoardPiece[][] getPieces() {
+        return pieces;
+    }
+
     public boolean movePiece(GameBoardPiece piece) {
         int postX = input.getSelectedCol();
         int postY = input.getSelectedRow();
@@ -57,10 +61,6 @@ public class PieceManager {
 
     private boolean spaceIsNull(int postX, int postY) {
         return pieces[postX][postY] == null;
-    }
-
-    public GameBoardPiece getPiece(int x, int y) {
-        return pieces[x][y];
     }
 
     public void printNumPieces() {

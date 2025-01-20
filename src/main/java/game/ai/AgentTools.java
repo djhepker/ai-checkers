@@ -1,4 +1,4 @@
-package main.java.ai;
+package main.java.game.ai;
 
 import main.java.game.entity.movement.ActionNode;
 import main.java.game.utils.GameBoardPiece;

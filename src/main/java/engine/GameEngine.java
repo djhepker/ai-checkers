@@ -1,6 +1,6 @@
 package main.java.engine;
 
-import main.java.ai.Agent;
+import main.java.game.ai.Agent;
 import main.java.game.gameworld.BoardManager;
 import main.java.game.graphics.GameWindow;
 import main.java.game.graphics.GraphicsHandler;
@@ -41,7 +41,7 @@ public class GameEngine {
         this.window.showPopUpColorDialog();
         this.lightChoice = window.lightChosen();
         this.playerTurn = true;
-        this.zero = new Agent(pieces, lightChoice);
+        this.zero = new Agent(pMgr, lightChoice);
     }
 
     public void updateGame() {
