@@ -11,11 +11,11 @@ public class PieceManager {
     private EntityCreator creator;
     private InputHandler input;
 
-    public PieceManager(GameBoardPiece[][] pieces, EntityCreator creator, InputHandler inputHandler) {
-        this.pieces = pieces;
+    public PieceManager(EntityCreator creator, InputHandler inputHandler) {
         this.creator = creator;
+        this.pieces = generateBeginningCheckers();
         this.input = inputHandler;
-        createBeginningCheckers();
+        generateBeginningCheckers();
         updateAllPieces();
     }
 
@@ -31,6 +31,10 @@ public class PieceManager {
 
     public GameBoardPiece[][] getPieces() {
         return pieces;
+    }
+
+    public GameBoardPiece getPiece(int x, int y) {
+        return pieces[x][y];
     }
 
     public boolean movePiece(GameBoardPiece piece) {
@@ -58,9 +62,8 @@ public class PieceManager {
         return false;
     }
 
-
-    private boolean spaceIsNull(int postX, int postY) {
-        return pieces[postX][postY] == null;
+    public boolean spaceIsNull(int inputX, int inputY) {
+        return pieces[inputX][inputY] == null;
     }
 
     public void printNumPieces() {
@@ -75,7 +78,8 @@ public class PieceManager {
         }
     }
 
-    private void createBeginningCheckers() {
+    private GameBoardPiece[][] generateBeginningCheckers() {
+        GameBoardPiece[][] pieces = new GameBoardPiece[8][8];
         int x = 1;
         int y = 0;
         while (y < 3) {
@@ -103,5 +107,6 @@ public class PieceManager {
                 x += 2;
             }
         }
+        return pieces;
     }
 }

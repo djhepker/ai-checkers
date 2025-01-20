@@ -16,14 +16,4 @@ public class BoardManager {
     public Image[] getCachedTiles() {
         return cachedTiles;
     }
-
-    private int[][] getBoardPattern() {
-        int[][] boardPattern = new int[8][8];
-        for (int j = 0; j < 8; j++) {
-            for (int i = 0; i < 8; i++) {
-                boardPattern[i][j] = (i + j) & 1;
-            }
-        }
-        return boardPattern;
-    }
 }

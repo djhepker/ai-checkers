@@ -19,8 +19,6 @@ public class GameEngine {
     private GameWindow window;
     private Agent zero;
 
-    private GameBoardPiece[][] pieces;
-
     private final Image[] cachedTiles;
 
     private final boolean lightChoice;
@@ -29,14 +27,20 @@ public class GameEngine {
     private boolean playerTurn;
 
     public GameEngine() {
-        this.pieces = new GameBoardPiece[8][8];
-        this.creator = new EntityCreator(pieces);
+        this.creator = new EntityCreator();
+
         this.bMgr = new BoardManager(creator);
         this.cachedTiles = bMgr.getCachedTiles();
+
         this.inputHandler = new InputHandler();
-        this.graphicsHandler = new GraphicsHandler(cachedTiles, pieces, inputHandler);
+
+        this.pMgr = new PieceManager(creator, inputHandler);
+
+        this.graphicsHandler = new GraphicsHandler(cachedTiles, pMgr, inputHandler);
+
         this.inputHandler.setGraphicsHandler(graphicsHandler);
-        this.pMgr = new PieceManager(pieces, creator, inputHandler);
+
+
         this.window = new GameWindow(graphicsHandler);
         this.window.showPopUpColorDialog();
         this.lightChoice = window.lightChosen();
@@ -49,7 +53,7 @@ public class GameEngine {
         if (playerTurn && inputHandler.movementChosen()) {
             int firstXPos = inputHandler.getFirstXPos();
             int firstYPos = inputHandler.getFirstYPos();
-            GameBoardPiece piece = pieces[firstXPos][firstYPos];
+            GameBoardPiece piece = pMgr.getPiece(firstXPos, firstYPos);
             if (DEBUG && piece != null && pMgr.movePiece(piece)) {
                 pMgr.updateAllPieces();
                 zero.printQueue();
@@ -68,7 +72,7 @@ public class GameEngine {
     }
 
     private void printSelectedPiece() {
-        GameBoardPiece piece = pieces[inputHandler.getFirstXPos()][inputHandler.getFirstYPos()];
+        GameBoardPiece piece = pMgr.getPiece(inputHandler.getFirstXPos(), inputHandler.getFirstYPos());
         if (piece != null) {
             piece.printData();
         }
