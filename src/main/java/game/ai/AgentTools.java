@@ -1,6 +1,7 @@
-package main.java.ai;
+package main.java.game.ai;
 
 import main.java.game.entity.movement.ActionNode;
+import main.java.game.gameworld.PieceManager;
 import main.java.game.utils.GameBoardPiece;
 
 import java.util.Arrays;
@@ -22,19 +23,19 @@ import static main.java.game.utils.GameBoardPiece.PieceColor.LIGHT;
 class AgentTools {
     private final GameBoardPiece.PieceColor pieceColor;
 
-    public AgentTools(GameBoardPiece[][] pieces, boolean isDusky) {
+    public AgentTools(boolean isDusky) {
         this.pieceColor = isDusky ? DUSKY : LIGHT;
     }
 
-    public void printQueue(GameBoardPiece[][] pieces) {
-        ActionNode[] printable = getActionsArray(pieces);
+    public void printQueue(PieceManager pMgr) {
+        ActionNode[] printable = getDecisionArray(pMgr);
         for (ActionNode node : printable) {
             node.printData();
         }
     }
 
-    public ActionNode[] getActionsArray(GameBoardPiece[][] pieces) {
-        return Arrays.stream(pieces)
+    public ActionNode[] getDecisionArray(PieceManager pMgr) {
+        return Arrays.stream(pMgr.getPieces())
                 .flatMap(Arrays::stream)
                 .filter(piece -> piece != null && piece.getColor() == pieceColor)
                 .flatMap(GameBoardPiece::getMoveListAsStream)
@@ -42,29 +43,14 @@ class AgentTools {
                 .toArray(ActionNode[]::new);
     }
 
-    public String getEncodedGameState(GameBoardPiece[][] pieces) {
-        int[] arrState = getIntArrState(pieces);
-        return getHexadecimalEncodingOfArr(arrState);
-    }
-
-    private int[] getIntArrState(GameBoardPiece[][] pieces) {
-        int[] gameState = new int[64];
-        for (int j = 0; j < 8; ++j) {
-            for (int i = 0; i < 8; ++i) {
-                gameState[j * 8 + i] = pieceToInt(pieces[j][i]);
-            }
-        }
-        return gameState;
-    }
-
-    private String getHexadecimalEncodingOfArr(int[] gameState) {
+    public String getHexadecimalEncodingOfArr(int[] gameState) {
         String encodedState = Arrays.stream(gameState)
                 .mapToObj(Integer::toHexString)
                 .collect(Collectors.joining());
         return encodedState;
     }
 
-    private int pieceToInt(GameBoardPiece piece) {
+    public int pieceToInt(GameBoardPiece piece) {
         if (piece == null) {
             return 0;
         }

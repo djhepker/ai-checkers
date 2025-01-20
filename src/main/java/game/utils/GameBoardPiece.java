@@ -1,6 +1,7 @@
 package main.java.game.utils;
 
 import main.java.game.entity.movement.ActionNode;
+import main.java.game.gameworld.PieceManager;
 
 import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
@@ -15,9 +16,9 @@ public interface GameBoardPiece {
 
     boolean isLight();
 
-    void update(GameBoardPiece[][] pieces);
+    void update(PieceManager pMgr);
 
-    void generateLegalMoves(GameBoardPiece[][] pieces);
+    void generateLegalMoves(PieceManager pMgr);
 
     ActionNode getMoveListPointer();
 
