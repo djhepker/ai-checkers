@@ -1,6 +1,5 @@
 package main.java.game.ai;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 class QTableManager {

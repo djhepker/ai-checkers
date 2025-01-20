@@ -56,9 +56,9 @@ public class Agent {
         qTableMgr.updateQValues(stateKey);
         decisionHandler.updateDecisionArray();
         int moveChoice = getMoveChoice();
-        decisionHandler.fulfillDecision(moveChoice);
+        decisionHandler.fulfillDecision(environment, moveChoice);
         environment.generateStatePrime();
-        calculateReward(); // calculate reward rho for action a`
+        updateRho(); // calculate reward rho for action a`
 
         calculateMaxQPrime();
         updateQValue(moveChoice);
@@ -88,9 +88,9 @@ public class Agent {
      * Negative reward for a worse position
      * A large positive reward should be awarded if the Agent wins the game
      * */
-    double calculateReward() {
-
-        return 0.0;
+    public void updateRho() {
+        // should base it off of the number of possible actions the AI has vs player has
+        this.RHO = decisionHandler.getReward(environment);
     }
 
     public double getQValue() {

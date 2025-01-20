@@ -2,6 +2,8 @@ package main.java.game.ai;
 
 import main.java.game.gameworld.PieceManager;
 
+import java.util.Arrays;
+
 class Environment {
     private AgentTools toolbox;
     private PieceManager pMgr;
@@ -15,8 +17,16 @@ class Environment {
         updateEnvironment();
     }
 
-    private void updateEnvironment() {
-        this.gameStateArr = getStateArray(pMgr);
+    public int getNumAlliedPieces() {
+        return (int) Arrays.stream(gameStateArrPrime)
+                .filter(num -> num >= 1)
+                .count();
+    }
+
+    public int getNumEnemyPieces() {
+        return (int) Arrays.stream(gameStateArrPrime)
+                .filter(num -> num <= -1)
+                .count();
     }
 
     public String getEncodedGameState(PieceManager pMgr) {
@@ -27,7 +37,11 @@ class Environment {
         this.gameStateArrPrime = getStateArray(pMgr);
     }
 
-    public int[] getStateArray(PieceManager pMgr) {
+    private void updateEnvironment() {
+        this.gameStateArr = getStateArray(pMgr);
+    }
+
+    private int[] getStateArray(PieceManager pMgr) {
         int[] gameState = new int[64];
         for (int j = 0; j < 8; ++j) {
             for (int i = 0; i < 8; ++i) {
