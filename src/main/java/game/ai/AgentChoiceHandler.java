@@ -1,6 +1,5 @@
 package main.java.game.ai;
 
-import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;
 
 class AgentChoiceHandler {
@@ -13,7 +12,7 @@ class AgentChoiceHandler {
     }
 
     public void fulfillDecision(int moveChoice) {
-        pMgr.movePiece(toolbox.getActionsArray(pMgr)[moveChoice])
+        pMgr.movePiece(toolbox.getActionsArray(pMgr)[moveChoice]);
         pMgr.updateAllPieces();
     }
 }

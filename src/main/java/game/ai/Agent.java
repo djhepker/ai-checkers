@@ -27,29 +27,13 @@ public class Agent {
     private AgentChoiceHandler choiceHandler;
     private PieceManager pMgr;
 
-    /*
-    * Discounting Factor for Future Rewards. Future rewards are less valuable
-    * than current rewards so they must be discounted. Since Q-value is an
-    * estimation of expected rewards from a state, discounting rule applies here as well
-    * */
+
     private final double GAMMA = 0.75;
-    // learning rate
     private final double ALPHA = 0.84;
-    /*
-    * greed policy, exploitation P(max) = 1 - epselon -> optimal decision
-    * In this instance of exploitation, the agent chooses
-    * the course of action that, given its current understanding, it feels is optimal
-    * epselon = exploration chance
-    */
-    private final double EPSELON = 0.92;
-    // may or may not need or use sig
+    private final double EPSILON = 0.92;
     private double SIGMA = 0.0;
     // instantaneous reward the agent received for taking action "a" from state "S"
     private double RHO;
-    /*
-     * Q(s,a) Q-value for action a given state
-     * TODO: map states s for the above
-     * */
     private double currentQ;
     // max(a') [ Q(s',a') ], maximum qValue for the next state, s', representing the best possible future outcome
     private double maxQ;
@@ -67,24 +51,29 @@ public class Agent {
         this.currentQ = 0.0;
         this.maxQ = 0.0;
         this.maxQPrime = 0.0;
+        this.RHO = 0.0;
     }
 
     public void update() {
+        // Identify state s
         this.stateKey = toolbox.getEncodedGameState(pMgr);
         this.qValues = qTableMgr.getQValuesOfState(stateKey);
-        updateMaxQ(stateKey);
+        getMaxQ(stateKey);
+        // choose action a
         int moveChoice = getMoveChoice();
-        /*
-        * TODO: calculate maxQPrime after AI makes a move decision
-        *  need to create a controller class for the AI to manipulate
-        *  game world
-        * */
+        // perform action
+        choiceHandler.fulfillDecision(moveChoice);
+        // game now in s'
+        // calculate reward rho for action a
+        calculateReward();
+
         calculateMaxQPrime();
         updateQValue(moveChoice);
+        // store result
     }
 
     private int getMoveChoice() {
-        if (Math.random() < EPSELON) {
+        if (Math.random() < EPSILON) {
             return explore();
         } else {
             return exploit();
@@ -105,7 +94,7 @@ public class Agent {
         return 0.0;
     }
 
-    public void updateMaxQ(String stringKey) {
+    public void getMaxQ(String stringKey) {
         this.maxQ = qTableMgr.getMaxQOfState(stringKey);
     }
 
@@ -135,7 +124,8 @@ public class Agent {
 
     private void updateQValue(int moveChoice) {
         double nextQMax = 0.0;
-        qValues[moveChoice]+= ALPHA * (RHO + GAMMA * nextQMax - qValues[moveChoice]);
+        // this will grow over time; may need to research;
+        qValues[moveChoice] += ALPHA * (RHO + GAMMA * nextQMax - qValues[moveChoice]);
     }
 
     private void getAvailableMoves() {}
