@@ -53,15 +53,14 @@ public class Agent {
     public void update() {
         this.environment = new Environment(toolbox, pMgr);
         this.stateKey = environment.getEncodedGameState(pMgr);
-        qTableMgr.updateQValues(stateKey);
         decisionHandler.updateDecisionArray();
         int moveChoice = getMoveChoice();
-        decisionHandler.fulfillDecision(moveChoice);
+        this.currentQ = qTableMgr.getQValue(stateKey, moveChoice);
+        decisionHandler.fulfillDecision(environment, moveChoice);
         environment.generateStatePrime();
-        calculateReward(); // calculate reward rho for action a`
-
+        updateRho();
         calculateMaxQPrime();
-        updateQValue(moveChoice);
+        updateQValue(moveChoice); // progress flag * *
         // store result
     }
 
@@ -74,7 +73,7 @@ public class Agent {
     }
 
     private int exploit() {
-        return qTableMgr.getMaxQIndex();
+        return qTableMgr.getMaxQIndex(stateKey);
     }
 
     // random moves
@@ -88,9 +87,9 @@ public class Agent {
      * Negative reward for a worse position
      * A large positive reward should be awarded if the Agent wins the game
      * */
-    double calculateReward() {
-
-        return 0.0;
+    public void updateRho() {
+        // should base it off of the number of possible actions the AI has vs player has
+        this.RHO = decisionHandler.getReward(environment);
     }
 
     public double getQValue() {
@@ -98,13 +97,15 @@ public class Agent {
     }
 
     private void calculateMaxQPrime() {
-
+        String statePrimeKey = environment.getEncodedGameState(pMgr);
+        int maxQPrimeIndex = qTableMgr.getMaxQIndex(statePrimeKey);
+        this.maxQPrime = qTableMgr.getQValue(statePrimeKey, maxQPrimeIndex);
     }
 
     private void updateQValue(int moveChoice) {
-        double nextQMax = 0.0;
         // this will grow over time; may need to research;
         //qValues[moveChoice] += ALPHA * (RHO + GAMMA * nextQMax - qValues[moveChoice]);
+        double nextQValue = 2 * currentQ + ALPHA * (RHO + GAMMA * maxQPrime - currentQ);
     }
 
     private void getAvailableMoves() {

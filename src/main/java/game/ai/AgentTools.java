@@ -50,19 +50,36 @@ class AgentTools {
         return encodedState;
     }
 
+    public int getMaximumOpponentReward(PieceManager pMgr) {
+        return Arrays.stream(pMgr.getPieces())
+                .flatMap(Arrays::stream)
+                .filter(piece -> piece != null && piece.getColor() != pieceColor)
+                .flatMap(GameBoardPiece::getMoveListAsStream)
+                .mapToInt(ActionNode::getReward)
+                .max()
+                .orElse(0);
+    }
+
+    public int getNumOpponentOptions(PieceManager pMgr) {
+        return Arrays.stream(pMgr.getPieces())
+                .flatMap(Arrays::stream)
+                .filter(piece -> piece != null && piece.getColor() != pieceColor)
+                .flatMap(GameBoardPiece::getMoveListAsStream)
+                .toArray()
+                .length;
+    }
+
     public int pieceToInt(GameBoardPiece piece) {
         if (piece == null) {
             return 0;
         }
+        int colorSign = pieceColor == DUSKY ? 1 : -1;
         try {
-            switch (piece.getName()) {
-                case "LIGHTChecker":
-                    return 1;
-                case "DUSKYChecker":
-                    return -1;
-                default:
-                    throw new IllegalArgumentException("Invalid input: " + piece.getName());
-            }
+            return switch (piece.getName()) {
+                case "LIGHTChecker" -> -1 * colorSign;
+                case "DUSKYChecker" -> colorSign;
+                default -> throw new IllegalArgumentException("Invalid input: " + piece.getName());
+            };
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             System.exit(0);

@@ -15,6 +15,7 @@ public class PieceManager {
         this.creator = creator;
         this.pieces = generateBeginningCheckers();
         this.input = inputHandler;
+
         generateBeginningCheckers();
         updateAllPieces();
     }
@@ -76,13 +77,8 @@ public class PieceManager {
         pieces[piece.getX()][piece.getY()] = piece;
     }
 
-
     public boolean spaceIsNull(int inputX, int inputY) {
         return pieces[inputX][inputY] == null;
-    }
-
-    public void printNumPieces() {
-        System.out.println("The number of pieces: " + pieces.length);
     }
 
     public void printAllPiecesInPlay() {
