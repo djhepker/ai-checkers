@@ -60,7 +60,7 @@ public class Agent {
         environment.generateStatePrime();
         updateRho();
         calculateMaxQPrime();
-        updateQValue(moveChoice); // progress flag * *
+        updateQValue(moveChoice);
         // store result
     }
 
@@ -103,17 +103,12 @@ public class Agent {
     }
 
     private void updateQValue(int moveChoice) {
-        // this will grow over time; may need to research;
-        //qValues[moveChoice] += ALPHA * (RHO + GAMMA * nextQMax - qValues[moveChoice]);
-        double nextQValue = 2 * currentQ + ALPHA * (RHO + GAMMA * maxQPrime - currentQ);
-    }
-
-    private void getAvailableMoves() {
-
+        double updatedQ = 2 * currentQ + ALPHA * (RHO + GAMMA * maxQPrime - currentQ);
+        qTableMgr.setQValue(stateKey, moveChoice, updatedQ);
     }
 
     private void decayEpsilon() {
-
+        // logic for increasing the exploitation rate over time
     }
 
     public void printQueue() {
