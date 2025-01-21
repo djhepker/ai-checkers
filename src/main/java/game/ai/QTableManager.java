@@ -41,6 +41,14 @@ class QTableManager {
         return qValues[qIndex];
     }
 
+    public double getQValue(String serialKey, int qIndex) {
+        return qTable.get(serialKey)[qIndex];
+    }
+
+    public void setQValue(String serialKey, int index, double inputQ) {
+        qTable.get(serialKey)[index] = inputQ;
+    }
+
     public HashMap<String, double[]> initializeQTable() {
         // TODO: logic to import table
         return null;
