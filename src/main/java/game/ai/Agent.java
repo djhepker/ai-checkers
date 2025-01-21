@@ -53,10 +53,9 @@ public class Agent {
     public void update() {
         this.environment = new Environment(toolbox, pMgr);
         this.stateKey = environment.getEncodedGameState(pMgr);
-        qTableMgr.updateQValues(stateKey);
         decisionHandler.updateDecisionArray();
         int moveChoice = getMoveChoice();
-        this.currentQ = qTableMgr.getQValue(moveChoice);
+        this.currentQ = qTableMgr.getQValue(stateKey, moveChoice);
         decisionHandler.fulfillDecision(environment, moveChoice);
         environment.generateStatePrime();
         updateRho();
@@ -74,7 +73,7 @@ public class Agent {
     }
 
     private int exploit() {
-        return qTableMgr.getMaxQIndex();
+        return qTableMgr.getMaxQIndex(stateKey);
     }
 
     // random moves
@@ -98,16 +97,15 @@ public class Agent {
     }
 
     private void calculateMaxQPrime() {
-        String statePrime = environment.getEncodedGameState(pMgr);
-
-        maxQPrime = qTableMgr.getQValue(qTableMgr.getMaxQIndex());
+        String statePrimeKey = environment.getEncodedGameState(pMgr);
+        int maxQPrimeIndex = qTableMgr.getMaxQIndex(statePrimeKey);
+        this.maxQPrime = qTableMgr.getQValue(statePrimeKey, maxQPrimeIndex);
     }
 
     private void updateQValue(int moveChoice) {
-        double nextQMax = 0.0;
         // this will grow over time; may need to research;
         //qValues[moveChoice] += ALPHA * (RHO + GAMMA * nextQMax - qValues[moveChoice]);
-
+        double nextQValue = 2 * currentQ + ALPHA * (RHO + GAMMA * maxQPrime - currentQ);
     }
 
     private void getAvailableMoves() {
