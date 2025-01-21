@@ -58,7 +58,7 @@ public class Agent {
         int moveChoice = getMoveChoice();
         decisionHandler.fulfillDecision(environment, moveChoice);
         environment.generateStatePrime();
-        updateRho(); // calculate reward rho for action a`
+        updateRho();
 
         calculateMaxQPrime();
         updateQValue(moveChoice);
@@ -98,7 +98,9 @@ public class Agent {
     }
 
     private void calculateMaxQPrime() {
-
+        stateKey = environment.getEncodedGameState(pMgr);
+        qTableMgr.updateQValues(stateKey);
+        maxQPrime = qTableMgr.getQValue(qTableMgr.getMaxQIndex());
     }
 
     private void updateQValue(int moveChoice) {
