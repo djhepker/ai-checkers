@@ -59,9 +59,8 @@ public class Agent {
         decisionHandler.fulfillDecision(environment, moveChoice);
         environment.generateStatePrime();
         updateRho();
-
         calculateMaxQPrime();
-        updateQValue(moveChoice);
+        updateQValue(moveChoice); // progress flag * *
         // store result
     }
 
