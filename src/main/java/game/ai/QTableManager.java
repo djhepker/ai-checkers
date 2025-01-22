@@ -1,5 +1,9 @@
 package main.java.game.ai;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 
 class QTableManager {
@@ -41,5 +45,30 @@ class QTableManager {
     public HashMap<String, double[]> initializeQTable() {
         // TODO: logic to import table
         return null;
+    }
+
+    private class SQLDatabase {
+        private String url = "jdbc:mysql://localhost:3306/game";
+
+        public void createTable() {
+            String sql = "CREATE TABLE IF NOT EXISTS users (\n"
+                    + "id TEXT PRIMARY KEY,\n"
+                    + "q_index INTEGER NOT NULL,\n"
+                    + "value REAL NOT NULL\n"
+                    + ");";
+
+            try (Connection conn = DriverManager.getConnection("jdbc:sqlite:database_name.db");
+                 Statement stmt = conn.createStatement()) {
+                stmt.execute(sql);
+                System.out.println("Table created successfully.");
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+
+        public void insert(String id, int qIndex, double qValue) {
+
+        }
     }
 }
