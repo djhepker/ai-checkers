@@ -1,9 +1,6 @@
 package main.java.game.ai;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.HashMap;
 
 class QTableManager {
@@ -52,23 +49,64 @@ class QTableManager {
 
         public void createTable() {
             String sql = "CREATE TABLE IF NOT EXISTS users (\n"
-                    + "id TEXT PRIMARY KEY,\n"
+                    + "key TEXT PRIMARY KEY,\n"
                     + "q_index INTEGER NOT NULL,\n"
-                    + "value REAL NOT NULL\n"
+                    + "q_value REAL NOT NULL\n"
                     + ");";
 
-            try (Connection conn = DriverManager.getConnection("jdbc:sqlite:database_name.db");
+            try (Connection conn = DriverManager.getConnection(url);
                  Statement stmt = conn.createStatement()) {
                 stmt.execute(sql);
-                System.out.println("Table created successfully.");
+                System.out.println("Table reference successfully.");
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
         }
 
+        public void updateQData(String serialKey, int qIndex, double qValue) {
+            String sql = "INSERT INTO users (key, q_index, q_Value) VALUES (?,?,?) "
+                    + "ON DUPLICATE KEY UPDATE q_value = VALUES(q_value)";
 
-        public void insert(String id, int qIndex, double qValue) {
+            try (Connection connection = DriverManager.getConnection(url);
+            PreparedStatement ppdStmt = connection.prepareStatement(sql)) {
 
+                ppdStmt.setString(1, serialKey);
+                ppdStmt.setInt(2, qIndex);
+                ppdStmt.setDouble(3, qValue);
+
+                ppdStmt.executeUpdate();
+                System.out.println("Inserted data successfully.");
+
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
+
+        public double getData(String serialKey, int qIndex) {
+            String sql = "SELECT * FROM users WHERE key = ? AND q_index = ?";
+
+            try (Connection connection = DriverManager.getConnection(url);
+                 PreparedStatement ppdStmt = connection.prepareStatement(sql)) {
+
+                ppdStmt.setString(1, serialKey);
+                ppdStmt.setInt(2, qIndex);
+
+                try (ResultSet rs = ppdStmt.executeQuery()) {
+                    if (rs.next()) {
+                        double retrievedValue = rs.getDouble("q_value");
+
+                        return retrievedValue;
+                    } else {
+                        System.out.println("No matching data found for key " + serialKey + " and index " + qIndex);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+            return 0;
         }
     }
 }
