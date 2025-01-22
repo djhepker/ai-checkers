@@ -1,9 +1,10 @@
 package main.java.game.ai;
 
 import java.sql.*;
-import java.util.HashMap;
+import java.util.*;
 
 class QTableManager {
+    private final String url = "jdbc:mysql://localhost:3306/game";
     private AgentTools toolbox;
     private HashMap<String, double[]> qTable;
 
@@ -15,7 +16,7 @@ class QTableManager {
     public QTableManager(AgentTools toolbox) {
         this.toolbox = toolbox;
         this.qTable = new HashMap<>();
-        this.qTable = initializeQTable();
+        this.qTable = fetchQTable();
     }
 
     public int getMaxQIndex(String serialKey) {
@@ -39,19 +40,63 @@ class QTableManager {
         qTable.get(serialKey)[index] = inputQ;
     }
 
-    public HashMap<String, double[]> initializeQTable() {
-        // TODO: logic to import table
-        return null;
+    public HashMap<String, double[]> fetchQTable() {
+        HashMap<String, double[]> qTable = new HashMap<>();
+        String sql = "SELECT key, q_index, q_value FROM QTable";
+        try (Connection connection = DriverManager.getConnection(url);
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                String key = rs.getString("key");
+                int qIndex = rs.getInt("q_index");
+                double qValue = rs.getDouble("q_value");
+                if (!qTable.containsKey(key)) {
+                    qTable.put(key, new double[qIndex + 1]);
+                } else {
+                    double[] qValues = qTable.get(key);
+                    if (qValues.length <= qIndex) {
+                        qValues = Arrays.copyOf(qValues, qIndex + 1);
+                        qTable.put(key, qValues);
+                    }
+                }
+                double[] qValues = qTable.get(key);
+                qValues[qIndex] = qValue;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching Q-table data: " + e.getMessage());
+        }
+        return qTable;
     }
 
-    private class SQLDatabase {
-        private String url = "jdbc:mysql://localhost:3306/game";
 
+
+    private String[] fetchUniqueKeys() {
+        List<String> uniqueKeys = new ArrayList<>();
+
+        String sql = "SELECT DISTINCT key FROM QTable";
+
+        try (Connection connection = DriverManager.getConnection(url);
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                uniqueKeys.add(rs.getString("key"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching unique keys: " + e.getMessage());
+        }
+
+        return uniqueKeys.toArray(new String[0]);
+    }
+
+
+    private class SQLDatabase {
         public void createTable() {
-            String sql = "CREATE TABLE IF NOT EXISTS users (\n"
+            String sql = "CREATE TABLE IF NOT EXISTS QTable (\n"
                     + "key TEXT PRIMARY KEY,\n"
                     + "q_index INTEGER NOT NULL,\n"
                     + "q_value REAL NOT NULL\n"
+                    + "PRIMARY KEY (key, q_index)\n)"
                     + ");";
 
             try (Connection conn = DriverManager.getConnection(url);
@@ -64,7 +109,7 @@ class QTableManager {
         }
 
         public void updateQData(String serialKey, int qIndex, double qValue) {
-            String sql = "INSERT INTO users (key, q_index, q_Value) VALUES (?,?,?) "
+            String sql = "INSERT INTO QTable (key, q_index, q_Value) VALUES (?,?,?) "
                     + "ON DUPLICATE KEY UPDATE q_value = VALUES(q_value)";
 
             try (Connection connection = DriverManager.getConnection(url);
@@ -84,8 +129,8 @@ class QTableManager {
             }
         }
 
-        public double getData(String serialKey, int qIndex) {
-            String sql = "SELECT * FROM users WHERE key = ? AND q_index = ?";
+        public Optional<Double> getData(String serialKey, int qIndex) {
+            String sql = "SELECT q_value FROM QTable WHERE key = ? AND q_index = ?";
 
             try (Connection connection = DriverManager.getConnection(url);
                  PreparedStatement ppdStmt = connection.prepareStatement(sql)) {
@@ -95,18 +140,39 @@ class QTableManager {
 
                 try (ResultSet rs = ppdStmt.executeQuery()) {
                     if (rs.next()) {
-                        double retrievedValue = rs.getDouble("q_value");
-
-                        return retrievedValue;
+                        return Optional.of(rs.getDouble("q_value"));
                     } else {
                         System.out.println("No matching data found for key " + serialKey + " and index " + qIndex);
                     }
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
-                System.exit(1);
+                System.out.println("Error retrieving data: " + e.getMessage());
             }
-            return 0;
+            return Optional.empty();  // Return empty if not found
+        }
+
+        public void displayAllData() {
+            String sql = "SELECT key, q_index, q_value FROM QTable";
+
+            try (Connection connection = DriverManager.getConnection(url);
+                 Statement stmt = connection.createStatement();
+                 ResultSet rs = stmt.executeQuery(sql)) {
+
+                // Print the column headers
+                System.out.println("Key\t\tQ_Index\tQ_Value");
+                System.out.println("----------------------------------");
+
+                // Print all rows
+                while (rs.next()) {
+                    String key = rs.getString("key");
+                    int qIndex = rs.getInt("q_index");
+                    double qValue = rs.getDouble("q_value");
+                    System.out.println(key + "\t" + qIndex + "\t" + qValue);
+                }
+
+            } catch (SQLException e) {
+                System.out.println("Error displaying data: " + e.getMessage());
+            }
         }
     }
 }
