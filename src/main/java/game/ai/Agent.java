@@ -31,8 +31,6 @@ public class Agent {
     private final double GAMMA = 0.75;
     private final double ALPHA = 0.84;
     private final double EPSILON = 0.92;
-    private double SIGMA = 0.0;
-    // instantaneous reward the agent received for taking action "a" from state "S"
     private double RHO;
     private double currentQ;
     private double maxQPrime;
@@ -61,7 +59,6 @@ public class Agent {
         updateRho();
         calculateMaxQPrime();
         updateQValue(moveChoice);
-        // store result
     }
 
     private int getMoveChoice() {
@@ -76,24 +73,13 @@ public class Agent {
         return qTableMgr.getMaxQIndex(stateKey);
     }
 
-    // random moves
     private int explore() {
         return new Random().nextInt(decisionHandler.getNumDecisions());
     }
 
-    /*
-     * After an action is taken, the reward is calculated based on the change in game state
-     * Positive reward for a better position
-     * Negative reward for a worse position
-     * A large positive reward should be awarded if the Agent wins the game
-     * */
-    public void updateRho() {
-        // should base it off of the number of possible actions the AI has vs player has
-        this.RHO = decisionHandler.getReward(environment);
-    }
 
-    public double getQValue() {
-        return 0.0;
+    public void updateRho() {
+        this.RHO = decisionHandler.getReward(environment);
     }
 
     private void calculateMaxQPrime() {
@@ -104,7 +90,12 @@ public class Agent {
 
     private void updateQValue(int moveChoice) {
         double updatedQ = 2 * currentQ + ALPHA * (RHO + GAMMA * maxQPrime - currentQ);
+        System.out.println("Q inserted back into hashmap: " + updatedQ);
         qTableMgr.setQValue(stateKey, moveChoice, updatedQ);
+    }
+
+    private void finalizeQTableUpdate() {
+        qTableMgr.updateQData();
     }
 
     private void decayEpsilon() {

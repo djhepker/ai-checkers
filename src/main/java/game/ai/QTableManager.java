@@ -8,10 +8,8 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 
 class QTableManager {
@@ -19,6 +17,7 @@ class QTableManager {
 
     public QTableManager() {
         this.qTable = new HashMap<>();
+        SQLDatabase.createTable();
         this.qTable = SQLDatabase.fetchQTable();
     }
 
@@ -43,8 +42,30 @@ class QTableManager {
         qTable.get(serialKey)[index] = inputQ;
     }
 
+    public void updateQData() {
+        System.out.println("Displaying data of updated Q-table");
+        SQLDatabase.updateQTable(qTable);
+        SQLDatabase.displayAllData();
+    }
+
     private class SQLDatabase {
         private static final String url = "jdbc:mysql://localhost:3306/game";
+
+        public static void createTable() {
+            String sql = "CREATE TABLE IF NOT EXISTS QTable (\n"
+                    + "key TEXT PRIMARY KEY,\n"
+                    + "q_index INTEGER NOT NULL,\n"
+                    + "q_value REAL NOT NULL\n"
+                    + "PRIMARY KEY (key, q_index)\n)"
+                    + ");";
+            try (Connection conn = DriverManager.getConnection(url);
+                 Statement stmt = conn.createStatement()) {
+                stmt.execute(sql);
+                System.out.println("Table reference successfully.");
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
 
         public static HashMap<String, double[]> fetchQTable() {
             HashMap<String, double[]> qTable = new HashMap<>();
@@ -74,36 +95,29 @@ class QTableManager {
             return qTable;
         }
 
-        public static void createTable() {
-            String sql = "CREATE TABLE IF NOT EXISTS QTable (\n"
-                    + "key TEXT PRIMARY KEY,\n"
-                    + "q_index INTEGER NOT NULL,\n"
-                    + "q_value REAL NOT NULL\n"
-                    + "PRIMARY KEY (key, q_index)\n)"
-                    + ");";
-            try (Connection conn = DriverManager.getConnection(url);
-                 Statement stmt = conn.createStatement()) {
-                stmt.execute(sql);
-                System.out.println("Table reference successfully.");
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-
-        public static void updateQData(String serialKey, int qIndex, double qValue) {
-            String sql = "INSERT INTO QTable (key, q_index, q_Value) VALUES (?,?,?) "
+        public static void updateQTable(Map<String, double[]> qTable) {
+            String sql = "INSERT INTO QTable (key, q_index, q_value) VALUES (?, ?, ?) "
                     + "ON DUPLICATE KEY UPDATE q_value = VALUES(q_value)";
             try (Connection connection = DriverManager.getConnection(url);
-            PreparedStatement ppdStmt = connection.prepareStatement(sql)) {
-                ppdStmt.setString(1, serialKey);
-                ppdStmt.setInt(2, qIndex);
-                ppdStmt.setDouble(3, qValue);
-                ppdStmt.executeUpdate();
-                System.out.println("Inserted data successfully.");
+                 PreparedStatement ppdStmt = connection.prepareStatement(sql)) {
+                for (Map.Entry<String, double[]> entry : qTable.entrySet()) {
+                    String key = entry.getKey();
+                    double[] qValues = entry.getValue();
+                    for (int i = 0; i < qValues.length; i++) {
+                        if (Double.isNaN(qValues[i])) {
+                            continue;
+                        }
+                        ppdStmt.setString(1, key);
+                        ppdStmt.setInt(2, i);
+                        ppdStmt.setDouble(3, qValues[i]);
+                        ppdStmt.addBatch();
+                    }
+                }
+                int[] result = ppdStmt.executeBatch();
+                System.out.println("Updated " + result.length + " rows in the QTable.");
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Error updating QTable: " + e.getMessage());
                 e.printStackTrace();
-                System.exit(1);
             }
         }
 
