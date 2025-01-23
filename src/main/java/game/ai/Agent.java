@@ -31,8 +31,6 @@ public class Agent {
     private final double GAMMA = 0.75;
     private final double ALPHA = 0.84;
     private final double EPSILON = 0.92;
-    private double SIGMA = 0.0;
-    // instantaneous reward the agent received for taking action "a" from state "S"
     private double RHO;
     private double currentQ;
     private double maxQPrime;
@@ -43,7 +41,7 @@ public class Agent {
         this.isDusky = playerLight;
         this.pMgr = pMgr;
         this.toolbox = new AgentTools(isDusky);
-        this.qTableMgr = new QTableManager(toolbox);
+        this.qTableMgr = new QTableManager();
         this.decisionHandler = new AgentDecisionHandler(pMgr, toolbox);
         this.currentQ = 0.0;
         this.maxQPrime = 0.0;
@@ -60,8 +58,7 @@ public class Agent {
         environment.generateStatePrime();
         updateRho();
         calculateMaxQPrime();
-        updateQValue(moveChoice); // progress flag * *
-        // store result
+        updateQValue(moveChoice);
     }
 
     private int getMoveChoice() {
@@ -76,24 +73,13 @@ public class Agent {
         return qTableMgr.getMaxQIndex(stateKey);
     }
 
-    // random moves
     private int explore() {
         return new Random().nextInt(decisionHandler.getNumDecisions());
     }
 
-    /*
-     * After an action is taken, the reward is calculated based on the change in game state
-     * Positive reward for a better position
-     * Negative reward for a worse position
-     * A large positive reward should be awarded if the Agent wins the game
-     * */
-    public void updateRho() {
-        // should base it off of the number of possible actions the AI has vs player has
-        this.RHO = decisionHandler.getReward(environment);
-    }
 
-    public double getQValue() {
-        return 0.0;
+    public void updateRho() {
+        this.RHO = decisionHandler.getReward(environment);
     }
 
     private void calculateMaxQPrime() {
@@ -103,17 +89,17 @@ public class Agent {
     }
 
     private void updateQValue(int moveChoice) {
-        // this will grow over time; may need to research;
-        //qValues[moveChoice] += ALPHA * (RHO + GAMMA * nextQMax - qValues[moveChoice]);
-        double nextQValue = 2 * currentQ + ALPHA * (RHO + GAMMA * maxQPrime - currentQ);
+        double updatedQ = 2 * currentQ + ALPHA * (RHO + GAMMA * maxQPrime - currentQ);
+        System.out.println("Q inserted back into hashmap: " + updatedQ);
+        qTableMgr.setQValue(stateKey, moveChoice, updatedQ);
     }
 
-    private void getAvailableMoves() {
-
+    private void finalizeQTableUpdate() {
+        qTableMgr.updateQData();
     }
 
     private void decayEpsilon() {
-
+        // logic for increasing the exploitation rate over time
     }
 
     public void printQueue() {
