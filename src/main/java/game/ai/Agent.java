@@ -43,7 +43,7 @@ public class Agent {
         this.isDusky = playerLight;
         this.pMgr = pMgr;
         this.toolbox = new AgentTools(isDusky);
-        this.qTableMgr = new QTableManager(toolbox);
+        this.qTableMgr = new QTableManager();
         this.decisionHandler = new AgentDecisionHandler(pMgr, toolbox);
         this.currentQ = 0.0;
         this.maxQPrime = 0.0;
