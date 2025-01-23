@@ -1,7 +1,7 @@
 package main.java.game.gameworld;
 
 import main.java.game.entity.movement.CapturedNode;
-import main.java.game.entity.movement.LocationNode;
+import main.java.game.entity.movement.ActionNode;
 import main.java.game.graphics.InputHandler;
 import main.java.engine.EntityCreator;
 import main.java.game.utils.GameBoardPiece;
@@ -11,11 +11,12 @@ public class PieceManager {
     private EntityCreator creator;
     private InputHandler input;
 
-    public PieceManager(GameBoardPiece[][] pieces, EntityCreator creator, InputHandler inputHandler) {
-        this.pieces = pieces;
+    public PieceManager(EntityCreator creator, InputHandler inputHandler) {
         this.creator = creator;
+        this.pieces = generateBeginningCheckers();
         this.input = inputHandler;
-        createBeginningCheckers();
+
+        generateBeginningCheckers();
         updateAllPieces();
     }
 
@@ -23,20 +24,27 @@ public class PieceManager {
         for (GameBoardPiece[] row : pieces) {
             for (GameBoardPiece piece : row) {
                 if (piece != null) {
-                    piece.update(pieces);
+                    piece.update(this);
                 }
             }
         }
     }
 
+    public GameBoardPiece[][] getPieces() {
+        return pieces;
+    }
+
+    public GameBoardPiece getPiece(int x, int y) {
+        return pieces[x][y];
+    }
+
     public boolean movePiece(GameBoardPiece piece) {
         int postX = input.getSelectedCol();
         int postY = input.getSelectedRow();
-
         if (spaceIsNull(postX, postY)) {
-            LocationNode cursor = piece.getMoveListPointer();
+            ActionNode cursor = piece.getMoveListPointer();
             while (cursor != null) {
-                if (cursor.getDataX() == postX && cursor.getDataY() == postY) {
+                if (cursor.getfDataX() == postX && cursor.getfDataY() == postY) {
                     CapturedNode capturedPiece = cursor.getCapturedNodes();
                     while (capturedPiece != null) {
                         pieces[capturedPiece.getDataX()][capturedPiece.getDataY()] = null;
@@ -54,17 +62,23 @@ public class PieceManager {
         return false;
     }
 
-
-    private boolean spaceIsNull(int postX, int postY) {
-        return pieces[postX][postY] == null;
+    public void movePiece(ActionNode actionNode) {
+        int xNaught = actionNode.getoDataX();
+        int yNaught = actionNode.getoDataY();
+        CapturedNode capturedPiece = actionNode.getCapturedNodes();
+        while (capturedPiece != null) {
+            pieces[capturedPiece.getDataX()][capturedPiece.getDataY()] = null;
+            capturedPiece = capturedPiece.getNext();
+        }
+        GameBoardPiece piece = pieces[actionNode.getoDataX()][actionNode.getoDataY()];
+        piece.setX(actionNode.getfDataX());
+        piece.setY(actionNode.getfDataY());
+        pieces[xNaught][yNaught] = null;
+        pieces[piece.getX()][piece.getY()] = piece;
     }
 
-    public GameBoardPiece getPiece(int x, int y) {
-        return pieces[x][y];
-    }
-
-    public void printNumPieces() {
-        System.out.println("The number of pieces: " + pieces.length);
+    public boolean spaceIsNull(int inputX, int inputY) {
+        return pieces[inputX][inputY] == null;
     }
 
     public void printAllPiecesInPlay() {
@@ -75,7 +89,8 @@ public class PieceManager {
         }
     }
 
-    private void createBeginningCheckers() {
+    private GameBoardPiece[][] generateBeginningCheckers() {
+        GameBoardPiece[][] pieces = new GameBoardPiece[8][8];
         int x = 1;
         int y = 0;
         while (y < 3) {
@@ -103,5 +118,6 @@ public class PieceManager {
                 x += 2;
             }
         }
+        return pieces;
     }
 }

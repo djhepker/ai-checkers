@@ -45,7 +45,6 @@ public class GameWindow {
     }
 
     public boolean lightChosen() {
-        System.out.println(lightChosen);
         return lightChosen;
     }
 
