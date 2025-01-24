@@ -17,10 +17,10 @@ import java.util.Map;
 
 class QTableManager {
     private HashMap<String, double[]> qTable;
-    private SQLDatabase db;
+    private SQLITEDatabase db;
 
     public QTableManager() {
-        this.db = new SQLDatabase();
+        this.db = new SQLITEDatabase();
         this.qTable = new HashMap<>();
         this.db.createTable();
         this.qTable = db.fetchQTable();
@@ -53,13 +53,13 @@ class QTableManager {
         db.displayAllData();
     }
 
-    private class SQLDatabase {
+    private class SQLITEDatabase {
         private final String SQL_URL_KEY = "SQL_URL";
         private final String ENV_FILEPATH = ".env";
         private final String url;
         private EnvLoader envLoader;
 
-        public SQLDatabase() {
+        public SQLITEDatabase() {
             try {
                 this.envLoader = new EnvLoader(ENV_FILEPATH);
             } catch (IOException e) {
@@ -70,15 +70,15 @@ class QTableManager {
 
         public void createTable() {
             String sql = "CREATE TABLE IF NOT EXISTS QTable (\n"
-                    + "key TEXT PRIMARY KEY,\n"
+                    + "key TEXT NOT NULL,\n"
                     + "q_index INTEGER NOT NULL,\n"
-                    + "q_value REAL NOT NULL\n"
-                    + "PRIMARY KEY (key, q_index)\n)"
+                    + "q_value REAL NOT NULL,\n"
+                    + "PRIMARY KEY (key, q_index)\n"
                     + ");";
             try (Connection conn = DriverManager.getConnection(url);
                  Statement stmt = conn.createStatement()) {
                 stmt.execute(sql);
-                System.out.println("Table reference successfully.");
+                System.out.println("Table created successfully.");
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -94,16 +94,11 @@ class QTableManager {
                     String key = rs.getString("key");
                     int qIndex = rs.getInt("q_index");
                     double qValue = rs.getDouble("q_value");
-                    if (!qTable.containsKey(key)) {
-                        qTable.put(key, new double[qIndex + 1]);
-                    } else {
-                        double[] qValues = qTable.get(key);
-                        if (qValues.length <= qIndex) {
-                            qValues = Arrays.copyOf(qValues, qIndex + 1);
-                            qTable.put(key, qValues);
-                        }
+                    double[] qValues = qTable.getOrDefault(key, new double[qIndex + 1]);
+                    if (qValues.length <= qIndex) {
+                        qValues = Arrays.copyOf(qValues, qIndex + 1);
+                        qTable.put(key, qValues);
                     }
-                    double[] qValues = qTable.get(key);
                     qValues[qIndex] = qValue;
                 }
             } catch (SQLException e) {
@@ -113,8 +108,7 @@ class QTableManager {
         }
 
         public void updateQTable(Map<String, double[]> qTable) {
-            String sql = "INSERT INTO QTable (key, q_index, q_value) VALUES (?, ?, ?) "
-                    + "ON DUPLICATE KEY UPDATE q_value = VALUES(q_value)";
+            String sql = "INSERT OR REPLACE INTO QTable (key, q_index, q_value) VALUES (?, ?, ?)";
             try (Connection connection = DriverManager.getConnection(url);
                  PreparedStatement ppdStmt = connection.prepareStatement(sql)) {
                 for (Map.Entry<String, double[]> entry : qTable.entrySet()) {
@@ -122,7 +116,7 @@ class QTableManager {
                     double[] qValues = entry.getValue();
                     for (int i = 0; i < qValues.length; i++) {
                         if (Double.isNaN(qValues[i])) {
-                            continue;
+                            continue;  // Skip NaN values
                         }
                         ppdStmt.setString(1, key);
                         ppdStmt.setInt(2, i);
