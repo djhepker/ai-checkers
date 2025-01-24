@@ -1,5 +1,8 @@
 package main.java.game.ai;
 
+import main.java.game.utils.EnvLoader;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -14,11 +17,13 @@ import java.util.Map;
 
 class QTableManager {
     private HashMap<String, double[]> qTable;
+    private SQLDatabase db;
 
     public QTableManager() {
+        this.db = new SQLDatabase();
         this.qTable = new HashMap<>();
-        SQLDatabase.createTable();
-        this.qTable = SQLDatabase.fetchQTable();
+        this.db.createTable();
+        this.qTable = db.fetchQTable();
     }
 
     public int getMaxQIndex(String serialKey) {
@@ -44,14 +49,26 @@ class QTableManager {
 
     public void updateQData() {
         System.out.println("Displaying data of updated Q-table");
-        SQLDatabase.updateQTable(qTable);
-        SQLDatabase.displayAllData();
+        db.updateQTable(qTable);
+        db.displayAllData();
     }
 
     private class SQLDatabase {
-        private static final String url = "jdbc:mysql://localhost:3306/game";
+        private final String SQL_URL_KEY = "SQL_URL";
+        private final String ENV_FILEPATH = ".env";
+        private final String url;
+        private EnvLoader envLoader;
 
-        public static void createTable() {
+        public SQLDatabase() {
+            try {
+                this.envLoader = new EnvLoader(ENV_FILEPATH);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            this.url = envLoader.get(SQL_URL_KEY);
+        }
+
+        public void createTable() {
             String sql = "CREATE TABLE IF NOT EXISTS QTable (\n"
                     + "key TEXT PRIMARY KEY,\n"
                     + "q_index INTEGER NOT NULL,\n"
@@ -67,7 +84,7 @@ class QTableManager {
             }
         }
 
-        public static HashMap<String, double[]> fetchQTable() {
+        public HashMap<String, double[]> fetchQTable() {
             HashMap<String, double[]> qTable = new HashMap<>();
             String sql = "SELECT key, q_index, q_value FROM QTable";
             try (Connection connection = DriverManager.getConnection(url);
@@ -95,7 +112,7 @@ class QTableManager {
             return qTable;
         }
 
-        public static void updateQTable(Map<String, double[]> qTable) {
+        public void updateQTable(Map<String, double[]> qTable) {
             String sql = "INSERT INTO QTable (key, q_index, q_value) VALUES (?, ?, ?) "
                     + "ON DUPLICATE KEY UPDATE q_value = VALUES(q_value)";
             try (Connection connection = DriverManager.getConnection(url);
@@ -121,7 +138,7 @@ class QTableManager {
             }
         }
 
-        public static void displayAllData() {
+        public void displayAllData() {
             String sql = "SELECT key, q_index, q_value FROM QTable";
             try (Connection connection = DriverManager.getConnection(url);
                  Statement stmt = connection.createStatement();

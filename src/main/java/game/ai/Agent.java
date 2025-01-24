@@ -77,7 +77,6 @@ public class Agent {
         return new Random().nextInt(decisionHandler.getNumDecisions());
     }
 
-
     public void updateRho() {
         this.RHO = decisionHandler.getReward(environment);
     }
@@ -94,7 +93,7 @@ public class Agent {
         qTableMgr.setQValue(stateKey, moveChoice, updatedQ);
     }
 
-    private void finalizeQTableUpdate() {
+    public void finalizeQTableUpdate() {
         qTableMgr.updateQData();
     }
 

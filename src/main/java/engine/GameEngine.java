@@ -39,7 +39,11 @@ public class GameEngine {
     }
 
     public boolean isOpen() {
-        return window.isOpen();
+        if (!window.isOpen()) {
+            zero.finalizeQTableUpdate();
+            return false;
+        }
+        return true;
     }
 
     private void handleInput() {
