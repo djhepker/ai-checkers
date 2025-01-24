@@ -2,7 +2,10 @@
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-.idea
+.idea/
+.env
+*.iml
+/data/
 
 ### Eclipse ###
 .apt_generated

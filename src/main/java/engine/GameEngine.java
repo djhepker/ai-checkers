@@ -18,7 +18,7 @@ public class GameEngine {
     private Agent zero;
 
     private final boolean lightChoice;
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
 
     private boolean playerTurn;
 
@@ -34,12 +34,19 @@ public class GameEngine {
         inputHandler.update();
         if (playerTurn) {
             handleInput();
+        } else {
+            zero.update();
+            playerTurn = !playerTurn;
         }
         graphicsHandler.repaint();
     }
 
     public boolean isOpen() {
-        return window.isOpen();
+        if (!window.isOpen()) {
+            zero.finalizeQTableUpdate();
+            return false;
+        }
+        return true;
     }
 
     private void handleInput() {
@@ -51,7 +58,7 @@ public class GameEngine {
                 pMgr.updateAllPieces();
             } else if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
                 pMgr.updateAllPieces();
-                // playerTurn = !playerTurn;
+                playerTurn = !playerTurn;
             }
             inputHandler.resetClicks();
             printSelectedPiece();

@@ -14,6 +14,8 @@ class Environment {
     public Environment(AgentTools toolbox, PieceManager pMgr) {
         this.pMgr = pMgr;
         this.toolbox = toolbox;
+        generateStatePrime();
+        updateEnvironment();
         updateEnvironment();
     }
 
