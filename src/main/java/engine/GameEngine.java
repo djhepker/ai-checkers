@@ -36,6 +36,7 @@ public class GameEngine {
             handleInput();
         } else {
             zero.update();
+            playerTurn = !playerTurn;
         }
         graphicsHandler.repaint();
     }
