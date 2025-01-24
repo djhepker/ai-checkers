@@ -27,7 +27,6 @@ public class Agent {
     private Environment environment;
     private PieceManager pMgr;
 
-
     private final double GAMMA = 0.75;
     private final double ALPHA = 0.84;
     private final double EPSILON = 0.92;
@@ -53,12 +52,20 @@ public class Agent {
         this.stateKey = environment.getEncodedGameState(pMgr);
         decisionHandler.updateDecisionArray();
         int moveChoice = getMoveChoice();
-        this.currentQ = qTableMgr.getQValue(stateKey, moveChoice);
+        this.currentQ = getQValue(stateKey, moveChoice);
         decisionHandler.fulfillDecision(environment, moveChoice);
         environment.generateStatePrime();
         updateRho();
         calculateMaxQPrime();
         updateQValue(moveChoice);
+    }
+
+    private double getQValue(String stateKey, int moveChoice) {
+        if (qTableMgr.isWithinSize(stateKey, moveChoice)) {
+            return qTableMgr.getQValue(stateKey, moveChoice);
+        } else {
+            return 0.0;
+        }
     }
 
     private int getMoveChoice() {
@@ -84,7 +91,7 @@ public class Agent {
     private void calculateMaxQPrime() {
         String statePrimeKey = environment.getEncodedGameState(pMgr);
         int maxQPrimeIndex = qTableMgr.getMaxQIndex(statePrimeKey);
-        this.maxQPrime = qTableMgr.getQValue(statePrimeKey, maxQPrimeIndex);
+        this.maxQPrime = getQValue(statePrimeKey, maxQPrimeIndex);
     }
 
     private void updateQValue(int moveChoice) {

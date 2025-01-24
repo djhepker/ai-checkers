@@ -30,13 +30,25 @@ class QTableManager {
         int maxQIndex = 0;
         double maxQValue = Double.MIN_VALUE;
         double[] qValues = qTable.get(serialKey);
-        for (int i = 0; i < qValues.length; i++) {
-            if (maxQValue < qValues[i]) {
-                maxQValue = qValues[i];
-                maxQIndex = i;
+        if (qValues != null) {
+            for (int i = 0; i < qValues.length; i++) {
+                if (maxQValue < qValues[i]) {
+                    maxQValue = qValues[i];
+                    maxQIndex = i;
+                }
             }
+            return maxQIndex;
         }
         return maxQIndex;
+    }
+
+    public boolean isWithinSize(String serialKey, int qIndex) {
+        if (qTable.containsKey(serialKey)) {
+            if (qTable.get(serialKey).length >= qIndex) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public double getQValue(String serialKey, int qIndex) {
@@ -44,8 +56,20 @@ class QTableManager {
     }
 
     public void setQValue(String serialKey, int index, double inputQ) {
-        qTable.get(serialKey)[index] = inputQ;
+        if (!qTable.containsKey(serialKey)) {
+            System.out.println("Key '" + serialKey + "' does not exist. Creating a new entry.");
+            qTable.put(serialKey, new double[index + 1]);
+        }
+        double[] qValues = qTable.get(serialKey);
+        if (index >= qValues.length) {
+            System.out.println("Array for key '" + serialKey + "' is too small. Resizing to fit index " + index + ".");
+            qValues = Arrays.copyOf(qValues, index + 1);
+            qTable.put(serialKey, qValues);
+        }
+        qValues[index] = inputQ;
+        System.out.println("Q-value updated: Key = " + serialKey + ", Index = " + index + ", Value = " + inputQ);
     }
+
 
     public void updateQData() {
         System.out.println("Displaying data of updated Q-table");
