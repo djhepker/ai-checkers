@@ -1,6 +1,7 @@
 package main.java.engine;
 
 import main.java.game.entity.Checker;
+import main.java.game.entity.KingChecker;
 import main.java.game.utils.AssetManager;
 
 import java.awt.Image;
@@ -21,4 +22,9 @@ public class EntityCreator {
     public Checker createChecker(String name, int x, int y) {
         return new Checker(name, x, y, assetManager.getSpriteByName(name));
     }
+
+    public KingChecker createKingChecker(String name, int x, int y) {
+        return new KingChecker(name, x, y, assetManager.getSpriteByName(name));
+    }
+    //  public KingChecker(String name, int x, int y, BufferedImage image) {
 }

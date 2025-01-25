@@ -19,10 +19,6 @@ class AgentDecisionHandler {
         this.toolbox = toolbox;
     }
 
-    public boolean hasOptions() {
-        return decisionArray.length > 0;
-    }
-
     public void updateDecisionArray() {
         decisionArray = toolbox.getDecisionArray(pMgr);
     }

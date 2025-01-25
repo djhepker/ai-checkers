@@ -51,9 +51,6 @@ public class Agent {
         this.environment = new Environment(toolbox, pMgr);
         this.stateKey = environment.getEncodedGameState(pMgr);
         decisionHandler.updateDecisionArray();
-        if (!decisionHandler.hasOptions()) {
-
-        }
         int moveChoice = getMoveChoice();
         this.currentQ = getQValue(stateKey, moveChoice);
         decisionHandler.fulfillDecision(environment, moveChoice);
