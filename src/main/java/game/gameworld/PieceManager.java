@@ -31,6 +31,12 @@ public class PieceManager {
         }
     }
 
+    public void promotePiece(GameBoardPiece piece) {
+        int x = piece.getX();
+        int y = piece.getY();
+        pieces[x][y] = creator.createPiece(piece.getName() + "King", x, y);
+    }
+
     public boolean sideDefeated() {
         return numDusky * numLight == 0;
     }
@@ -111,7 +117,7 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces[x][y] = creator.createChecker("DUSKYChecker", x, y);
+                pieces[x][y] = creator.createPiece("DUSKYChecker", x, y);
                 x += 2;
             }
         }
@@ -124,7 +130,7 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces[x][y] = creator.createChecker("LIGHTChecker", x, y);
+                pieces[x][y] = creator.createPiece("LIGHTChecker", x, y);
                 x += 2;
             }
         }

@@ -63,6 +63,9 @@ public class GameEngine {
             if (DEBUG && piece != null && pMgr.movePiece(piece)) {
                 pMgr.updateAllPieces();
             } else if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
+                if (piece.isReadyForPromotion()) {
+                    pMgr.promotePiece(piece);
+                }
                 pMgr.updateAllPieces();
                 playerTurn = !playerTurn;
             }

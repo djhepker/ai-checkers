@@ -85,6 +85,16 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     @Override
+    public boolean isReadyForPromotion() {
+        if (movementSign == 1 && getY() == 0) {
+            return true;
+        } else if (movementSign == -1 && getY() == 7) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void setX(int x) {
         super.setX(x);
     }
@@ -104,7 +114,6 @@ public class Checker extends Entity implements GameBoardPiece {
         return super.getY();
     }
 
-    //TODO: Logic implementation for king status of checker
     /*
      *   STATECODE:
      *   Stationary: 3
