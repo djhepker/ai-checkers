@@ -77,8 +77,8 @@ public class PieceManager {
             } else {
                 --numDusky;
             }
-            capturedPiece = capturedPiece.getNext();
             pieces[capturedPiece.getDataX()][capturedPiece.getDataY()] = null;
+            capturedPiece = capturedPiece.getNext();
         }
         GameBoardPiece piece = pieces[actionNode.getoDataX()][actionNode.getoDataY()];
         piece.setX(actionNode.getfDataX());
