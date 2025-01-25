@@ -10,12 +10,13 @@ public class PieceManager {
     private GameBoardPiece[][] pieces;
     private EntityCreator creator;
     private InputHandler input;
+    private int numDusky;
+    private int numLight;
 
     public PieceManager(EntityCreator creator, InputHandler inputHandler) {
         this.creator = creator;
         this.pieces = generateBeginningCheckers();
         this.input = inputHandler;
-
         generateBeginningCheckers();
         updateAllPieces();
     }
@@ -28,6 +29,10 @@ public class PieceManager {
                 }
             }
         }
+    }
+
+    public boolean sideDefeated() {
+        return numDusky * numLight == 0;
     }
 
     public GameBoardPiece[][] getPieces() {
@@ -67,8 +72,13 @@ public class PieceManager {
         int yNaught = actionNode.getoDataY();
         CapturedNode capturedPiece = actionNode.getCapturedNodes();
         while (capturedPiece != null) {
-            pieces[capturedPiece.getDataX()][capturedPiece.getDataY()] = null;
+            if (pieces[capturedPiece.getDataX()][capturedPiece.getDataY()].isLight()) {
+                --numLight;
+            } else {
+                --numDusky;
+            }
             capturedPiece = capturedPiece.getNext();
+            pieces[capturedPiece.getDataX()][capturedPiece.getDataY()] = null;
         }
         GameBoardPiece piece = pieces[actionNode.getoDataX()][actionNode.getoDataY()];
         piece.setX(actionNode.getfDataX());
@@ -118,6 +128,8 @@ public class PieceManager {
                 x += 2;
             }
         }
+        numDusky = 12;
+        numLight = 12;
         return pieces;
     }
 }

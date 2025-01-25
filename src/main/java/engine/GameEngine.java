@@ -21,6 +21,7 @@ public class GameEngine {
     private final boolean DEBUG = false;
 
     private boolean playerTurn;
+    private boolean gameOver;
 
     public GameEngine() {
         loadGameWorld();
@@ -28,6 +29,7 @@ public class GameEngine {
         this.lightChoice = window.lightChosen();
         this.zero = new Agent(pMgr, lightChoice);
         this.playerTurn = lightChoice;
+        this.gameOver = false;
     }
 
     public void updateGame() {
@@ -38,15 +40,19 @@ public class GameEngine {
             zero.update();
             playerTurn = !playerTurn;
         }
-        graphicsHandler.repaint();
+        if (pMgr.sideDefeated()) {
+            this.gameOver = true;
+        } else {
+            graphicsHandler.repaint();
+        }
     }
 
-    public boolean isOpen() {
-        if (!window.isOpen()) {
+    public boolean gameOver() {
+        if (!window.isOpen() || gameOver) {
+            this.gameOver = true;
             zero.finalizeQTableUpdate();
-            return false;
         }
-        return true;
+        return gameOver;
     }
 
     private void handleInput() {
