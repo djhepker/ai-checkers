@@ -69,6 +69,9 @@ class AgentTools {
                 .length;
     }
 
+    /*
+    * TODO: logic for kingchecker mapping
+    * */
     public int pieceToInt(GameBoardPiece piece) {
         if (piece == null) {
             return 0;
