@@ -36,7 +36,6 @@ public class GameLoop implements Runnable {
         Thread.currentThread().interrupt();
     }
 
-
     public void start() {
         new Thread(this).start();
     }

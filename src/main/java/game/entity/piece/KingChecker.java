@@ -60,6 +60,9 @@ public class KingChecker extends Checker {
                 }
             };
 
+            /*
+            * TODO: troubleshoot pathfinding logic
+            * */
             for (int xDirection : xDirectionArray) {
                 int xNext = currState.getX() + xDirection;
                 if (0 <= xNext && xNext < 8) {
