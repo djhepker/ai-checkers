@@ -4,7 +4,7 @@ import main.java.game.entity.movement.CapturedNode;
 import main.java.game.entity.movement.ActionNode;
 import main.java.game.graphics.InputHandler;
 import main.java.engine.EntityCreator;
-import main.java.game.utils.GameBoardPiece;
+import main.java.game.entity.GameBoardPiece;
 
 public class PieceManager {
     private GameBoardPiece[][] pieces;

@@ -4,7 +4,7 @@ import main.java.game.entity.Entity;
 import main.java.game.entity.movement.MovementManager;
 import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;
-import main.java.game.utils.GameBoardPiece;
+import main.java.game.entity.GameBoardPiece;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
@@ -75,7 +75,7 @@ public class Checker extends Entity implements GameBoardPiece {
                                 taskQueue.push(new MoveState(
                                         xNext, yNext, 3, nextSpace.getCapturedNodes()));
                             }
-                        } else if (stateCode > 1 && target.getColor() != this.color) {  // target not open;
+                        } else if (stateCode > 2 && target.getColor() != this.color) {  // target not open;
                             if (stateCode == 3) { // post-jump; target !null; stationary;
                                 taskQueue.push(new MoveState(xNext, yNext, xDirection, currState.getCapture()));
                             } else {    // beginning position

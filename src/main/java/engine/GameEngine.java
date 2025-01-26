@@ -6,7 +6,7 @@ import main.java.game.graphics.GameWindow;
 import main.java.game.graphics.GraphicsHandler;
 import main.java.game.gameworld.PieceManager;
 import main.java.game.graphics.InputHandler;
-import main.java.game.utils.GameBoardPiece;
+import main.java.game.entity.GameBoardPiece;
 
 public class GameEngine {
     private EntityCreator creator;
@@ -18,7 +18,9 @@ public class GameEngine {
     private Agent zero;
 
     private final boolean lightChoice;
-    private final boolean DEBUG = false;
+
+    private final boolean DEBUG = true;
+    private int DEBUG_COUNTER = 0;
 
     private boolean playerTurn;
     private boolean gameOver;
@@ -69,6 +71,7 @@ public class GameEngine {
                 pMgr.updateAllPieces();
                 playerTurn = !playerTurn;
             }
+            System.out.println("calling reset clicks in handleinput: " + ++DEBUG_COUNTER);
             inputHandler.resetClicks();
             printSelectedPiece();
         }

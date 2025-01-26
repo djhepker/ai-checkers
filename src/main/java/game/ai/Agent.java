@@ -96,7 +96,6 @@ public class Agent {
 
     private void updateQValue(int moveChoice) {
         double updatedQ = 2 * currentQ + ALPHA * (RHO + GAMMA * maxQPrime - currentQ);
-        System.out.println("Q inserted back into hashmap: " + updatedQ);
         qTableMgr.setQValue(stateKey, moveChoice, updatedQ);
     }
 

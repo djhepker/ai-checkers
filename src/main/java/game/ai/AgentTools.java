@@ -2,14 +2,14 @@ package main.java.game.ai;
 
 import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;
-import main.java.game.utils.GameBoardPiece;
+import main.java.game.entity.GameBoardPiece;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
-import static main.java.game.utils.GameBoardPiece.PieceColor.DUSKY;
-import static main.java.game.utils.GameBoardPiece.PieceColor.LIGHT;
+import static main.java.game.entity.GameBoardPiece.PieceColor.DUSKY;
+import static main.java.game.entity.GameBoardPiece.PieceColor.LIGHT;
 
 /*
 * STATE REPRESENTATION: Hexadecimal String

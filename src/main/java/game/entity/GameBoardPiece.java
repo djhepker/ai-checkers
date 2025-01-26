@@ -1,4 +1,4 @@
-package main.java.game.utils;
+package main.java.game.entity;
 
 import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;

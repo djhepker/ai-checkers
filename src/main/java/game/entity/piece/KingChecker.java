@@ -3,7 +3,7 @@ package main.java.game.entity.piece;
 import main.java.game.entity.movement.ActionNode;
 import main.java.game.entity.movement.MovementManager;
 import main.java.game.gameworld.PieceManager;
-import main.java.game.utils.GameBoardPiece;
+import main.java.game.entity.GameBoardPiece;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
@@ -12,7 +12,7 @@ import java.util.Deque;
 /*
 * TODO: create movement logic for KingChecker, likely just need to Override generateLegalMoves()
 * */
-public class KingChecker extends Checker implements GameBoardPiece {
+public class KingChecker extends Checker {
     MovementManager moveMgr;
 
     public KingChecker(String name, int x, int y, BufferedImage image) {
@@ -32,7 +32,7 @@ public class KingChecker extends Checker implements GameBoardPiece {
     @Override
     public void generateLegalMoves(PieceManager pMgr) {
         Deque<MoveState> taskQueue = new ArrayDeque<>();
-        taskQueue.push(new MoveState(getX(), getY(), 3));
+        taskQueue.push(new MoveState(getX(), getY(), 4));
 
         while (!taskQueue.isEmpty()) {
 
@@ -60,7 +60,6 @@ public class KingChecker extends Checker implements GameBoardPiece {
                 xDirectionArray = new int[] {1};
             }
 
-            // set ynext, xnext
             for (int xDirection : xDirectionArray) {
                 int xNext = currState.getX() + xDirection;
                 if (0 <= xNext && xNext < 8) {
@@ -75,6 +74,12 @@ public class KingChecker extends Checker implements GameBoardPiece {
                                     ActionNode nextSpace = getJumpLandingNode(currState, xNext, yNext, pMgr);
                                     taskQueue.push(new MoveState(
                                             xNext, yNext, 3, nextSpace.getCapturedNodes()));
+                                }
+                            } else if (stateCode > 2 && target.getColor() != super.getColor()) {  // target not open;
+                                if (stateCode == 3) { // post-jump; target !null; stationary;
+                                    taskQueue.push(new MoveState(xNext, yNext, xDirection, currState.getCapture()));
+                                } else {    // beginning position
+                                    taskQueue.push(new MoveState(xNext, yNext, xDirection));
                                 }
                             }
                         }
