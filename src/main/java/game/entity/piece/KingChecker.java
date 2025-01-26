@@ -60,7 +60,27 @@ public class KingChecker extends Checker implements GameBoardPiece {
                 xDirectionArray = new int[] {1};
             }
 
-
+            // set ynext, xnext
+            for (int xDirection : xDirectionArray) {
+                int xNext = currState.getX() + xDirection;
+                if (0 <= xNext && xNext < 8) {
+                    for (int yDirection : yDirectionArray) {
+                        int yNext = currState.getY() + yDirection;
+                        if (0 <= yNext && yNext < 8) {
+                            GameBoardPiece target = pMgr.getPiece(xNext, yNext);
+                            if (target == null) {   // target open case
+                                if (stateCode == 4) {   // target open; stationary
+                                    moveMgr.addLocationNode(getX(), getY(), xNext, yNext);
+                                } else if (stateCode < 3) { //  target open; mid-jump; direction acknowledged;
+                                    ActionNode nextSpace = getJumpLandingNode(currState, xNext, yNext, pMgr);
+                                    taskQueue.push(new MoveState(
+                                            xNext, yNext, 3, nextSpace.getCapturedNodes()));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

@@ -43,15 +43,15 @@ public class Checker extends Entity implements GameBoardPiece {
 
     /*
      *   STATECODE:
-     *   Stationary: 3
-     *   Post-jump stationary: 2
+     *   Stationary: 4
+     *   Post-jump stationary: 3
      *   Left-jumping: -1
      *   Right-jumping: 1
      * */
     @Override
     public void generateLegalMoves(PieceManager pMgr) {
         Deque<MoveState> taskQueue = new ArrayDeque<>();
-        taskQueue.push(new MoveState(getX(), getY(), 3));
+        taskQueue.push(new MoveState(getX(), getY(), 4));
         while (!taskQueue.isEmpty()) {
             MoveState currState = taskQueue.pop();
             int stateCode = currState.getStateCode();
@@ -68,20 +68,15 @@ public class Checker extends Entity implements GameBoardPiece {
                     if (0 <= xNext && xNext < 8) {
                         GameBoardPiece target = pMgr.getPiece(xNext, yNext);
                         if (target == null) {   // target open case
-                            if (stateCode == 3) { // target open; stationary;
+                            if (stateCode == 4) { // target open; stationary;
                                 moveMgr.addLocationNode(getX(), getY(), xNext, yNext);
-                            } else if (stateCode < 2) {    //  target open; mid-jump; direction acknowledged;
-                                short captureValue = pMgr.getPiece(currState.getX(), currState.getY()).getPieceValue();
-                                ActionNode nextSpace = new ActionNode(getX(), getY(), xNext, yNext);
-                                nextSpace.addCapturedNode(currState.getX(), currState.getY(), captureValue);
-                                if (currState.getCapture() != null) { // handle prior captures this move
-                                    nextSpace.addCapturedNode(moveMgr.cloneCapturedNode(currState.getCapture()));
-                                }
-                                moveMgr.addLocationNode(nextSpace);
-                                taskQueue.push(new MoveState(xNext, yNext, 2, nextSpace.getCapturedNodes()));
+                            } else if (stateCode < 3) {    //  target open; mid-jump; direction acknowledged;
+                                ActionNode nextSpace = getJumpLandingNode(currState, xNext, yNext, pMgr);
+                                taskQueue.push(new MoveState(
+                                        xNext, yNext, 3, nextSpace.getCapturedNodes()));
                             }
                         } else if (stateCode > 1 && target.getColor() != this.color) {  // target not open;
-                            if (stateCode == 2) { // post-jump; target !null; stationary;
+                            if (stateCode == 3) { // post-jump; target !null; stationary;
                                 taskQueue.push(new MoveState(xNext, yNext, xDirection, currState.getCapture()));
                             } else {    // beginning position
                                 taskQueue.push(new MoveState(xNext, yNext, xDirection));
@@ -91,6 +86,17 @@ public class Checker extends Entity implements GameBoardPiece {
                 }
             }
         }
+    }
+
+    ActionNode getJumpLandingNode(MoveState currState, int xNext, int yNext, PieceManager pMgr) {
+        short captureValue = pMgr.getPiece(currState.getX(), currState.getY()).getPieceValue();
+        ActionNode nextSpace = new ActionNode(getX(), getY(), xNext, yNext);
+        nextSpace.addCapturedNode(currState.getX(), currState.getY(), captureValue);
+        if (currState.getCapture() != null) { // handle prior captures this move
+            nextSpace.addCapturedNode(moveMgr.cloneCapturedNode(currState.getCapture()));
+        }
+        moveMgr.addLocationNode(nextSpace);
+        return nextSpace;
     }
 
     public MovementManager getMoveMgr() {
