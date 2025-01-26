@@ -1,7 +1,7 @@
 package main.java.engine;
 
-import main.java.game.entity.Checker;
-import main.java.game.entity.KingChecker;
+import main.java.game.entity.piece.Checker;
+import main.java.game.entity.piece.KingChecker;
 import main.java.game.utils.AssetManager;
 import main.java.game.utils.GameBoardPiece;
 
