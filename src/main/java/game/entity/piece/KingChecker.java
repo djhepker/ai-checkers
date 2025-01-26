@@ -33,32 +33,32 @@ public class KingChecker extends Checker {
     public void generateLegalMoves(PieceManager pMgr) {
         Deque<MoveState> taskQueue = new ArrayDeque<>();
         taskQueue.push(new MoveState(getX(), getY(), 4));
-
         while (!taskQueue.isEmpty()) {
-
             MoveState currState = taskQueue.pop();
             int stateCode = currState.getStateCode();
             int[] xDirectionArray;
-            int[] yDirectionArray;
-
-            if (stateCode > 2) {    // stationary case
-                xDirectionArray = new int[] {-1, 1};
-                yDirectionArray = new int[] {1, -1};
-            } else if (stateCode < 0) {    // jumping case
-                if (stateCode == -1) {
-                    yDirectionArray = new int[] {-1};
-                } else {
-                    yDirectionArray = new int[] {1};
+            int[] yDirectionArray = switch (stateCode) {
+                case -2 -> {
+                    xDirectionArray = new int[]{-1};
+                    yield new int[]{1};
                 }
-                xDirectionArray = new int[] {-1};
-            } else {
-                if (stateCode == 1) {
-                    yDirectionArray = new int[] {-1};
-                } else {
-                    yDirectionArray = new int[] {1};
+                case -1 -> {
+                    xDirectionArray = new int[]{-1};
+                    yield new int[]{-1};
                 }
-                xDirectionArray = new int[] {1};
-            }
+                case 1 -> {
+                    xDirectionArray = new int[]{1};
+                    yield new int[]{-1};
+                }
+                case 2 -> {
+                    xDirectionArray = new int[]{1};
+                    yield new int[]{1};
+                }
+                default -> {
+                    xDirectionArray = new int[]{-1, 1};
+                    yield new int[]{-1, 1};
+                }
+            };
 
             for (int xDirection : xDirectionArray) {
                 int xNext = currState.getX() + xDirection;
