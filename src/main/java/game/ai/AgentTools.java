@@ -71,6 +71,8 @@ class AgentTools {
 
     /*
     * TODO: logic for kingchecker mapping
+    *
+    * TODO: dynamic color logic
     * */
     public int pieceToInt(GameBoardPiece piece) {
         if (piece == null) {
