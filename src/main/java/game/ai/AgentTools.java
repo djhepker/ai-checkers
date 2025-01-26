@@ -43,6 +43,9 @@ class AgentTools {
                 .toArray(ActionNode[]::new);
     }
 
+    /*
+    * TODO: reduce the size of our statekeys (if possible)
+    * */
     public String getHexadecimalEncodingOfArr(int[] gameState) {
         String encodedState = Arrays.stream(gameState)
                 .mapToObj(Integer::toHexString)
@@ -69,11 +72,6 @@ class AgentTools {
                 .length;
     }
 
-    /*
-    * TODO: logic for kingchecker mapping
-    *
-    * TODO: dynamic color logic
-    * */
     public int pieceToInt(GameBoardPiece piece) {
         if (piece == null) {
             return 0;
@@ -83,11 +81,12 @@ class AgentTools {
             return switch (piece.getName()) {
                 case "LIGHTChecker" -> -1 * colorSign;
                 case "DUSKYChecker" -> colorSign;
-                default -> throw new IllegalArgumentException("Invalid input: " + piece.getName());
+                case "LIGHTCheckerKing" -> -2 * colorSign;
+                case "DUSKYCheckerKing" -> 2 * colorSign;
+                default -> throw new IllegalArgumentException("Invalid piece name: " + piece.getName());
             };
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            System.exit(0);
             return 0;
         }
     }
