@@ -71,7 +71,6 @@ public class GameEngine {
                 pMgr.updateAllPieces();
                 playerTurn = !playerTurn;
             }
-            System.out.println("calling reset clicks in handleinput: " + ++DEBUG_COUNTER);
             inputHandler.resetClicks();
             printSelectedPiece();
         }

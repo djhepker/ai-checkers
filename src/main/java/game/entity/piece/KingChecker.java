@@ -9,11 +9,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-/*
-* TODO: create movement logic for KingChecker, likely just need to Override generateLegalMoves()
-* */
 public class KingChecker extends Checker {
-    MovementManager moveMgr;
+    private MovementManager moveMgr;
+
+    private int DEBUG_TIMER = 0;
 
     public KingChecker(String name, int x, int y, BufferedImage image) {
         super(name, x, y, image);
@@ -34,6 +33,7 @@ public class KingChecker extends Checker {
         Deque<MoveState> taskQueue = new ArrayDeque<>();
         taskQueue.push(new MoveState(getX(), getY(), 4));
         while (!taskQueue.isEmpty()) {
+            System.out.println(++DEBUG_TIMER);
             MoveState currState = taskQueue.pop();
             int stateCode = currState.getStateCode();
             int[] xDirectionArray;
@@ -60,9 +60,6 @@ public class KingChecker extends Checker {
                 }
             };
 
-            /*
-            * TODO: troubleshoot pathfinding logic
-            * */
             for (int xDirection : xDirectionArray) {
                 int xNext = currState.getX() + xDirection;
                 if (0 <= xNext && xNext < 8) {
@@ -90,6 +87,7 @@ public class KingChecker extends Checker {
                 }
             }
         }
+        DEBUG_TIMER = 0;
     }
 
     @Override
