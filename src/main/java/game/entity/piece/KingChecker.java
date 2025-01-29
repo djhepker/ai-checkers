@@ -75,6 +75,11 @@ public class KingChecker extends Checker {
         }
         DEBUG_TIMER = 0;
     }
+    /*
+    * TODO: Fix infinite loop caused by king re-jumping the same enemy multiple times;
+    *  likely need to maintain a list of previously captured checkers, this list can be
+    *  a member variable, as to not complicate ActionList logic
+    * */
 
     /*
      *   STATECODE:
