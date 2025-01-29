@@ -37,25 +37,28 @@ public class KingChecker extends Checker {
             int stateCode = currState.getStateCode();
             int[] directionArr = getDirectionArr(stateCode);
             for (int i = 0; i < directionArr.length; ++i) {
-                int xNext = directionArr[i++];
+                int xNext = currState.getX() + directionArr[i++];
                 if (0 <= xNext && xNext < 8) {
-                    int yNext = directionArr[i];
+                    int yNext = currState.getY() + directionArr[i];
                     if (0 <= yNext && yNext < 8) {
                         GameBoardPiece target = pMgr.getPiece(xNext, yNext);
                         if (target == null) { // cell open
-                            if (stateCode == 4) {
+                            if (stateCode == 4) { // cell open; stationary
                                 moveMgr.addLocationNode(getX(), getY(), xNext, yNext);
                             } else if (stateCode < 3) { // cell open; mid-jump
                                 ActionNode nextSpace = getJumpLandingNode(currState, xNext, yNext, pMgr);
+                                System.out.printf("ActionNode created with path (%d, %d)\n", xNext, yNext);
                                 taskQueue.push(new MoveState(
                                         xNext, yNext, 3, nextSpace.getCapturedNodes()));
                             }
                         } else if (stateCode > 2 && target.getColor() != super.getColor()) { // enemy occupied;
+                            int dx = currState.getX() - xNext;
+                            int dy = currState.getY() - yNext;
                             if (stateCode == 3) { // post-jump; enemy located
                                 taskQueue.push(new MoveState(
-                                        xNext, yNext, getStateCode(xNext, yNext), currState.getCapture()));
+                                        xNext, yNext, getStateCode(dx, dy), currState.getCapture()));
                             } else { // starting position; enemy located;
-                                taskQueue.push(new MoveState(xNext, yNext, getStateCode(xNext, yNext)));
+                                taskQueue.push(new MoveState(xNext, yNext, getStateCode(dx, dy)));
                             }
                         }
                     }
@@ -75,43 +78,31 @@ public class KingChecker extends Checker {
      *   Southwest: 2
      * */
     private int getStateCode(int xNext, int yNext) {
-        if (xNext == 1) {
-            if (yNext == 1) {
+        if (xNext == 1) { // east case
+            if (yNext == 1) { // south case
                 return -1;
             }
             return -2;
-        } else if (xNext == -1) {
-            if (yNext == 1) {
+        } else if (xNext == -1) { // west case
+            if (yNext == 1) { // south case
                 return 2;
             }
             return 1;
+        } else {
+            throw new IllegalArgumentException("xNext: " + xNext + ", yNext: " + yNext);
         }
-        return 100000;
     }
 
     private int[] getDirectionArr(int stateCode) {
-        int[] directionArr = switch (stateCode) {
-            case -2 -> {
-                yield new int[]{1,-1};
-            }
-            case -1 -> {
-                yield new int[]{1,1};
-            }
-            case 1 -> {
-                yield new int[]{-1,-1};
-            }
-            case 2 -> {
-                yield new int[]{-1,1};
-            }
-            default -> {
-                yield new int[]{ 1,-1,
-                                 1,1,
-                                 -1,-1,
-                                 -1,1 };
-            }
+        return switch (stateCode) {
+            case -2 -> new int[]{1, -1}; // Northeast
+            case -1 -> new int[]{1, 1};  // Southeast
+            case 1 -> new int[]{-1, -1}; // Northwest
+            case 2 -> new int[]{-1, 1};  // Southwest
+            default -> new int[]{ 1,-1, 1,1, -1,-1, -1,1 }; // For stationary and other cases
         };
-        return directionArr;
     }
+
 
     @Override
     public boolean isReadyForPromotion() {
