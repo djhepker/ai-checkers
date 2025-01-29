@@ -36,33 +36,41 @@ public class KingChecker extends Checker {
             MoveState currState = taskQueue.pop();
             int stateCode = currState.getStateCode();
             int[] directionArr = getDirectionArr(stateCode);
-            for (int i = 0; i < directionArr.length; ++i) {
-                int xNext = currState.getX() + directionArr[i++];
-                if (0 <= xNext && xNext < 8) {
-                    int yNext = currState.getY() + directionArr[i];
-                    if (0 <= yNext && yNext < 8) {
-                        GameBoardPiece target = pMgr.getPiece(xNext, yNext);
-                        if (target == null) { // cell open
-                            if (stateCode == 4) { // cell open; stationary
-                                moveMgr.addLocationNode(getX(), getY(), xNext, yNext);
-                            } else if (stateCode < 3) { // cell open; mid-jump
-                                ActionNode nextSpace = getJumpLandingNode(currState, xNext, yNext, pMgr);
-                                System.out.printf("ActionNode created with path (%d, %d)\n", xNext, yNext);
-                                taskQueue.push(new MoveState(
-                                        xNext, yNext, 3, nextSpace.getCapturedNodes()));
-                            }
-                        } else if (stateCode > 2 && target.getColor() != super.getColor()) { // enemy occupied;
-                            int dx = currState.getX() - xNext;
-                            int dy = currState.getY() - yNext;
-                            if (stateCode == 3) { // post-jump; enemy located
-                                taskQueue.push(new MoveState(
-                                        xNext, yNext, getStateCode(dx, dy), currState.getCapture()));
-                            } else { // starting position; enemy located;
-                                taskQueue.push(new MoveState(xNext, yNext, getStateCode(dx, dy)));
+            try {
+                for (int i = 0; i < directionArr.length; ++i) {
+                    if (++DEBUG_TIMER > 1000) {
+                        throw new IllegalStateException();
+                    }
+                    int xNext = currState.getX() + directionArr[i++];
+                    if (0 <= xNext && xNext < 8) {
+                        int yNext = currState.getY() + directionArr[i];
+                        if (0 <= yNext && yNext < 8) {
+                            GameBoardPiece target = pMgr.getPiece(xNext, yNext);
+                            if (target == null) { // cell open
+                                if (stateCode == 4) { // cell open; stationary
+                                    moveMgr.addLocationNode(getX(), getY(), xNext, yNext);
+                                } else if (stateCode < 3) { // cell open; mid-jump
+                                    ActionNode nextSpace = getJumpLandingNode(currState, xNext, yNext, pMgr);
+                                    taskQueue.push(new MoveState(
+                                            xNext, yNext, 3, nextSpace.getCapturedNodes()));
+                                }
+                            } else if (stateCode > 2 && target.getColor() != super.getColor()) { // enemy occupied;
+                                int dx = xNext - currState.getX();
+                                int dy = yNext - currState.getY();
+                                int updatedState = getStateCode(dx, dy);
+                                if (stateCode == 3) { // post-jump; enemy located
+                                    taskQueue.push(new MoveState(
+                                            xNext, yNext, updatedState, currState.getCapture()));
+                                } else { // starting position; enemy located;
+                                    taskQueue.push(new MoveState(xNext, yNext, updatedState));
+                                }
                             }
                         }
                     }
                 }
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+                taskQueue.clear();
             }
         }
         DEBUG_TIMER = 0;
