@@ -8,6 +8,7 @@ import main.java.game.entity.GameBoardPiece;
 import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.LinkedList;
 
 public class KingChecker extends Checker {
     private MovementManager moveMgr;
@@ -18,6 +19,10 @@ public class KingChecker extends Checker {
         super(name, x, y, image);
         this.moveMgr = super.getMoveMgr();
     }
+
+    /*
+    * TODO: check if the fix worked
+    * */
 
     /*
      *   STATECODE:
@@ -32,6 +37,7 @@ public class KingChecker extends Checker {
     public void generateLegalMoves(PieceManager pMgr) {
         Deque<MoveState> taskQueue = new ArrayDeque<>();
         taskQueue.push(new MoveState(getX(), getY(), 4));
+        boolean[] isChecked = new boolean[64];
         while (!taskQueue.isEmpty()) {
             MoveState currState = taskQueue.pop();
             int stateCode = currState.getStateCode();
@@ -50,11 +56,14 @@ public class KingChecker extends Checker {
                                 if (stateCode == 4) { // cell open; stationary
                                     moveMgr.addLocationNode(getX(), getY(), xNext, yNext);
                                 } else if (stateCode < 3) { // cell open; mid-jump
+                                    isChecked[yNext * 8 + xNext] = true;
                                     ActionNode nextSpace = getJumpLandingNode(currState, xNext, yNext, pMgr);
                                     taskQueue.push(new MoveState(
                                             xNext, yNext, 3, nextSpace.getCapturedNodes()));
                                 }
-                            } else if (stateCode > 2 && target.getColor() != super.getColor()) { // enemy occupied;
+                            } else if (stateCode > 2 &&
+                                    target.getColor() != super.getColor() &&
+                                    !isChecked[yNext * 8 + xNext]) { // enemy occupied;
                                 int dx = xNext - currState.getX();
                                 int dy = yNext - currState.getY();
                                 int updatedState = getStateCode(dx, dy);
@@ -75,11 +84,6 @@ public class KingChecker extends Checker {
         }
         DEBUG_TIMER = 0;
     }
-    /*
-    * TODO: Fix infinite loop caused by king re-jumping the same enemy multiple times;
-    *  likely need to maintain a list of previously captured checkers, this list can be
-    *  a member variable, as to not complicate ActionList logic
-    * */
 
     /*
      *   STATECODE:
