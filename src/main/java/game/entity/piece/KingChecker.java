@@ -51,6 +51,7 @@ public class KingChecker extends Checker {
                     if (0 <= xNext && xNext < 8) {
                         int yNext = currState.getY() + directionArr[i];
                         if (0 <= yNext && yNext < 8) {
+                            int nxtTile = yNext * 8 + xNext;
                             GameBoardPiece target = pMgr.getPiece(xNext, yNext);
                             if (target == null) { // cell open
                                 if (stateCode == 4) { // cell open; stationary
@@ -61,9 +62,7 @@ public class KingChecker extends Checker {
                                     taskQueue.push(new MoveState(
                                             xNext, yNext, 3, nextSpace.getCapturedNodes()));
                                 }
-                            } else if (stateCode > 2 &&
-                                    target.getColor() != super.getColor() &&
-                                    !isChecked[yNext * 8 + xNext]) { // enemy occupied;
+                            } else if (stateCode > 2 && target.getColor() != super.getColor() && !isChecked[nxtTile]) { // enemy occupied;
                                 int dx = xNext - currState.getX();
                                 int dy = yNext - currState.getY();
                                 int updatedState = getStateCode(dx, dy);
@@ -73,6 +72,7 @@ public class KingChecker extends Checker {
                                 } else { // starting position; enemy located;
                                     taskQueue.push(new MoveState(xNext, yNext, updatedState));
                                 }
+                                isChecked[nxtTile] = true;
                             }
                         }
                     }
