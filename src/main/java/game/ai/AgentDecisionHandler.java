@@ -32,7 +32,7 @@ class AgentDecisionHandler {
         this.numOptionsNaught = decisionArray.length;
         this.numEnemyOptionsNaught = toolbox.getNumOpponentOptions(pMgr);
         pointsFromDecision = decisionArray[moveChoice].getReward();
-        pMgr.movePiece(decisionArray[moveChoice]);
+        pMgr.machineMovePiece(decisionArray[moveChoice]);
         pMgr.updateAllPieces();
         updateDecisionArray();
     }
