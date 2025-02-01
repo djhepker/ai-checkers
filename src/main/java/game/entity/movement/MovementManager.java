@@ -25,14 +25,10 @@ public class MovementManager {
 
     public CapturedNode cloneCapturedNode(CapturedNode inputNode) {
         if (inputNode == null) {
-            System.out.println("Input node is null in getCloneOfCapturedNodeList()");
             return null;
         }
         CapturedNode cursor = inputNode;
-        if (cursor == null) {
-            System.out.println("inputNode.getCapturedNodes() is null in getCloneOfCapturedNodeList()");
-            return null;
-        }
+
         CapturedNode listHead = new CapturedNode(cursor.getDataX(), cursor.getDataY(), cursor.getPointValue());
         CapturedNode capturedNode = listHead;
         while (cursor.getNext() != null) {

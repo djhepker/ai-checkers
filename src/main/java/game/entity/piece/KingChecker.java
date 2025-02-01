@@ -53,9 +53,11 @@ public class KingChecker extends Checker {
                                     moveMgr.addLocationNode(getX(), getY(), xNext, yNext);
                                 } else if (stateCode < 3) { // cell open; mid-jump
                                     isChecked[nxtTile] = true;
-                                    ActionNode nextSpace = getJumpLandingNode(currState, xNext, yNext, pMgr);
+                                    ActionNode nextSpace = getCaptureAction(currState, xNext, yNext, pMgr);
+                                    nextSpace.printCapturedEnemies();
                                     taskQueue.push(new MoveState(
                                             xNext, yNext, 3, nextSpace.getCapturedNodes()));
+                                    moveMgr.addLocationNode(nextSpace);
                                 }
                             } else if (stateCode > 2 && target.getColor() != super.getColor()) { // enemy occupied;
                                 if (!isChecked[nxtTile]) {
@@ -83,11 +85,6 @@ public class KingChecker extends Checker {
         }
         DEBUG_TIMER = 0;
     }
-    /*
-    * TODO: the error is that the stack may not necessarily be organized for captured nodes
-    *  therefore, when calling .getCapturedNode() of movestate, it may be for an entirely different
-    *  movestate check
-    * */
 
     /*
      *   STATECODE:

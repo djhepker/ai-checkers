@@ -71,9 +71,10 @@ public class Checker extends Entity implements GameBoardPiece {
                             if (stateCode == 4) { // target open; stationary;
                                 moveMgr.addLocationNode(getX(), getY(), xNext, yNext);
                             } else if (stateCode < 3) {    //  target open; mid-jump; direction acknowledged;
-                                ActionNode nextSpace = getJumpLandingNode(currState, xNext, yNext, pMgr);
+                                ActionNode nextSpace = getCaptureAction(currState, xNext, yNext, pMgr);
                                 taskQueue.push(new MoveState(
                                         xNext, yNext, 3, nextSpace.getCapturedNodes()));
+                                moveMgr.addLocationNode(nextSpace);
                             }
                         } else if (stateCode > 2 && target.getColor() != this.color) {  // target not open;
                             if (stateCode == 3) { // post-jump; target !null; stationary;
@@ -88,14 +89,15 @@ public class Checker extends Entity implements GameBoardPiece {
         }
     }
 
-    ActionNode getJumpLandingNode(MoveState currState, int xNext, int yNext, PieceManager pMgr) {
-        short captureValue = pMgr.getPiece(currState.getX(), currState.getY()).getPieceValue();
+    ActionNode getCaptureAction(MoveState currState, int xNext, int yNext, PieceManager pMgr) {
+        int jumpedX = currState.getX();
+        int jumpedY = currState.getY();
+        short captureValue = pMgr.getPiece(jumpedX, jumpedY).getPieceValue();
         ActionNode nextSpace = new ActionNode(getX(), getY(), xNext, yNext);
-        nextSpace.addCapturedNode(currState.getX(), currState.getY(), captureValue);
         if (currState.getCapture() != null) { // handle prior captures this move
             nextSpace.addCapturedNode(moveMgr.cloneCapturedNode(currState.getCapture()));
         }
-        moveMgr.addLocationNode(nextSpace);
+        nextSpace.addCapturedNode(jumpedX, jumpedY, captureValue);
         return nextSpace;
     }
 

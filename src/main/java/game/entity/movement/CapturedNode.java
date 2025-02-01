@@ -30,4 +30,8 @@ public class CapturedNode {
     public void setNext(CapturedNode next) {
         this.next = next;
     }
+
+    public void printData() {
+        System.out.printf("CapturedNode (%d,%d)\n", data[0], data[1]);
+    }
 }

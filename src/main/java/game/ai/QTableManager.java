@@ -70,7 +70,7 @@ class QTableManager {
 
     public void updateQData() {
         db.updateQTable(qTable);
-        db.displayAllData();
+        // db.displayAllData();
     }
 
     private class SQLITEDatabase {
