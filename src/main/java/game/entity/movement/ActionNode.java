@@ -1,42 +1,39 @@
 package main.java.game.entity.movement;
 
 public class ActionNode {
-    private final short[][] data;
+    private final short[] data;
     private CapturedNode capturedEnemies;
     private ActionNode next;
     private int reward;
 
     public ActionNode(short preX, short preY, short postX, short postY) {
-        this.data = new short[][]{{preX, preY}, {postX, postY}};
+        this.data = new short[]{preX, preY, postX, postY};
         this.next = null;
         this.capturedEnemies = null;
         this.reward = 0;
     }
 
-    /*
-    * TODO: scale down short[][] to short[]
-    * */
     public ActionNode(int preX, int preY, int postX, int postY) {
-        this.data = new short[][]{{(short) preX, (short) preY}, {(short) postX, (short) postY}};
+        this.data = new short[]{(short) preX, (short) preY, (short) postX, (short) postY};
         this.next = null;
         this.capturedEnemies = null;
         this.reward = 0;
     }
 
     public short getoDataX() {
-        return data[0][0];
+        return data[0];
     }
 
     public short getoDataY() {
-        return data[0][1];
+        return data[1];
     }
 
     public short getfDataX() {
-        return data[1][0];
+        return data[2];
     }
 
     public short getfDataY() {
-        return data[1][1];
+        return data[3];
     }
 
     public CapturedNode getCapturedNodes() {
@@ -68,7 +65,7 @@ public class ActionNode {
     }
 
     public void printData() {
-        System.out.printf("Node (%d,%d)\n", data[0][0], data[0][1]);
+        System.out.printf("Node (%d,%d)\n", data[0], data[1]);
     }
 
     public void printCapturedEnemies() {

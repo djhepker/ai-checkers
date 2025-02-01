@@ -5,11 +5,9 @@ import main.java.game.entity.movement.ActionNode;
 import main.java.game.graphics.InputHandler;
 import main.java.engine.EntityCreator;
 import main.java.game.entity.GameBoardPiece;
-/*
-* TODO: scale down [][] to []
-* */
+
 public class PieceManager {
-    private GameBoardPiece[][] pieces;
+    private GameBoardPiece[] pieces;
     private EntityCreator creator;
     private InputHandler input;
     private int numDusky;
@@ -24,31 +22,29 @@ public class PieceManager {
     }
 
     public void updateAllPieces() {
-        for (GameBoardPiece[] row : pieces) {
-            for (GameBoardPiece piece : row) {
-                if (piece != null) {
-                    piece.update(this);
-                }
+        for (GameBoardPiece piece : pieces) {
+            if (piece != null) {
+                piece.update(this);
             }
         }
     }
 
     public void promotePiece(GameBoardPiece piece) {
-        int x = piece.getX();
-        int y = piece.getY();
-        pieces[x][y] = creator.createPiece(piece.getName() + "King", x, y);
+        if (piece != null) {
+            insertPieceToBoard(creator.createPiece(piece.getName() + "King", piece.getX(), piece.getY()));
+        }
     }
 
     public boolean sideDefeated() {
         return numDusky * numLight == 0;
     }
 
-    public GameBoardPiece[][] getPieces() {
+    public GameBoardPiece[] getPieces() {
         return pieces;
     }
 
     public GameBoardPiece getPiece(int x, int y) {
-        return pieces[x][y];
+        return pieces[y * 8 + x];
     }
 
     public boolean movePiece(GameBoardPiece piece) {
@@ -61,8 +57,8 @@ public class PieceManager {
                     processCapturedPieces(cursor);
                     piece.setX(postX);
                     piece.setY(postY);
-                    pieces[input.getFirstXPos()][input.getFirstYPos()] = null;
-                    pieces[piece.getX()][piece.getY()] = piece;
+                    nullifyPiece(input.getFirstXPos(), input.getFirstYPos());
+                    insertPieceToBoard(piece);
                     return true;
                 }
                 cursor = cursor.getNext();
@@ -75,43 +71,53 @@ public class PieceManager {
         int xNaught = actionNode.getoDataX();
         int yNaught = actionNode.getoDataY();
         processCapturedPieces(actionNode);
-        GameBoardPiece piece = pieces[xNaught][yNaught];
+        GameBoardPiece piece = getPiece(xNaught, yNaught);
         piece.setX(actionNode.getfDataX());
         piece.setY(actionNode.getfDataY());
-        pieces[xNaught][yNaught] = null;
-        pieces[piece.getX()][piece.getY()] = piece;
+        nullifyPiece(xNaught, yNaught);
+        insertPieceToBoard(piece);
         if (piece.isReadyForPromotion()) {
             promotePiece(piece);
         }
     }
 
     public boolean spaceIsNull(int inputX, int inputY) {
-        return pieces[inputX][inputY] == null;
+        return pieces[inputY * 8 + inputX] == null;
     }
 
     public void printAllPiecesInPlay() {
-        for (GameBoardPiece[] row : pieces) {
-            for (GameBoardPiece piece : row) {
-                piece.printData();
-            }
+        for (GameBoardPiece piece : pieces) {
+            piece.printData();
         }
+    }
+
+    public boolean insertPieceToBoard(GameBoardPiece piece) {
+        if (piece == null) {
+            return false;
+        }
+        pieces[piece.getY() * 8 + piece.getX()] = piece;
+        return true;
+    }
+
+    public void nullifyPiece(int x, int y) {
+        pieces[y * 8 + x] = null;
     }
 
     private void processCapturedPieces(ActionNode actionNode) {
         CapturedNode capturedPiece = actionNode.getCapturedNodes();
         while (capturedPiece != null) {
-            if (pieces[capturedPiece.getDataX()][capturedPiece.getDataY()].isLight()) {
+            if (getPiece(capturedPiece.getDataX(), capturedPiece.getDataY()).isLight()) {
                 --numLight;
             } else {
                 --numDusky;
             }
-            pieces[capturedPiece.getDataX()][capturedPiece.getDataY()] = null;
+            nullifyPiece(capturedPiece.getDataX(), capturedPiece.getDataY());
             capturedPiece = capturedPiece.getNext();
         }
     }
 
-    private GameBoardPiece[][] generateBeginningCheckers() {
-        GameBoardPiece[][] pieces = new GameBoardPiece[8][8];
+    private GameBoardPiece[] generateBeginningCheckers() {
+        GameBoardPiece[] pieces = new GameBoardPiece[64];
         int x = 1;
         int y = 0;
         while (y < 3) {
@@ -122,7 +128,7 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces[x][y] = creator.createPiece("DUSKYChecker", x, y);
+                pieces[y * 8 + x] = creator.createPiece("DUSKYChecker", x, y);
                 x += 2;
             }
         }
@@ -135,7 +141,7 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces[x][y] = creator.createPiece("LIGHTChecker", x, y);
+                pieces[y * 8 + x] = creator.createPiece("LIGHTChecker", x, y);
                 x += 2;
             }
         }
