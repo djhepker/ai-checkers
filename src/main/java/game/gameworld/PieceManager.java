@@ -88,7 +88,7 @@ public class PieceManager {
             pieces[capturedPiece.getDataX()][capturedPiece.getDataY()] = null;
             capturedPiece = capturedPiece.getNext();
         }
-        GameBoardPiece piece = pieces[actionNode.getoDataX()][actionNode.getoDataY()];
+        GameBoardPiece piece = pieces[xNaught][yNaught];
         piece.setX(actionNode.getfDataX());
         piece.setY(actionNode.getfDataY());
         pieces[xNaught][yNaught] = null;

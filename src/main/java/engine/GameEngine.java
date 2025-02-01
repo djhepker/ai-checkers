@@ -19,7 +19,7 @@ public class GameEngine {
 
     private final boolean lightChoice;
 
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
     private int DEBUG_COUNTER = 0;
 
     private boolean playerTurn;
@@ -63,6 +63,9 @@ public class GameEngine {
             int firstYPos = inputHandler.getFirstYPos();
             GameBoardPiece piece = pMgr.getPiece(firstXPos, firstYPos);
             if (DEBUG && piece != null && pMgr.movePiece(piece)) {
+                if (piece.isReadyForPromotion()) {
+                    pMgr.promotePiece(piece);
+                }
                 pMgr.updateAllPieces();
             } else if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
                 if (piece.isReadyForPromotion()) {

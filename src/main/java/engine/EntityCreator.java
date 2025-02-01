@@ -16,15 +16,14 @@ public class EntityCreator {
 
     public GameBoardPiece createPiece(String name, int x, int y) {
         String pieceName = name.substring(5);
-//        switch (pieceName) {
-//            case "Checker":
-//                return createChecker(name, x, y);
-//            case "CheckerKing":
-//                return createKingChecker(name, x, y);
-//            default:
-//                throw new IllegalArgumentException("Invalid piece name: " + name + " tested as: " + pieceName);
-//        }
-        return createKingChecker(name + "King", x, y);
+        switch (pieceName) {
+            case "Checker":
+                return createChecker(name, x, y);
+            case "CheckerKing":
+                return createKingChecker(name, x, y);
+            default:
+                throw new IllegalArgumentException("Invalid piece name: " + name + " tested as: " + pieceName);
+        }
     }
 
     private Checker createChecker(String name, int x, int y) {
