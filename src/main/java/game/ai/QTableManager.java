@@ -57,24 +57,20 @@ class QTableManager {
 
     public void setQValue(String serialKey, int index, double inputQ) {
         if (!qTable.containsKey(serialKey)) {
-            System.out.println("Key '" + serialKey + "' does not exist. Creating a new entry.");
             qTable.put(serialKey, new double[index + 1]);
         }
         double[] qValues = qTable.get(serialKey);
         if (index >= qValues.length) {
-            System.out.println("Array for key '" + serialKey + "' is too small. Resizing to fit index " + index + ".");
             qValues = Arrays.copyOf(qValues, index + 1);
             qTable.put(serialKey, qValues);
         }
         qValues[index] = inputQ;
-        System.out.println("Q-value updated: Key = " + serialKey + ", Index = " + index + ", Value = " + inputQ);
     }
 
 
     public void updateQData() {
-        System.out.println("Displaying data of updated Q-table");
         db.updateQTable(qTable);
-        db.displayAllData();
+        // db.displayAllData();
     }
 
     private class SQLITEDatabase {

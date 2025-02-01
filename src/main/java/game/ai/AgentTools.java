@@ -2,14 +2,14 @@ package main.java.game.ai;
 
 import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;
-import main.java.game.utils.GameBoardPiece;
+import main.java.game.entity.GameBoardPiece;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
-import static main.java.game.utils.GameBoardPiece.PieceColor.DUSKY;
-import static main.java.game.utils.GameBoardPiece.PieceColor.LIGHT;
+import static main.java.game.entity.GameBoardPiece.PieceColor.DUSKY;
+import static main.java.game.entity.GameBoardPiece.PieceColor.LIGHT;
 
 /*
 * STATE REPRESENTATION: Hexadecimal String
@@ -43,6 +43,9 @@ class AgentTools {
                 .toArray(ActionNode[]::new);
     }
 
+    /*
+    * TODO: reduce the size of our statekeys (if possible)
+    * */
     public String getHexadecimalEncodingOfArr(int[] gameState) {
         String encodedState = Arrays.stream(gameState)
                 .mapToObj(Integer::toHexString)
@@ -78,11 +81,12 @@ class AgentTools {
             return switch (piece.getName()) {
                 case "LIGHTChecker" -> -1 * colorSign;
                 case "DUSKYChecker" -> colorSign;
-                default -> throw new IllegalArgumentException("Invalid input: " + piece.getName());
+                case "LIGHTCheckerKing" -> -2 * colorSign;
+                case "DUSKYCheckerKing" -> 2 * colorSign;
+                default -> throw new IllegalArgumentException("Invalid piece name: " + piece.getName());
             };
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            System.exit(0);
             return 0;
         }
     }

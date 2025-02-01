@@ -3,9 +3,9 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 .idea/
-.env
 *.iml
-/data/
+#.env
+#/data/
 
 ### Eclipse ###
 .apt_generated

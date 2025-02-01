@@ -13,6 +13,9 @@ public class ActionNode {
         this.reward = 0;
     }
 
+    /*
+    * TODO: scale down short[][] to short[]
+    * */
     public ActionNode(int preX, int preY, int postX, int postY) {
         this.data = new short[][]{{(short) preX, (short) preY}, {(short) postX, (short) postY}};
         this.next = null;
@@ -65,7 +68,16 @@ public class ActionNode {
     }
 
     public void printData() {
-        System.out.println("Node: (" + getoDataX() + ", " + getoDataY() +
-                "); With a reward of: " + getReward());
+        System.out.printf("Node (%d,%d)\n", data[0][0], data[0][1]);
+    }
+
+    public void printCapturedEnemies() {
+        CapturedNode capturedCursor = capturedEnemies;
+        printData();
+        while (capturedCursor != null) {
+            capturedCursor.printData();
+            capturedCursor = capturedCursor.getNext();
+        }
+        System.out.println();
     }
 }

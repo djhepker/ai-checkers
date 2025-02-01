@@ -11,7 +11,7 @@ public class GameLoop implements Runnable {
 
     @Override
     public void run() {
-        while (game.isOpen() && !Thread.currentThread().isInterrupted()) {
+        while (!game.gameOver() && !Thread.currentThread().isInterrupted()) {
             long startTime = System.nanoTime();
             game.updateGame();
             long elapsedTime = System.nanoTime() - startTime;
@@ -35,7 +35,6 @@ public class GameLoop implements Runnable {
         }
         Thread.currentThread().interrupt();
     }
-
 
     public void start() {
         new Thread(this).start();

@@ -2,7 +2,7 @@ package main.java.game.graphics;
 
 import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;
-import main.java.game.utils.GameBoardPiece;
+import main.java.game.entity.GameBoardPiece;
 
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;

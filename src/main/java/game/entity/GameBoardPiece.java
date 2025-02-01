@@ -1,4 +1,4 @@
-package main.java.game.utils;
+package main.java.game.entity;
 
 import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;
@@ -7,6 +7,8 @@ import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
 
 public interface GameBoardPiece {
+    boolean isReadyForPromotion();
+
     enum PieceColor {
         LIGHT,
         DUSKY

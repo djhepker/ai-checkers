@@ -12,6 +12,8 @@ public class AssetManager {
     private final int lightTileStart = 16;
     private final int lightCheckerCoordinate = 32;
     private final int duskyCheckerCoordinate = 48;
+    private final int lightCheckerKingSpriteX = 64;
+    private final int duskyCheckerKingSpriteX = 80;
 
     private SpriteSheet spriteSheet;
     private HashMap<String, BufferedImage> spriteMap;
@@ -31,5 +33,7 @@ public class AssetManager {
         spriteMap.put("DuskyTile", spriteSheet.getSprite(duskyTileStart, 0, cellWidth, cellHeight));
         spriteMap.put("LIGHTChecker", spriteSheet.getSprite(lightCheckerCoordinate, 0, cellWidth, cellHeight));
         spriteMap.put("DUSKYChecker", spriteSheet.getSprite(duskyCheckerCoordinate, 0, cellWidth, cellHeight));
+        spriteMap.put("LIGHTCheckerKing", spriteSheet.getSprite(lightCheckerKingSpriteX, 0, cellWidth, cellHeight));
+        spriteMap.put("DUSKYCheckerKing", spriteSheet.getSprite(duskyCheckerKingSpriteX, 0, cellWidth, cellHeight));
     }
 }
