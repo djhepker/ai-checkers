@@ -70,8 +70,6 @@ public class KingChecker extends Checker {
                                         taskQueue.push(new MoveState(xNext, yNext, updatedState));
                                     }
                                     isChecked[nxtTile] = true;
-                                } else if (true) {
-
                                 }
                             }
                         }

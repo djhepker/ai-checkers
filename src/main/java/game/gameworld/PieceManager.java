@@ -5,7 +5,9 @@ import main.java.game.entity.movement.ActionNode;
 import main.java.game.graphics.InputHandler;
 import main.java.engine.EntityCreator;
 import main.java.game.entity.GameBoardPiece;
-
+/*
+* TODO: scale down [][] to []
+* */
 public class PieceManager {
     private GameBoardPiece[][] pieces;
     private EntityCreator creator;
