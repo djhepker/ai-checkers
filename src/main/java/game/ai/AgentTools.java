@@ -36,7 +36,6 @@ class AgentTools {
 
     public ActionNode[] getDecisionArray(PieceManager pMgr) {
         return Arrays.stream(pMgr.getPieces())
-                .flatMap(Arrays::stream)
                 .filter(piece -> piece != null && piece.getColor() == pieceColor)
                 .flatMap(GameBoardPiece::getMoveListAsStream)
                 .sorted(Comparator.comparingInt(ActionNode::getoDataX).thenComparing(ActionNode::getoDataY))
@@ -55,7 +54,6 @@ class AgentTools {
 
     public int getMaximumOpponentReward(PieceManager pMgr) {
         return Arrays.stream(pMgr.getPieces())
-                .flatMap(Arrays::stream)
                 .filter(piece -> piece != null && piece.getColor() != pieceColor)
                 .flatMap(GameBoardPiece::getMoveListAsStream)
                 .mapToInt(ActionNode::getReward)
@@ -65,7 +63,6 @@ class AgentTools {
 
     public int getNumOpponentOptions(PieceManager pMgr) {
         return Arrays.stream(pMgr.getPieces())
-                .flatMap(Arrays::stream)
                 .filter(piece -> piece != null && piece.getColor() != pieceColor)
                 .flatMap(GameBoardPiece::getMoveListAsStream)
                 .toArray()
