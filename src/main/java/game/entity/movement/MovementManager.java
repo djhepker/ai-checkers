@@ -28,7 +28,6 @@ public class MovementManager {
             return null;
         }
         CapturedNode cursor = inputNode;
-
         CapturedNode listHead = new CapturedNode(cursor.getDataX(), cursor.getDataY(), cursor.getPointValue());
         CapturedNode capturedNode = listHead;
         while (cursor.getNext() != null) {

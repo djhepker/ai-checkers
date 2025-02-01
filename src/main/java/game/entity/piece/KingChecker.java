@@ -54,7 +54,6 @@ public class KingChecker extends Checker {
                                 } else if (stateCode < 3) { // cell open; mid-jump
                                     isChecked[nxtTile] = true;
                                     ActionNode nextSpace = getCaptureAction(currState, xNext, yNext, pMgr);
-                                    nextSpace.printCapturedEnemies();
                                     taskQueue.push(new MoveState(
                                             xNext, yNext, 3, nextSpace.getCapturedNodes()));
                                     moveMgr.addLocationNode(nextSpace);
