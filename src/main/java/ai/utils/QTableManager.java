@@ -1,8 +1,7 @@
-package main.java.game.ai;
+package main.java.ai.utils;
 
 import main.java.game.utils.EnvLoader;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -15,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-class QTableManager {
+public class QTableManager {
     private HashMap<String, double[]> qTable;
     private SQLITEDatabase db;
 

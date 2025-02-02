@@ -1,6 +1,6 @@
 package main.java.engine;
 
-import main.java.game.ai.Agent;
+import main.java.ai.Agent;
 import main.java.game.gameworld.BoardManager;
 import main.java.game.graphics.GameWindow;
 import main.java.game.graphics.GraphicsHandler;

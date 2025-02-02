@@ -1,4 +1,4 @@
-package main.java.game.ai;
+package main.java.ai.utils;
 
 import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;
@@ -20,7 +20,7 @@ import static main.java.game.entity.GameBoardPiece.PieceColor.LIGHT;
 * AVERAGE REWARD PER-GAME: Average points
 * */
 
-class AgentTools {
+public class AgentTools {
     private final GameBoardPiece.PieceColor pieceColor;
 
     public AgentTools(boolean isDusky) {

@@ -1,9 +1,10 @@
-package main.java.game.ai;
+package main.java.ai.environment;
 
+import main.java.ai.utils.AgentTools;
 import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;
 
-class AgentDecisionHandler {
+public class AgentDecisionHandler {
     private PieceManager pMgr;
     private AgentTools toolbox;
     private ActionNode[] decisionArray;
@@ -27,14 +28,17 @@ class AgentDecisionHandler {
         return decisionArray.length;
     }
 
-    public void fulfillDecision(Environment env, int moveChoice) {
+    public void movePiece(int moveChoice) {
+        pMgr.machineMovePiece(decisionArray[moveChoice]);
+        pMgr.updateAllPieces();
+        updateDecisionArray();
+    }
+
+    public void processDecisionReward(Environment env, int moveChoice) {
         this.numEnemiesNaught = env.getNumEnemyPieces();
         this.numOptionsNaught = decisionArray.length;
         this.numEnemyOptionsNaught = toolbox.getNumOpponentOptions(pMgr);
         pointsFromDecision = decisionArray[moveChoice].getReward();
-        pMgr.machineMovePiece(decisionArray[moveChoice]);
-        pMgr.updateAllPieces();
-        updateDecisionArray();
     }
 
     public double getReward(Environment env) {

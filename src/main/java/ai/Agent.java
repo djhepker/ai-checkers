@@ -1,5 +1,9 @@
-package main.java.game.ai;
+package main.java.ai;
 
+import main.java.ai.environment.AgentDecisionHandler;
+import main.java.ai.environment.Environment;
+import main.java.ai.utils.AgentTools;
+import main.java.ai.utils.QTableManager;
 import main.java.game.gameworld.PieceManager;
 
 import java.util.Random;
@@ -18,7 +22,7 @@ import java.util.Random;
 * action "a" is to be taken while in state "S"
 * */
 
-public class Agent {
+public class Agent extends NPC {
     private final boolean isDusky;
 
     private AgentTools toolbox;
@@ -48,13 +52,19 @@ public class Agent {
     }
 
     public void update() {
-        this.environment = new Environment(toolbox, pMgr);
-        this.stateKey = environment.getEncodedGameState(pMgr);
-        decisionHandler.updateDecisionArray();
-        int moveChoice = getMoveChoice();
-        this.currentQ = getQValue(stateKey, moveChoice);
-        decisionHandler.fulfillDecision(environment, moveChoice);
-        environment.generateStatePrime();
+        this.environment = new Environment(toolbox, pMgr); // not needed
+        this.stateKey = environment.getEncodedGameState(pMgr); // not needed
+
+        decisionHandler.updateDecisionArray(); // loads movelist into decisionhandler
+        int moveChoice = getMoveChoice();   // random move generated
+
+        this.currentQ = getQValue(stateKey, moveChoice);    // q value calculated
+        decisionHandler.processDecisionReward(environment, moveChoice); // reward calculated
+
+        decisionHandler.movePiece(moveChoice);  // piece moved
+
+
+        environment.updateStatePrime();
         updateRho();
         calculateMaxQPrime();
         updateQValue(moveChoice);
