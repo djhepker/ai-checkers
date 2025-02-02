@@ -1,8 +1,8 @@
 package main.java.ai;
 
-import main.java.ai.environment.AgentDecisionHandler;
+import main.java.ai.environment.AIDecisionHandler;
 import main.java.ai.environment.Environment;
-import main.java.ai.utils.AgentTools;
+import main.java.ai.utils.AITools;
 import main.java.ai.utils.QTableManager;
 import main.java.game.gameworld.PieceManager;
 
@@ -22,10 +22,10 @@ import java.util.Random;
 * action "a" is to be taken while in state "S"
 * */
 
-public class Agent extends NPC {
+public class Agent {
     private final boolean isDusky;
 
-    private AgentTools toolbox;
+    private AITools toolbox;
     private QTableManager qTableMgr;
     private PieceManager pMgr;
 
@@ -38,10 +38,10 @@ public class Agent extends NPC {
 
     private String stateKey;
 
-    public Agent (PieceManager pMgr, boolean playerLight) {
+    public Agent (PieceManager pMgr, AITools toolbox, boolean vsLight) {
         this.pMgr = pMgr;
-        this.isDusky = playerLight;
-        this.toolbox = new AgentTools(isDusky);
+        this.isDusky = vsLight;
+        this.toolbox = toolbox;
         this.qTableMgr = new QTableManager();
         this.currentQ = 0.0;
         this.maxQPrime = 0.0;
@@ -49,29 +49,35 @@ public class Agent extends NPC {
     }
 
     public void update() {
-        AgentDecisionHandler decisionHandler = new AgentDecisionHandler(pMgr, toolbox);
-        super.update(pMgr, toolbox);
-
-        Environment environment = new Environment(toolbox, pMgr); // not needed
-        this.stateKey = environment.getEncodedGameState(pMgr); // not needed
-
-        this.currentQ = getQValue(stateKey, moveChoice);    // not needed; requires movechoice
-        decisionHandler.calculateDecisionReward(environment, moveChoice); // not needed; requires movechoice
-
-        decisionHandler.updateDecisionArray(); // needed for updateRho
-        environment.updateStatePrime(); // not needed; requires piece be moved
-        updateRho(environment, decisionHandler);
+        Environment environment = new Environment(toolbox, pMgr);
+        AIDecisionHandler decisionHandler = new AIDecisionHandler(pMgr, toolbox, environment);
+        this.stateKey = environment.getEncodedGameState(pMgr);
+        decisionHandler.updateDecisionArray();
+        int moveChoice = getMoveChoice(decisionHandler.getNumDecisions());
+        this.currentQ = getQValue(stateKey, moveChoice);
+        decisionHandler.calculateDecisionReward(moveChoice);
+        decisionHandler.movePiece(moveChoice);
+        decisionHandler.updateDecisionArray();
+        environment.generateStatePrime();
+        updateRho(decisionHandler);
         calculateMaxQPrime(environment);
         updateQValue(moveChoice);
     }
 
-    @Override
-    public int getMoveChoice(AgentDecisionHandler handler) {
+    private int getMoveChoice(int numDecisions) {
         if (Math.random() < EPSILON) {
-            return explore(handler);
+            return explore(numDecisions);
         } else {
             return exploit();
         }
+    }
+
+    private int exploit() {
+        return qTableMgr.getMaxQIndex(stateKey);
+    }
+
+    private int explore(int numDecisions) {
+        return new Random().nextInt(numDecisions);
     }
 
     private double getQValue(String stateKey, int moveChoice) {
@@ -82,16 +88,8 @@ public class Agent extends NPC {
         }
     }
 
-    private int exploit() {
-        return qTableMgr.getMaxQIndex(stateKey);
-    }
-
-    private int explore(AgentDecisionHandler handler) {
-        return new Random().nextInt(handler.getNumDecisions());
-    }
-
-    public void updateRho(Environment env, AgentDecisionHandler handler) {
-        this.RHO = handler.getDecisionReward(env);
+    public void updateRho(AIDecisionHandler handler) {
+        this.RHO = handler.getDecisionReward();
     }
 
     private void calculateMaxQPrime(Environment env) {

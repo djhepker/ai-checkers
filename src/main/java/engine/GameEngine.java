@@ -1,6 +1,6 @@
 package main.java.engine;
 
-import main.java.ai.Agent;
+import main.java.ai.NPCManager;
 import main.java.game.gameworld.BoardManager;
 import main.java.game.graphics.GameWindow;
 import main.java.game.graphics.GraphicsHandler;
@@ -15,7 +15,7 @@ public class GameEngine {
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
     private GameWindow window;
-    private Agent zero;
+    private NPCManager npcMgr;
 
     private final boolean lightChoice;
 
@@ -29,7 +29,7 @@ public class GameEngine {
         loadGameWorld();
         renderUI();
         this.lightChoice = window.lightChosen();
-        this.zero = new Agent(pMgr, lightChoice);
+        this.npcMgr = new NPCManager(pMgr, lightChoice, "Agent Vs Player");
         this.playerTurn = lightChoice;
         this.gameOver = false;
     }
@@ -39,7 +39,7 @@ public class GameEngine {
         if (playerTurn) {
             handleInput();
         } else {
-            zero.update();
+            npcMgr.update();
             playerTurn = !playerTurn;
         }
         if (pMgr.sideDefeated()) {
@@ -52,7 +52,7 @@ public class GameEngine {
     public boolean gameOver() {
         if (!window.isOpen() || gameOver) {
             this.gameOver = true;
-            zero.finalizeQTableUpdate();
+            npcMgr.finishGame();
         }
         return gameOver;
     }

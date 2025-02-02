@@ -5,7 +5,7 @@ import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;
 
 public class DecisionCalculator {
-    private AgentTools toolbox;
+    private AITools toolbox;
     private PieceManager pMgr;
 
     private int numOptionsNaught;
@@ -14,7 +14,7 @@ public class DecisionCalculator {
     private int pointsFromDecision;
     private int numEnemiesNaught;
 
-    public DecisionCalculator(AgentTools toolbox, PieceManager pMgr) {
+    public DecisionCalculator(AITools toolbox, PieceManager pMgr) {
         this.toolbox = toolbox;
         this.pMgr = pMgr;
     }

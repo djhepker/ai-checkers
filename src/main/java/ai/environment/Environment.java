@@ -1,21 +1,21 @@
 package main.java.ai.environment;
 
-import main.java.ai.utils.AgentTools;
+import main.java.ai.utils.AITools;
 import main.java.game.gameworld.PieceManager;
 
 import java.util.Arrays;
 
 public class Environment {
-    private AgentTools toolbox;
+    private AITools toolbox;
     private PieceManager pMgr;
 
     int[] gameStateArr;
     int[] gameStateArrPrime;
 
-    public Environment(AgentTools toolbox, PieceManager pMgr) {
+    public Environment(AITools toolbox, PieceManager pMgr) {
         this.pMgr = pMgr;
         this.toolbox = toolbox;
-        updateStatePrime();
+        generateStatePrime();
         updateEnvironment();
     }
 
@@ -35,7 +35,7 @@ public class Environment {
         return toolbox.getHexadecimalEncodingOfArr(getStateArray(pMgr));
     }
 
-    public void updateStatePrime() {
+    public void generateStatePrime() {
         this.gameStateArrPrime = getStateArray(pMgr);
     }
 

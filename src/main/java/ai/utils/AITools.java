@@ -20,10 +20,10 @@ import static main.java.game.entity.GameBoardPiece.PieceColor.LIGHT;
 * AVERAGE REWARD PER-GAME: Average points
 * */
 
-public class AgentTools {
+public class AITools {
     private final GameBoardPiece.PieceColor pieceColor;
 
-    public AgentTools(boolean isDusky) {
+    public AITools(boolean isDusky) {
         this.pieceColor = isDusky ? DUSKY : LIGHT;
     }
 

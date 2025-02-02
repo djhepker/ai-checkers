@@ -1,21 +1,24 @@
 package main.java.ai.environment;
 
-import main.java.ai.utils.AgentTools;
+import main.java.ai.utils.AITools;
 import main.java.ai.utils.DecisionCalculator;
 import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;
 
-public class AgentDecisionHandler {
+public class AIDecisionHandler {
     private PieceManager pMgr;
-    private final AgentTools toolbox;
+    private final AITools toolbox;
     private final DecisionCalculator calculator;
+    private Environment env;
 
     private ActionNode[] decisionArray;
 
-    public AgentDecisionHandler(PieceManager pMgr, AgentTools toolbox) {
+    public AIDecisionHandler(PieceManager pMgr, AITools toolbox, Environment env) {
         this.pMgr = pMgr;
         this.toolbox = toolbox;
+        this.env = env;
         this.calculator = new DecisionCalculator(toolbox, pMgr);
+        updateDecisionArray();
     }
 
     public void movePiece(int moveChoice) {
@@ -31,11 +34,11 @@ public class AgentDecisionHandler {
         return decisionArray.length;
     }
 
-    public void calculateDecisionReward(Environment env, int moveChoice) {
+    public void calculateDecisionReward(int moveChoice) {
         calculator.calculateDecisionReward(env, decisionArray, moveChoice);
     }
 
-    public double getDecisionReward(Environment env) {
+    public double getDecisionReward() {
         return calculator.getReward(env, decisionArray);
     }
 }
