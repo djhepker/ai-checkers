@@ -1,4 +1,4 @@
-package main.java.ai;
+package main.java.ai.ai;
 
 import main.java.ai.environment.AIDecisionHandler;
 import main.java.ai.environment.Environment;

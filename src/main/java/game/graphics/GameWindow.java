@@ -44,6 +44,23 @@ public class GameWindow {
         }
     }
 
+    public String showGameModeDialog() {
+        try {
+            String[] playerOptions = {"Agent Vs Stochastic", "Agent Vs Player", "Stochastic Vs Player"};
+            String selectedGameMode = (String) JOptionPane.showInputDialog(
+                    graphicsHandler,
+                    "Choose who will be playing",
+                    "Checkers",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null, playerOptions, playerOptions[0]);
+            return selectedGameMode;
+        } catch (Exception e) {
+            System.out.println("Game Mode Dialog closed.");
+            System.exit(0);
+        }
+        return null;
+    }
+
     public boolean lightChosen() {
         return lightChosen;
     }

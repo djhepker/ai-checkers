@@ -1,4 +1,4 @@
-package main.java.ai;
+package main.java.ai.ai;
 
 import main.java.ai.utils.AITools;
 import main.java.game.entity.movement.ActionNode;
@@ -21,6 +21,7 @@ public class StochasticNPC {
     public void update() {
         ActionNode[] decisionArr = toolbox.getDecisionArray(pMgr);
         int moveChoice = new Random().nextInt(decisionArr.length);
+        System.out.printf("StochasticNPC update with choice: %d\n", moveChoice);
         pMgr.machineMovePiece(decisionArr[moveChoice]);
         pMgr.updateAllPieces();
     }
