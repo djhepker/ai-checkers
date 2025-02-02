@@ -67,7 +67,7 @@ public class PieceManager {
         return false;
     }
 
-    public void machineMovePiece(ActionNode actionNode) {
+    public boolean machineMovePiece(ActionNode actionNode) {
         int xNaught = actionNode.getoDataX();
         int yNaught = actionNode.getoDataY();
         processCapturedPieces(actionNode);
@@ -75,10 +75,11 @@ public class PieceManager {
         piece.setX(actionNode.getfDataX());
         piece.setY(actionNode.getfDataY());
         nullifyPiece(xNaught, yNaught);
-        insertPieceToBoard(piece);
+        boolean result = insertPieceToBoard(piece);
         if (piece.isReadyForPromotion()) {
             promotePiece(piece);
         }
+        return result;
     }
 
     public boolean spaceIsNull(int inputX, int inputY) {

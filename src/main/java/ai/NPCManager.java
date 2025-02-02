@@ -23,6 +23,10 @@ public class NPCManager {
         loadGameState(gameType);
     }
 
+    /*
+    * TODO: Add in a timing buffer to slow the game down
+    *  Figure out why kane is not updating
+    * */
     public void update() {
         if (gameType == GameState.AGENT_VS_PLAYER) {
             zero.update();
