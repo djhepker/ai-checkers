@@ -39,8 +39,8 @@ public class Agent extends NPC {
     private String stateKey;
 
     public Agent (PieceManager pMgr, boolean playerLight) {
-        this.isDusky = playerLight;
         this.pMgr = pMgr;
+        this.isDusky = playerLight;
         this.toolbox = new AgentTools(isDusky);
         this.qTableMgr = new QTableManager();
         this.currentQ = 0.0;
@@ -50,26 +50,23 @@ public class Agent extends NPC {
 
     public void update() {
         AgentDecisionHandler decisionHandler = new AgentDecisionHandler(pMgr, toolbox);
-        decisionHandler.updateDecisionArray(); // loads movelist into decisionhandler *
-        int moveChoice = getMoveChoice(decisionHandler);   // random move generated *
+        super.update(pMgr, toolbox);
 
         Environment environment = new Environment(toolbox, pMgr); // not needed
         this.stateKey = environment.getEncodedGameState(pMgr); // not needed
 
-
         this.currentQ = getQValue(stateKey, moveChoice);    // not needed; requires movechoice
         decisionHandler.calculateDecisionReward(environment, moveChoice); // not needed; requires movechoice
 
-        decisionHandler.movePiece(moveChoice);  // piece moved *
-
-
+        decisionHandler.updateDecisionArray(); // needed for updateRho
         environment.updateStatePrime(); // not needed; requires piece be moved
         updateRho(environment, decisionHandler);
         calculateMaxQPrime(environment);
         updateQValue(moveChoice);
     }
 
-    private int getMoveChoice(AgentDecisionHandler handler) {
+    @Override
+    public int getMoveChoice(AgentDecisionHandler handler) {
         if (Math.random() < EPSILON) {
             return explore(handler);
         } else {

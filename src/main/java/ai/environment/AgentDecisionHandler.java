@@ -21,7 +21,6 @@ public class AgentDecisionHandler {
     public void movePiece(int moveChoice) {
         pMgr.machineMovePiece(decisionArray[moveChoice]);
         pMgr.updateAllPieces();
-        updateDecisionArray();
     }
 
     public void updateDecisionArray() {
