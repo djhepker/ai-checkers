@@ -71,6 +71,7 @@ class QTableManager {
     public void updateQData() {
         db.updateQTable(qTable);
         // db.displayAllData();
+        db.updateEpisodes();
     }
 
     private class SQLITEDatabase {
@@ -80,16 +81,12 @@ class QTableManager {
         private EnvLoader envLoader;
 
         public SQLITEDatabase() {
-            try {
-                this.envLoader = new EnvLoader(ENV_FILEPATH);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            this.envLoader = new EnvLoader(ENV_FILEPATH);
             this.url = envLoader.get(SQL_URL_KEY);
         }
 
         public void createTable() {
-            String sql = "CREATE TABLE IF NOT EXISTS QTable (\n"
+            final String sql = "CREATE TABLE IF NOT EXISTS QTable (\n"
                     + "key TEXT NOT NULL,\n"
                     + "q_index INTEGER NOT NULL,\n"
                     + "q_value REAL NOT NULL,\n"
@@ -106,7 +103,7 @@ class QTableManager {
 
         public HashMap<String, double[]> fetchQTable() {
             HashMap<String, double[]> qTable = new HashMap<>();
-            String sql = "SELECT key, q_index, q_value FROM QTable";
+            final String sql = "SELECT key, q_index, q_value FROM QTable";
             try (Connection connection = DriverManager.getConnection(url);
                  Statement stmt = connection.createStatement();
                  ResultSet rs = stmt.executeQuery(sql)) {
@@ -128,7 +125,7 @@ class QTableManager {
         }
 
         public void updateQTable(Map<String, double[]> qTable) {
-            String sql = "INSERT OR REPLACE INTO QTable (key, q_index, q_value) VALUES (?, ?, ?)";
+            final String sql = "INSERT OR REPLACE INTO QTable (key, q_index, q_value) VALUES (?, ?, ?)";
             try (Connection connection = DriverManager.getConnection(url);
                  PreparedStatement ppdStmt = connection.prepareStatement(sql)) {
                 for (Map.Entry<String, double[]> entry : qTable.entrySet()) {
@@ -153,7 +150,7 @@ class QTableManager {
         }
 
         public void displayAllData() {
-            String sql = "SELECT key, q_index, q_value FROM QTable";
+            final String sql = "SELECT key, q_index, q_value FROM QTable";
             try (Connection connection = DriverManager.getConnection(url);
                  Statement stmt = connection.createStatement();
                  ResultSet rs = stmt.executeQuery(sql)) {
@@ -168,6 +165,13 @@ class QTableManager {
             } catch (SQLException e) {
                 System.out.println("Error displaying data: " + e.getMessage());
             }
+        }
+
+        public void updateEpisodes() {
+            final String EPISODE_KEY = "EPISODE_COUNT_FILEPATH";
+            EpisodeCounter episodeCounter = new EpisodeCounter(envLoader.get(EPISODE_KEY));
+            episodeCounter.processEpisode();
+            System.out.printf("Number of episodes: %d", episodeCounter.getEpisodeCount());
         }
     }
 }

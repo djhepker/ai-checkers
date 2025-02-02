@@ -101,6 +101,7 @@ public class Agent {
 
     public void finalizeQTableUpdate() {
         qTableMgr.updateQData();
+
     }
 
     private void decayEpsilon() {
