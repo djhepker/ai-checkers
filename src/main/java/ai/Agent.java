@@ -27,8 +27,6 @@ public class Agent extends NPC {
 
     private AgentTools toolbox;
     private QTableManager qTableMgr;
-    private AgentDecisionHandler decisionHandler;
-    private Environment environment;
     private PieceManager pMgr;
 
     private final double GAMMA = 0.75;
@@ -45,29 +43,38 @@ public class Agent extends NPC {
         this.pMgr = pMgr;
         this.toolbox = new AgentTools(isDusky);
         this.qTableMgr = new QTableManager();
-        this.decisionHandler = new AgentDecisionHandler(pMgr, toolbox);
         this.currentQ = 0.0;
         this.maxQPrime = 0.0;
         this.RHO = 0.0;
     }
 
     public void update() {
-        this.environment = new Environment(toolbox, pMgr); // not needed
+        AgentDecisionHandler decisionHandler = new AgentDecisionHandler(pMgr, toolbox);
+        decisionHandler.updateDecisionArray(); // loads movelist into decisionhandler *
+        int moveChoice = getMoveChoice(decisionHandler);   // random move generated *
+
+        Environment environment = new Environment(toolbox, pMgr); // not needed
         this.stateKey = environment.getEncodedGameState(pMgr); // not needed
 
-        decisionHandler.updateDecisionArray(); // loads movelist into decisionhandler
-        int moveChoice = getMoveChoice();   // random move generated
 
-        this.currentQ = getQValue(stateKey, moveChoice);    // q value calculated
-        decisionHandler.processDecisionReward(environment, moveChoice); // reward calculated
+        this.currentQ = getQValue(stateKey, moveChoice);    // not needed; requires movechoice
+        decisionHandler.calculateDecisionReward(environment, moveChoice); // not needed; requires movechoice
 
-        decisionHandler.movePiece(moveChoice);  // piece moved
+        decisionHandler.movePiece(moveChoice);  // piece moved *
 
 
-        environment.updateStatePrime();
-        updateRho();
-        calculateMaxQPrime();
+        environment.updateStatePrime(); // not needed; requires piece be moved
+        updateRho(environment, decisionHandler);
+        calculateMaxQPrime(environment);
         updateQValue(moveChoice);
+    }
+
+    private int getMoveChoice(AgentDecisionHandler handler) {
+        if (Math.random() < EPSILON) {
+            return explore(handler);
+        } else {
+            return exploit();
+        }
     }
 
     private double getQValue(String stateKey, int moveChoice) {
@@ -78,28 +85,20 @@ public class Agent extends NPC {
         }
     }
 
-    private int getMoveChoice() {
-        if (Math.random() < EPSILON) {
-            return explore();
-        } else {
-            return exploit();
-        }
-    }
-
     private int exploit() {
         return qTableMgr.getMaxQIndex(stateKey);
     }
 
-    private int explore() {
-        return new Random().nextInt(decisionHandler.getNumDecisions());
+    private int explore(AgentDecisionHandler handler) {
+        return new Random().nextInt(handler.getNumDecisions());
     }
 
-    public void updateRho() {
-        this.RHO = decisionHandler.getReward(environment);
+    public void updateRho(Environment env, AgentDecisionHandler handler) {
+        this.RHO = handler.getDecisionReward(env);
     }
 
-    private void calculateMaxQPrime() {
-        String statePrimeKey = environment.getEncodedGameState(pMgr);
+    private void calculateMaxQPrime(Environment env) {
+        String statePrimeKey = env.getEncodedGameState(pMgr);
         int maxQPrimeIndex = qTableMgr.getMaxQIndex(statePrimeKey);
         this.maxQPrime = getQValue(statePrimeKey, maxQPrimeIndex);
     }
