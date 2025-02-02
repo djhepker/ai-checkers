@@ -1,34 +1,30 @@
 package main.java.game.utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EnvLoader {
-    private Map<String, String> envVars = new HashMap<>();
+    private final Map<String, String> envVars = new HashMap<>();
 
-    public EnvLoader(String filePath) throws IOException {
-        loadEnv(filePath);
+    public EnvLoader(String filePath) {
+        try {
+            FileLoader fileLoader = new FileLoader(filePath);
+            loadEnv(fileLoader.readLines());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void loadEnv(String filePath) throws IOException {
-        File file = new File(filePath);
-
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                if (line.trim().isEmpty() || line.startsWith("#")) {
-                    continue;
-                }
-                String[] parts = line.split("=", 2);
-                if (parts.length == 2) {
-                    String key = parts[0].trim();
-                    String value = parts[1].trim();
-                    envVars.put(key, value);
-                }
+    private void loadEnv(List<String> lines) {
+        for (String line : lines) {
+            if (line.trim().isEmpty() || line.startsWith("#")) {
+                continue;
+            }
+            String[] parts = line.split("=", 2);
+            if (parts.length == 2) {
+                envVars.put(parts[0].trim(), parts[1].trim());
             }
         }
     }
