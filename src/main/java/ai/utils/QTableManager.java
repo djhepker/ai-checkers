@@ -42,12 +42,7 @@ public class QTableManager {
     }
 
     public boolean isWithinSize(String serialKey, int qIndex) {
-        if (qTable.containsKey(serialKey)) {
-            if (qTable.get(serialKey).length >= qIndex) {
-                return true;
-            }
-        }
-        return false;
+        return qTable.containsKey(serialKey) && qTable.get(serialKey).length > qIndex;
     }
 
     public double getQValue(String serialKey, int qIndex) {
@@ -69,7 +64,6 @@ public class QTableManager {
 
     public void updateQData() {
         db.updateQTable(qTable);
-        // db.displayAllData();
         db.updateEpisodes();
     }
 
@@ -149,6 +143,7 @@ public class QTableManager {
         }
 
         public void displayAllData() {
+            System.out.println("Displaying all QTable data.");
             final String sql = "SELECT key, q_index, q_value FROM QTable";
             try (Connection connection = DriverManager.getConnection(url);
                  Statement stmt = connection.createStatement();
@@ -170,7 +165,7 @@ public class QTableManager {
             final String EPISODE_KEY = "EPISODE_COUNT_FILEPATH";
             EpisodeCounter episodeCounter = new EpisodeCounter(envLoader.get(EPISODE_KEY));
             episodeCounter.processEpisode();
-            System.out.printf("Number of episodes: %d", episodeCounter.getEpisodeCount());
+            System.out.printf("Number of episodes: %d\n", episodeCounter.getEpisodeCount());
         }
     }
 }

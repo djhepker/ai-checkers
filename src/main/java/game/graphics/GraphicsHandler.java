@@ -72,6 +72,10 @@ public class GraphicsHandler extends JPanel {
         }
     }
 
+    public void gameOver() {
+        setBackground(Color.BLACK);
+    }
+
     private void drawHighlightRectangles(Graphics2D g2d) {
         g2d.setColor(Color.BLUE);
         g2d.setStroke(new BasicStroke(3));

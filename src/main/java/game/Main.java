@@ -8,8 +8,9 @@ public class Main {
         GameEngine game = new GameEngine();
         GameLoop gameLoop = new GameLoop(game);
 
-        //game.printAllCellsUsage();
-        //game.printAllPiecesInPlay();
-        //game.printAllCellsInPlay();
+        gameLoop.start();
+        gameLoop.awaitCompletion();
+
+        System.out.println("Loop ended. Game finished");
     }
 }

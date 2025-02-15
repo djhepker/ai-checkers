@@ -19,7 +19,6 @@ public class StochasticNPC {
     }
 
     public void update() {
-        System.out.println("StochasticNPC update");
         ActionNode[] decisionArr = toolbox.getDecisionArray(pMgr);
         if (decisionArr.length == 0) {
             pMgr.flagGameOver();

@@ -53,7 +53,12 @@ public class Agent {
         AIDecisionHandler decisionHandler = new AIDecisionHandler(pMgr, toolbox, environment);
         this.stateKey = environment.getEncodedGameState(pMgr);
         decisionHandler.updateDecisionArray();
-        int moveChoice = getMoveChoice(decisionHandler.getNumDecisions());
+        int numDecisions = decisionHandler.getNumDecisions();
+        if (numDecisions == 0) {
+            pMgr.flagGameOver();
+            return;
+        }
+        int moveChoice = getMoveChoice(numDecisions);
         this.currentQ = getQValue(stateKey, moveChoice);
         decisionHandler.calculateDecisionReward(moveChoice);
         decisionHandler.movePiece(moveChoice);
