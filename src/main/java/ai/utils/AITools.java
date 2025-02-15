@@ -4,9 +4,10 @@ import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;
 import main.java.game.entity.GameBoardPiece;
 
+import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 import static main.java.game.entity.GameBoardPiece.PieceColor.DUSKY;
 import static main.java.game.entity.GameBoardPiece.PieceColor.LIGHT;
@@ -50,17 +51,13 @@ public final class AITools {
                 .length;
     }
 
-    public String getBase64EncodingOfArr(int[] gameState) {
-        byte[] byteArray = new byte[gameState.length * Integer.BYTES];
-        for (int i = 0; i < gameState.length; i++) {
-            // Convert each int to a 4-byte array and copy it to the byte array
-            byteArray[i * 4] = (byte) (gameState[i] >> 24);
-            byteArray[i * 4 + 1] = (byte) (gameState[i] >> 16);
-            byteArray[i * 4 + 2] = (byte) (gameState[i] >> 8);
-            byteArray[i * 4 + 3] = (byte) gameState[i];
-        }
-        return Base64.getEncoder().encodeToString(byteArray);
+    public String getHexadecimalEncodingOfArr(int[] gameState) {
+        return new BigInteger(Arrays.stream(gameState)
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining()))
+                .toString(16);
     }
+
 
     public int getMaximumOpponentReward(PieceManager pMgr) {
         return Arrays.stream(pMgr.getPieces())
@@ -75,13 +72,12 @@ public final class AITools {
         if (piece == null) {
             return 0;
         }
-        int colorSign = pieceColor == DUSKY ? 1 : -1;
         try {
             return switch (piece.getName()) {
-                case "LIGHTChecker" -> -1 * colorSign;
-                case "DUSKYChecker" -> colorSign;
-                case "LIGHTCheckerKing" -> -2 * colorSign;
-                case "DUSKYCheckerKing" -> 2 * colorSign;
+                case "LIGHTChecker" -> 1;
+                case "DUSKYChecker" -> 3;
+                case "LIGHTCheckerKing" -> 2;
+                case "DUSKYCheckerKing" -> 4;
                 default -> throw new IllegalArgumentException("Invalid piece name: " + piece.getName());
             };
         } catch (IllegalArgumentException e) {

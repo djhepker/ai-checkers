@@ -32,7 +32,7 @@ public class Environment {
     }
 
     public String getEncodedGameState(PieceManager pMgr) {
-        return toolbox.getBase64EncodingOfArr(getStateArray(pMgr));
+        return toolbox.getHexadecimalEncodingOfArr(getStateArray(pMgr));
     }
 
     public void generateStatePrime() {
