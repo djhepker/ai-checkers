@@ -16,11 +16,12 @@ public class NPCManager {
 
     private GameState gameType;
 
-    public NPCManager(PieceManager pMgr, boolean playerLight, String gameType) {
+    public NPCManager(PieceManager pMgr, boolean playerLight, String gameTypeString) {
         this.IS_DUSKY = playerLight;
         this.pMgr = pMgr;
         this.toolbox = new AITools(IS_DUSKY);
-        loadGameState(gameType);
+        System.out.println(gameTypeString);
+        this.gameType = loadGameState(gameTypeString);
     }
 
     /*
@@ -46,19 +47,23 @@ public class NPCManager {
         zero.finalizeQTableUpdate();
     }
 
-    private void loadGameState(String gameType) {
-        if (gameType.equals("Agent Vs Player")) {
-            this.gameType = GameState.AGENT_VS_PLAYER;
+    private GameState loadGameState(String gameTypeString) {
+        if (gameTypeString.equals("Agent Vs Player")) {
             this.zero = new Agent(pMgr, toolbox, IS_DUSKY);
-        } else if (gameType.equals("Stochastic vs Player")) {
-            this.gameType = GameState.STOCHASTIC_VS_PLAYER;
+            System.out.println("Agent Vs Player loaded");
+            return GameState.AGENT_VS_PLAYER;
+        } else if (gameTypeString.equals("Stochastic Vs Player")) {
+            System.out.println("Stochastic Vs Player loaded");
             this.kane = new StochasticNPC(pMgr, toolbox, IS_DUSKY);
-        } else if (gameType.equals("Agent Vs Stochastic")) {
-            this.gameType = GameState.AGENT_VS_STOCHASTIC;
+            return GameState.STOCHASTIC_VS_PLAYER;
+        } else if (gameTypeString.equals("Agent Vs Stochastic")) {
+            System.out.println("Agent Vs Stochastic loaded");
             this.zero = new Agent(pMgr, toolbox, IS_DUSKY);
             this.kane = new StochasticNPC(pMgr, toolbox, !IS_DUSKY);
             duskyTurn = false;
+            return GameState.AGENT_VS_STOCHASTIC;
         }
+        return null;
     }
 
     private enum GameState {

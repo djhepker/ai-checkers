@@ -21,7 +21,6 @@ public class StochasticNPC {
     public void update() {
         ActionNode[] decisionArr = toolbox.getDecisionArray(pMgr);
         int moveChoice = new Random().nextInt(decisionArr.length);
-        System.out.printf("StochasticNPC update with choice: %d\n", moveChoice);
         if (!pMgr.machineMovePiece(decisionArr[moveChoice])) {
             throw new RuntimeException("StochasticNPC update failed");
         }
