@@ -1,21 +1,21 @@
-package main.java.game.ai;
+package main.java.ai.environment;
 
+import main.java.ai.utils.AITools;
 import main.java.game.gameworld.PieceManager;
 
 import java.util.Arrays;
 
-class Environment {
-    private AgentTools toolbox;
+public class Environment {
+    private AITools toolbox;
     private PieceManager pMgr;
 
     int[] gameStateArr;
     int[] gameStateArrPrime;
 
-    public Environment(AgentTools toolbox, PieceManager pMgr) {
+    public Environment(AITools toolbox, PieceManager pMgr) {
         this.pMgr = pMgr;
         this.toolbox = toolbox;
         generateStatePrime();
-        updateEnvironment();
         updateEnvironment();
     }
 

@@ -12,6 +12,7 @@ public class PieceManager {
     private InputHandler input;
     private int numDusky;
     private int numLight;
+    private boolean gameOver;
 
     public PieceManager(EntityCreator creator, InputHandler inputHandler) {
         this.creator = creator;
@@ -19,6 +20,7 @@ public class PieceManager {
         this.input = inputHandler;
         generateBeginningCheckers();
         updateAllPieces();
+        this.gameOver = false;
     }
 
     public void updateAllPieces() {
@@ -36,7 +38,11 @@ public class PieceManager {
     }
 
     public boolean sideDefeated() {
-        return numDusky * numLight == 0;
+        return numDusky * numLight == 0 || gameOver;
+    }
+
+    public void flagGameOver() {
+        this.gameOver = true;
     }
 
     public GameBoardPiece[] getPieces() {
@@ -67,7 +73,7 @@ public class PieceManager {
         return false;
     }
 
-    public void machineMovePiece(ActionNode actionNode) {
+    public boolean machineMovePiece(ActionNode actionNode) {
         int xNaught = actionNode.getoDataX();
         int yNaught = actionNode.getoDataY();
         processCapturedPieces(actionNode);
@@ -75,10 +81,11 @@ public class PieceManager {
         piece.setX(actionNode.getfDataX());
         piece.setY(actionNode.getfDataY());
         nullifyPiece(xNaught, yNaught);
-        insertPieceToBoard(piece);
+        boolean result = insertPieceToBoard(piece);
         if (piece.isReadyForPromotion()) {
             promotePiece(piece);
         }
+        return result;
     }
 
     public boolean spaceIsNull(int inputX, int inputY) {

@@ -1,4 +1,4 @@
-package main.java.game.ai;
+package main.java.ai.utils;
 
 import main.java.game.utils.FileLoader;
 

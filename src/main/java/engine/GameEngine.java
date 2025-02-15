@@ -1,6 +1,6 @@
 package main.java.engine;
 
-import main.java.game.ai.Agent;
+import main.java.ai.NPCManager;
 import main.java.game.gameworld.BoardManager;
 import main.java.game.graphics.GameWindow;
 import main.java.game.graphics.GraphicsHandler;
@@ -15,12 +15,12 @@ public class GameEngine {
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
     private GameWindow window;
-    private Agent zero;
+    private NPCManager npcMgr;
 
-    private final boolean lightChoice;
+    private final boolean LIGHT_CHOICE;
+    private final boolean HAS_PLAYER;
 
     private final boolean DEBUG = false;
-    private int DEBUG_COUNTER = 0;
 
     private boolean playerTurn;
     private boolean gameOver;
@@ -28,31 +28,39 @@ public class GameEngine {
     public GameEngine() {
         loadGameWorld();
         renderUI();
-        this.lightChoice = window.lightChosen();
-        this.zero = new Agent(pMgr, lightChoice);
-        this.playerTurn = lightChoice;
+        String gameMode = window.showGameModeDialog();
+        this.HAS_PLAYER = gameMode.endsWith("Player");
+        if (HAS_PLAYER) {
+            this.window.showPopUpColorDialog();
+        }
+        this.LIGHT_CHOICE = !HAS_PLAYER || window.lightChosen();
+        this.npcMgr = new NPCManager(pMgr, LIGHT_CHOICE, gameMode);
+        this.playerTurn = LIGHT_CHOICE;
         this.gameOver = false;
     }
 
     public void updateGame() {
-        inputHandler.update();
-        if (playerTurn) {
-            handleInput();
+        if (HAS_PLAYER) {
+            inputHandler.update();
+            if (playerTurn) {
+                handleInput();
+            } else {
+                npcMgr.update();
+                playerTurn = !playerTurn;
+            }
         } else {
-            zero.update();
-            playerTurn = !playerTurn;
+            npcMgr.update();
         }
         if (pMgr.sideDefeated()) {
             this.gameOver = true;
-        } else {
-            graphicsHandler.repaint();
         }
+        graphicsHandler.repaint();
     }
 
     public boolean gameOver() {
         if (!window.isOpen() || gameOver) {
             this.gameOver = true;
-            zero.finalizeQTableUpdate();
+            npcMgr.finishGame();
         }
         return gameOver;
     }
@@ -67,7 +75,7 @@ public class GameEngine {
                     pMgr.promotePiece(piece);
                 }
                 pMgr.updateAllPieces();
-            } else if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
+            } else if (piece != null && LIGHT_CHOICE == piece.isLight() && pMgr.movePiece(piece)) {
                 if (piece.isReadyForPromotion()) {
                     pMgr.promotePiece(piece);
                 }
@@ -90,7 +98,6 @@ public class GameEngine {
         this.graphicsHandler = new GraphicsHandler(bMgr.getCachedTiles(), pMgr, inputHandler);
         this.inputHandler.setGraphicsHandler(graphicsHandler);
         this.window = new GameWindow(graphicsHandler);
-        this.window.showPopUpColorDialog();
     }
 
     private void printSelectedPiece() {

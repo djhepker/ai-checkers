@@ -1,5 +1,9 @@
-package main.java.game.ai;
+package main.java.ai.ai;
 
+import main.java.ai.environment.AIDecisionHandler;
+import main.java.ai.environment.Environment;
+import main.java.ai.utils.AITools;
+import main.java.ai.utils.QTableManager;
 import main.java.game.gameworld.PieceManager;
 
 import java.util.Random;
@@ -21,10 +25,8 @@ import java.util.Random;
 public class Agent {
     private final boolean isDusky;
 
-    private AgentTools toolbox;
+    private AITools toolbox;
     private QTableManager qTableMgr;
-    private AgentDecisionHandler decisionHandler;
-    private Environment environment;
     private PieceManager pMgr;
 
     private final double GAMMA = 0.75;
@@ -36,28 +38,51 @@ public class Agent {
 
     private String stateKey;
 
-    public Agent (PieceManager pMgr, boolean playerLight) {
-        this.isDusky = playerLight;
+    public Agent (PieceManager pMgr, AITools toolbox, boolean vsLight) {
         this.pMgr = pMgr;
-        this.toolbox = new AgentTools(isDusky);
+        this.isDusky = vsLight;
+        this.toolbox = toolbox;
         this.qTableMgr = new QTableManager();
-        this.decisionHandler = new AgentDecisionHandler(pMgr, toolbox);
         this.currentQ = 0.0;
         this.maxQPrime = 0.0;
         this.RHO = 0.0;
     }
 
     public void update() {
-        this.environment = new Environment(toolbox, pMgr);
+        Environment environment = new Environment(toolbox, pMgr);
+        AIDecisionHandler decisionHandler = new AIDecisionHandler(pMgr, toolbox, environment);
         this.stateKey = environment.getEncodedGameState(pMgr);
         decisionHandler.updateDecisionArray();
-        int moveChoice = getMoveChoice();
+        int numDecisions = decisionHandler.getNumDecisions();
+        if (numDecisions == 0) {
+            pMgr.flagGameOver();
+            return;
+        }
+        int moveChoice = getMoveChoice(numDecisions);
         this.currentQ = getQValue(stateKey, moveChoice);
-        decisionHandler.fulfillDecision(environment, moveChoice);
+        decisionHandler.calculateDecisionReward(moveChoice);
+        decisionHandler.movePiece(moveChoice);
+        decisionHandler.updateDecisionArray();
         environment.generateStatePrime();
-        updateRho();
-        calculateMaxQPrime();
+        updateRho(decisionHandler);
+        calculateMaxQPrime(environment);
         updateQValue(moveChoice);
+    }
+
+    private int getMoveChoice(int numDecisions) {
+        if (Math.random() < EPSILON) {
+            return explore(numDecisions);
+        } else {
+            return exploit();
+        }
+    }
+
+    private int exploit() {
+        return qTableMgr.getMaxQIndex(stateKey);
+    }
+
+    private int explore(int numDecisions) {
+        return new Random().nextInt(numDecisions);
     }
 
     private double getQValue(String stateKey, int moveChoice) {
@@ -68,28 +93,12 @@ public class Agent {
         }
     }
 
-    private int getMoveChoice() {
-        if (Math.random() < EPSILON) {
-            return explore();
-        } else {
-            return exploit();
-        }
+    public void updateRho(AIDecisionHandler handler) {
+        this.RHO = handler.getDecisionReward();
     }
 
-    private int exploit() {
-        return qTableMgr.getMaxQIndex(stateKey);
-    }
-
-    private int explore() {
-        return new Random().nextInt(decisionHandler.getNumDecisions());
-    }
-
-    public void updateRho() {
-        this.RHO = decisionHandler.getReward(environment);
-    }
-
-    private void calculateMaxQPrime() {
-        String statePrimeKey = environment.getEncodedGameState(pMgr);
+    private void calculateMaxQPrime(Environment env) {
+        String statePrimeKey = env.getEncodedGameState(pMgr);
         int maxQPrimeIndex = qTableMgr.getMaxQIndex(statePrimeKey);
         this.maxQPrime = getQValue(statePrimeKey, maxQPrimeIndex);
     }

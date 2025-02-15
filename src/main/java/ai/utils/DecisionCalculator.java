@@ -1,12 +1,12 @@
-package main.java.game.ai;
+package main.java.ai.utils;
 
+import main.java.ai.environment.Environment;
 import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;
 
-class AgentDecisionHandler {
+public class DecisionCalculator {
+    private AITools toolbox;
     private PieceManager pMgr;
-    private AgentTools toolbox;
-    private ActionNode[] decisionArray;
 
     private int numOptionsNaught;
     private int numEnemyOptionsNaught;
@@ -14,35 +14,24 @@ class AgentDecisionHandler {
     private int pointsFromDecision;
     private int numEnemiesNaught;
 
-    public AgentDecisionHandler(PieceManager pMgr, AgentTools toolbox) {
-        this.pMgr = pMgr;
+    public DecisionCalculator(AITools toolbox, PieceManager pMgr) {
         this.toolbox = toolbox;
+        this.pMgr = pMgr;
     }
 
-    public void updateDecisionArray() {
-        decisionArray = toolbox.getDecisionArray(pMgr);
-    }
-
-    public int getNumDecisions() {
-        return decisionArray.length;
-    }
-
-    public void fulfillDecision(Environment env, int moveChoice) {
+    public void calculateDecisionReward(Environment env, ActionNode[] decisionArray, int moveChoice) {
         this.numEnemiesNaught = env.getNumEnemyPieces();
         this.numOptionsNaught = decisionArray.length;
         this.numEnemyOptionsNaught = toolbox.getNumOpponentOptions(pMgr);
         pointsFromDecision = decisionArray[moveChoice].getReward();
-        pMgr.machineMovePiece(decisionArray[moveChoice]);
-        pMgr.updateAllPieces();
-        updateDecisionArray();
     }
 
-    public double getReward(Environment env) {
+    public double getReward(Environment env, ActionNode[] decisionArray) {
         double ratioOptions = (double) decisionArray.length / toolbox.getNumOpponentOptions(pMgr) -
-                             (double) numOptionsNaught / numEnemyOptionsNaught;
+                (double) numOptionsNaught / numEnemyOptionsNaught;
         int numAlliedPieces = env.getNumAlliedPieces();
         double ratioPieces = (double) numAlliedPieces / env.getNumEnemyPieces() -
-                             (double) numAlliedPieces / numEnemiesNaught;
+                (double) numAlliedPieces / numEnemiesNaught;
         int pointsEarned = pointsFromDecision - toolbox.getMaximumOpponentReward(pMgr);
         return ratioOptions + ratioPieces + pointsEarned;
     }
