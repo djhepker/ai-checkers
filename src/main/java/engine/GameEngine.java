@@ -61,7 +61,6 @@ public class GameEngine {
         if (!window.isOpen() || gameOver) {
             this.gameOver = true;
             npcMgr.finishGame();
-            graphicsHandler.gameOver();
         }
         return gameOver;
     }
