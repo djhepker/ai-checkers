@@ -12,6 +12,7 @@ public class PieceManager {
     private InputHandler input;
     private int numDusky;
     private int numLight;
+    private boolean gameOver;
 
     public PieceManager(EntityCreator creator, InputHandler inputHandler) {
         this.creator = creator;
@@ -19,6 +20,7 @@ public class PieceManager {
         this.input = inputHandler;
         generateBeginningCheckers();
         updateAllPieces();
+        this.gameOver = false;
     }
 
     public void updateAllPieces() {
@@ -36,7 +38,11 @@ public class PieceManager {
     }
 
     public boolean sideDefeated() {
-        return numDusky * numLight == 0;
+        return numDusky * numLight == 0 || gameOver;
+    }
+
+    public void flagGameOver() {
+        this.gameOver = true;
     }
 
     public GameBoardPiece[] getPieces() {
