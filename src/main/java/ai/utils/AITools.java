@@ -5,8 +5,8 @@ import main.java.game.gameworld.PieceManager;
 import main.java.game.entity.GameBoardPiece;
 
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Comparator;
-import java.util.stream.Collectors;
 
 import static main.java.game.entity.GameBoardPiece.PieceColor.DUSKY;
 import static main.java.game.entity.GameBoardPiece.PieceColor.LIGHT;
@@ -42,14 +42,24 @@ public final class AITools {
                 .toArray(ActionNode[]::new);
     }
 
-    /*
-    * TODO: reduce the size of our statekeys (if possible)
-    * */
-    public String getHexadecimalEncodingOfArr(int[] gameState) {
-        String encodedState = Arrays.stream(gameState)
-                .mapToObj(Integer::toHexString)
-                .collect(Collectors.joining());
-        return encodedState;
+    public int getNumOpponentOptions(PieceManager pMgr) {
+        return Arrays.stream(pMgr.getPieces())
+                .filter(piece -> piece != null && piece.getColor() != pieceColor)
+                .flatMap(GameBoardPiece::getMoveListAsStream)
+                .toArray()
+                .length;
+    }
+
+    public String getBase64EncodingOfArr(int[] gameState) {
+        byte[] byteArray = new byte[gameState.length * Integer.BYTES];
+        for (int i = 0; i < gameState.length; i++) {
+            // Convert each int to a 4-byte array and copy it to the byte array
+            byteArray[i * 4] = (byte) (gameState[i] >> 24);
+            byteArray[i * 4 + 1] = (byte) (gameState[i] >> 16);
+            byteArray[i * 4 + 2] = (byte) (gameState[i] >> 8);
+            byteArray[i * 4 + 3] = (byte) gameState[i];
+        }
+        return Base64.getEncoder().encodeToString(byteArray);
     }
 
     public int getMaximumOpponentReward(PieceManager pMgr) {
@@ -59,14 +69,6 @@ public final class AITools {
                 .mapToInt(ActionNode::getReward)
                 .max()
                 .orElse(0);
-    }
-
-    public int getNumOpponentOptions(PieceManager pMgr) {
-        return Arrays.stream(pMgr.getPieces())
-                .filter(piece -> piece != null && piece.getColor() != pieceColor)
-                .flatMap(GameBoardPiece::getMoveListAsStream)
-                .toArray()
-                .length;
     }
 
     public int pieceToInt(GameBoardPiece piece) {
