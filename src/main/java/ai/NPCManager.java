@@ -31,28 +31,29 @@ public class NPCManager {
         }
     }
 
-    public void finishGame() {
+    public void finishGame(boolean gameWon) {
         if (gameType != GameState.STOCHASTIC_VS_PLAYER) {
-            zero.finalizeQTableUpdate();
+            zero.finalizeQTableUpdate(gameWon);
         }
     }
 
     private GameState loadGameState(String gameTypeString) {
         if (gameTypeString.equals("Agent Vs Player")) {
             this.zero = new Agent(pMgr, new AITools(IS_DUSKY), IS_DUSKY);
-            System.out.println("Agent Vs Player loaded");
             return GameState.AGENT_VS_PLAYER;
         } else if (gameTypeString.equals("Stochastic Vs Player")) {
-            System.out.println("Stochastic Vs Player loaded");
             this.kane = new StochasticNPC(pMgr, new AITools(IS_DUSKY), IS_DUSKY);
             return GameState.STOCHASTIC_VS_PLAYER;
         } else if (gameTypeString.equals("Agent Vs Stochastic")) {
-            System.out.println("Agent Vs Stochastic loaded");
             this.zero = new Agent(pMgr, new AITools(IS_DUSKY), IS_DUSKY);
             this.kane = new StochasticNPC(pMgr, new AITools(!IS_DUSKY), !IS_DUSKY);
             return GameState.AGENT_VS_STOCHASTIC;
         }
         return null;
+    }
+
+    public boolean isStochasticVsAgent() {
+        return kane != null && zero != null;
     }
 
     private enum GameState {

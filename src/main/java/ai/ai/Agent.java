@@ -29,9 +29,9 @@ public class Agent {
     private QTableManager qTableMgr;
     private PieceManager pMgr;
 
-    private final double GAMMA = 0.75;
-    private final double ALPHA = 0.84;
-    private final double EPSILON = 0.92;
+    private final double GAMMA = 0.75; // value of knowledge
+    private final double ALPHA = 0.84; // learning rate
+    private final double EPSILON = 0.8; // exploration rate
     private double RHO;
     private double currentQ;
     private double maxQPrime;
@@ -105,16 +105,13 @@ public class Agent {
 
     private void updateQValue(int moveChoice) {
         double updatedQ = 2 * currentQ + ALPHA * (RHO + GAMMA * maxQPrime - currentQ);
+        System.out.printf("Putting q updatedQ of: %.6f\n", updatedQ);
         qTableMgr.setQValue(stateKey, moveChoice, updatedQ);
     }
 
-    public void finalizeQTableUpdate() {
-        qTableMgr.updateQData();
+    public void finalizeQTableUpdate(boolean gameWon) {
+        qTableMgr.updateQData(gameWon);
 
-    }
-
-    private void decayEpsilon() {
-        // logic for increasing the exploitation rate over time
     }
 
     public void printQueue() {

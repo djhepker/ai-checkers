@@ -28,6 +28,10 @@ public final class AITools {
         this.pieceColor = isDusky ? DUSKY : LIGHT;
     }
 
+    public boolean isDusky() {
+        return pieceColor == DUSKY;
+    }
+
     public void printQueue(PieceManager pMgr) {
         ActionNode[] printable = getDecisionArray(pMgr);
         for (ActionNode node : printable) {
