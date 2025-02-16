@@ -6,7 +6,7 @@ import main.java.engine.GameLoop;
 public class Main {
     public static void main(String[] args) {
         boolean TRAINING_MODE = true;
-        int maxEpisodes = 200;
+        int maxEpisodes = 20;
         int episode = 0;
         GameLoop gameLoop;
 

@@ -27,7 +27,9 @@ public class GameEngine {
     public GameEngine(boolean isTraining) {
         this.IS_TRAINING = isTraining;
         loadGameWorld();
-        renderUI();
+        if (!IS_TRAINING) {
+            renderUI();
+        }
         if (IS_TRAINING) {
             this.LIGHT_CHOICE = true;
             this.HAS_PLAYER = false;
@@ -60,19 +62,26 @@ public class GameEngine {
         if (pMgr.sideDefeated()) {
             this.gameOver = true;
         }
-        graphicsHandler.repaint();
+        if (!IS_TRAINING) {
+            graphicsHandler.repaint();
+        }
     }
 
     public boolean gameOver() {
-        if (!window.isOpen() || gameOver) {
-            this.gameOver = true;
-            if (window.lightChosen() || npcMgr.isStochasticVsAgent()) {
+        if (!IS_TRAINING) {
+            if (!window.isOpen() || gameOver) {
+                this.gameOver = true;
+                if (window.lightChosen()) {
+                    npcMgr.finishGame(pMgr.getNumLight() == 0);
+                } else {
+                    npcMgr.finishGame(pMgr.getNumDusky() == 0);
+                }
+            }
+        } else if (gameOver) {
+            if (LIGHT_CHOICE) {
                 npcMgr.finishGame(pMgr.getNumLight() == 0);
             } else {
                 npcMgr.finishGame(pMgr.getNumDusky() == 0);
-            }
-            if (IS_TRAINING) {
-                window.close();
             }
         }
         return gameOver;
