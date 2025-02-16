@@ -58,7 +58,6 @@ public final class AITools {
                 .toString(16);
     }
 
-
     public int getMaximumOpponentReward(PieceManager pMgr) {
         return Arrays.stream(pMgr.getPieces())
                 .filter(piece -> piece != null && piece.getColor() != pieceColor)
