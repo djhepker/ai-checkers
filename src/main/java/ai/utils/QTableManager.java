@@ -15,10 +15,10 @@ import java.util.Map;
 
 public class QTableManager {
     private HashMap<String, double[]> qTable;
-    private SQLITEDatabase db;
+    private DataBaseHandler db;
 
     public QTableManager() {
-        this.db = new SQLITEDatabase();
+        this.db = new DataBaseHandler();
         this.qTable = new HashMap<>();
         this.db.createTable();
         this.qTable = db.fetchQTable();
@@ -61,18 +61,19 @@ public class QTableManager {
     }
 
 
-    public void updateQData() {
+    public void updateQData(boolean gameWon) {
         db.updateQTable(qTable);
         db.updateEpisodes();
+        db.updateAgentStats(gameWon);
     }
 
-    private class SQLITEDatabase {
+    private class DataBaseHandler {
         private final String SQL_URL_KEY = "SQL_URL";
         private final String ENV_FILEPATH = ".env";
         private final String url;
         private EnvLoader envLoader;
 
-        public SQLITEDatabase() {
+        public DataBaseHandler() {
             this.envLoader = new EnvLoader(ENV_FILEPATH);
             this.url = envLoader.get(SQL_URL_KEY);
         }
@@ -87,7 +88,6 @@ public class QTableManager {
             try (Connection conn = DriverManager.getConnection(url);
                  Statement stmt = conn.createStatement()) {
                 stmt.execute(sql);
-                System.out.println("Table created successfully.");
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -134,7 +134,7 @@ public class QTableManager {
                     }
                 }
                 int[] result = ppdStmt.executeBatch();
-                System.out.println("Updated " + result.length + " rows in the QTable.");
+                //System.out.println("Updated " + result.length + " rows in the QTable.");
             } catch (SQLException e) {
                 System.out.println("Error updating QTable: " + e.getMessage());
                 e.printStackTrace();
@@ -145,7 +145,12 @@ public class QTableManager {
             final String EPISODE_KEY = "EPISODE_COUNT_FILEPATH";
             EpisodeCounter episodeCounter = new EpisodeCounter(envLoader.get(EPISODE_KEY));
             episodeCounter.processEpisode();
-            System.out.printf("Number of episodes: %d\n", episodeCounter.getEpisodeCount());
+        }
+
+        public void updateAgentStats(boolean gameWon) {
+            final String STATS_KEY = "AGENT_STATS_FILEPATH";
+            AgentStats agentStatsHandler = new AgentStats(envLoader.get(STATS_KEY));
+            agentStatsHandler.processEpisode(gameWon);
         }
 
         public void displayAllData() {

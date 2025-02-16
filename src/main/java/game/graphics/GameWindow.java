@@ -9,20 +9,21 @@ public class GameWindow {
     private GraphicsHandler graphicsHandler;
     private boolean windowOpen;
     private boolean lightChosen;
+    private JFrame frame;
 
     public GameWindow(GraphicsHandler graphicsHandler) {
         this.graphicsHandler = graphicsHandler;
         this.lightChosen = false;
 
-        JFrame frame = new JFrame("Checkers dev");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(graphicsHandler);
-        frame.setSize(800,800);
-        frame.setLocationRelativeTo(null); // centered
-        frame.setVisible(true);
+        this.frame = new JFrame("Checkers dev");
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.frame.add(graphicsHandler);
+        this.frame.setSize(800,800);
+        this.frame.setLocationRelativeTo(null); // centered
+        this.frame.setVisible(true);
         this.windowOpen = true;
 
-        frame.addWindowListener(new WindowAdapter() {
+        this.frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
@@ -45,20 +46,23 @@ public class GameWindow {
     }
 
     public String showGameModeDialog() {
-        try {
-            String[] playerOptions = {"Agent Vs Stochastic", "Agent Vs Player", "Stochastic Vs Player"};
-            String selectedGameMode = (String) JOptionPane.showInputDialog(
-                    graphicsHandler,
-                    "Choose who will be playing",
-                    "Checkers",
-                    JOptionPane.QUESTION_MESSAGE,
-                    null, playerOptions, playerOptions[0]);
-            return selectedGameMode;
-        } catch (Exception e) {
+        String[] playerOptions = {"Agent Vs Stochastic", "Agent Vs Player", "Stochastic Vs Player"};
+        String selectedGameMode = (String) JOptionPane.showInputDialog(
+                graphicsHandler,
+                "Choose who will be playing",
+                "Checkers",
+                JOptionPane.QUESTION_MESSAGE,
+                null, playerOptions, playerOptions[0]);
+        if (selectedGameMode == null) {
             System.out.println("Game Mode Dialog closed.");
+            frame.dispose();
             System.exit(0);
         }
-        return null;
+        return selectedGameMode;
+    }
+
+    public void close() {
+        frame.dispose();
     }
 
     public boolean lightChosen() {

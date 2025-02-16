@@ -19,23 +19,29 @@ public class GameEngine {
 
     private final boolean LIGHT_CHOICE;
     private final boolean HAS_PLAYER;
-
-    private final boolean DEBUG = false;
+    private final boolean IS_TRAINING;
 
     private boolean playerTurn;
     private boolean gameOver;
 
-    public GameEngine() {
+    public GameEngine(boolean isTraining) {
+        this.IS_TRAINING = isTraining;
         loadGameWorld();
         renderUI();
-        String gameMode = window.showGameModeDialog();
-        this.HAS_PLAYER = gameMode.endsWith("Player");
-        if (HAS_PLAYER) {
-            this.window.showPopUpColorDialog();
+        if (IS_TRAINING) {
+            this.LIGHT_CHOICE = true;
+            this.HAS_PLAYER = false;
+            this.npcMgr = new NPCManager(pMgr, LIGHT_CHOICE, "Agent Vs Stochastic");
+        } else {
+            String gameMode = window.showGameModeDialog();
+            this.HAS_PLAYER = gameMode.endsWith("Player");
+            if (HAS_PLAYER) {
+                this.window.showPopUpColorDialog();
+            }
+            this.LIGHT_CHOICE = !HAS_PLAYER || window.lightChosen();
+            this.playerTurn = LIGHT_CHOICE;
+            this.npcMgr = new NPCManager(pMgr, LIGHT_CHOICE, gameMode);
         }
-        this.LIGHT_CHOICE = !HAS_PLAYER || window.lightChosen();
-        this.npcMgr = new NPCManager(pMgr, LIGHT_CHOICE, gameMode);
-        this.playerTurn = LIGHT_CHOICE;
         this.gameOver = false;
     }
 
@@ -60,7 +66,14 @@ public class GameEngine {
     public boolean gameOver() {
         if (!window.isOpen() || gameOver) {
             this.gameOver = true;
-            npcMgr.finishGame();
+            if (window.lightChosen() || npcMgr.isStochasticVsAgent()) {
+                npcMgr.finishGame(pMgr.getNumLight() == 0);
+            } else {
+                npcMgr.finishGame(pMgr.getNumDusky() == 0);
+            }
+            if (IS_TRAINING) {
+                window.close();
+            }
         }
         return gameOver;
     }
@@ -70,12 +83,7 @@ public class GameEngine {
             int firstXPos = inputHandler.getFirstXPos();
             int firstYPos = inputHandler.getFirstYPos();
             GameBoardPiece piece = pMgr.getPiece(firstXPos, firstYPos);
-            if (DEBUG && piece != null && pMgr.movePiece(piece)) {
-                if (piece.isReadyForPromotion()) {
-                    pMgr.promotePiece(piece);
-                }
-                pMgr.updateAllPieces();
-            } else if (piece != null && LIGHT_CHOICE == piece.isLight() && pMgr.movePiece(piece)) {
+            if (piece != null && LIGHT_CHOICE == piece.isLight() && pMgr.movePiece(piece)) {
                 if (piece.isReadyForPromotion()) {
                     pMgr.promotePiece(piece);
                 }

@@ -3,8 +3,6 @@ package main.java.ai.environment;
 import main.java.ai.utils.AITools;
 import main.java.game.gameworld.PieceManager;
 
-import java.util.Arrays;
-
 public class Environment {
     private AITools toolbox;
     private PieceManager pMgr;
@@ -20,15 +18,19 @@ public class Environment {
     }
 
     public int getNumAlliedPieces() {
-        return (int) Arrays.stream(gameStateArrPrime)
-                .filter(num -> num >= 1)
-                .count();
+        if (toolbox.isDusky()) {
+            return pMgr.getNumDusky();
+        } else {
+            return pMgr.getNumLight();
+        }
     }
 
     public int getNumEnemyPieces() {
-        return (int) Arrays.stream(gameStateArrPrime)
-                .filter(num -> num <= -1)
-                .count();
+        if (toolbox.isDusky()) {
+            return pMgr.getNumLight();
+        } else {
+            return pMgr.getNumDusky();
+        }
     }
 
     public String getEncodedGameState(PieceManager pMgr) {

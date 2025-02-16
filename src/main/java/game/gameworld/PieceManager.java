@@ -123,6 +123,14 @@ public class PieceManager {
         }
     }
 
+    public int getNumDusky() {
+        return numDusky;
+    }
+
+    public int getNumLight() {
+        return numLight;
+    }
+
     private GameBoardPiece[] generateBeginningCheckers() {
         GameBoardPiece[] pieces = new GameBoardPiece[64];
         int x = 1;
