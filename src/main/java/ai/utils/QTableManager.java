@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class QTableManager {
     private HashMap<String, double[]> qTable;
     private SQLITEDatabase db;
@@ -142,6 +141,13 @@ public class QTableManager {
             }
         }
 
+        public void updateEpisodes() {
+            final String EPISODE_KEY = "EPISODE_COUNT_FILEPATH";
+            EpisodeCounter episodeCounter = new EpisodeCounter(envLoader.get(EPISODE_KEY));
+            episodeCounter.processEpisode();
+            System.out.printf("Number of episodes: %d\n", episodeCounter.getEpisodeCount());
+        }
+
         public void displayAllData() {
             System.out.println("Displaying all QTable data.");
             final String sql = "SELECT key, q_index, q_value FROM QTable";
@@ -159,13 +165,6 @@ public class QTableManager {
             } catch (SQLException e) {
                 System.out.println("Error displaying data: " + e.getMessage());
             }
-        }
-
-        public void updateEpisodes() {
-            final String EPISODE_KEY = "EPISODE_COUNT_FILEPATH";
-            EpisodeCounter episodeCounter = new EpisodeCounter(envLoader.get(EPISODE_KEY));
-            episodeCounter.processEpisode();
-            System.out.printf("Number of episodes: %d\n", episodeCounter.getEpisodeCount());
         }
     }
 }
