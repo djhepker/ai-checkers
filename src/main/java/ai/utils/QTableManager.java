@@ -15,6 +15,8 @@ import java.util.Map;
 
 public class QTableManager {
     private HashMap<String, double[]> qTable;
+    private HashMap<String, double[]> updatedQValues;
+
     private DataBaseHandler db;
 
     public QTableManager() {
@@ -22,6 +24,7 @@ public class QTableManager {
         this.qTable = new HashMap<>();
         this.db.createTable();
         this.qTable = db.fetchQTable();
+        this.updatedQValues = new HashMap<>();
     }
 
     public int getMaxQIndex(String serialKey) {
@@ -55,14 +58,13 @@ public class QTableManager {
         double[] qValues = qTable.get(serialKey);
         if (index >= qValues.length) {
             qValues = Arrays.copyOf(qValues, index + 1);
-            qTable.put(serialKey, qValues);
+            updatedQValues.put(serialKey, qValues);
         }
         qValues[index] = inputQ;
     }
 
-
     public void updateQData(boolean gameWon) {
-        db.updateQTable(qTable);
+        db.updateQTable(updatedQValues);
         db.updateEpisodes();
         db.updateAgentStats(gameWon);
     }
@@ -134,7 +136,6 @@ public class QTableManager {
                     }
                 }
                 int[] result = ppdStmt.executeBatch();
-                //System.out.println("Updated " + result.length + " rows in the QTable.");
             } catch (SQLException e) {
                 System.out.println("Error updating QTable: " + e.getMessage());
                 e.printStackTrace();
@@ -151,25 +152,6 @@ public class QTableManager {
             final String STATS_KEY = "AGENT_STATS_FILEPATH";
             AgentStats agentStatsHandler = new AgentStats(envLoader.get(STATS_KEY));
             agentStatsHandler.processEpisode(gameWon);
-        }
-
-        public void displayAllData() {
-            System.out.println("Displaying all QTable data.");
-            final String sql = "SELECT key, q_index, q_value FROM QTable";
-            try (Connection connection = DriverManager.getConnection(url);
-                 Statement stmt = connection.createStatement();
-                 ResultSet rs = stmt.executeQuery(sql)) {
-                System.out.println("Key\t\tQ_Index\tQ_Value");
-                System.out.println("----------------------------------");
-                while (rs.next()) {
-                    String key = rs.getString("key");
-                    int qIndex = rs.getInt("q_index");
-                    double qValue = rs.getDouble("q_value");
-                    System.out.println(key + "\t" + qIndex + "\t" + qValue);
-                }
-            } catch (SQLException e) {
-                System.out.println("Error displaying data: " + e.getMessage());
-            }
         }
     }
 }

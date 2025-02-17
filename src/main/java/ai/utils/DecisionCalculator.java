@@ -26,6 +26,7 @@ public class DecisionCalculator {
         pointsFromDecision = decisionArray[moveChoice].getReward();
     }
 
+    // TODO: fix reward calculation to improve the rate of positive numbers
     public double getReward(Environment env, ActionNode[] decisionArray) {
         double ratioOptions = (double) decisionArray.length / toolbox.getNumOpponentOptions(pMgr) -
                 (double) numOptionsNaught / numEnemyOptionsNaught;
