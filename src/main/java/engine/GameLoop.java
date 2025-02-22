@@ -2,7 +2,8 @@ package main.java.engine;
 
 public class GameLoop implements Runnable {
     private final GameEngine game;
-    private final long FRAME_TIME = 16_666_667;
+    // 10^9 / FRAME_TIME = framerate
+    private final long FRAME_TIME = 8_333_333;
     private Thread thread;
 
     public GameLoop(GameEngine game) {
@@ -18,13 +19,13 @@ public class GameLoop implements Runnable {
             if (elapsedTime < FRAME_TIME) {
                 long sleepTimeNanos = FRAME_TIME - elapsedTime;
                 try {
-                    // Sleep for most of the remaining time
+
                     Thread.sleep(sleepTimeNanos / 1_000_000, (int) (sleepTimeNanos % 1_000_000));
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     return;
                 }
-                // Yield for any remaining time to fine-tune accuracy
+
                 while (System.nanoTime() - startTime < FRAME_TIME) {
                     Thread.yield();
                 }

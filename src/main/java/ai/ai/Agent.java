@@ -3,7 +3,7 @@ package main.java.ai.ai;
 import main.java.ai.environment.AIDecisionHandler;
 import main.java.ai.environment.Environment;
 import main.java.ai.utils.AITools;
-import main.java.ai.utils.QTableManager;
+import main.java.ai.table.DataManager;
 import main.java.game.gameworld.PieceManager;
 
 import java.util.Random;
@@ -26,7 +26,7 @@ public class Agent {
     private final boolean isDusky;
 
     private AITools toolbox;
-    private QTableManager qTableMgr;
+    private DataManager qTableMgr;
     private PieceManager pMgr;
 
     private final double GAMMA = 0.9; // value of knowledge
@@ -42,7 +42,7 @@ public class Agent {
         this.pMgr = pMgr;
         this.isDusky = vsLight;
         this.toolbox = toolbox;
-        this.qTableMgr = new QTableManager();
+        this.qTableMgr = new DataManager();
         this.currentQ = 0.0;
         this.maxQPrime = 0.0;
         this.RHO = 0.0;
@@ -109,7 +109,7 @@ public class Agent {
     }
 
     public void finalizeQTableUpdate(boolean gameWon) {
-        qTableMgr.updateQData(gameWon);
+        qTableMgr.updateData(gameWon);
 
     }
 }
