@@ -58,7 +58,7 @@ public class QTableManager {
     }
 
     public void updateQData(boolean gameWon) {
-        printUpdatedValues();
+        //printUpdatedValues();
         db.updateQTable(updatedQValues);
         db.updateEpisodes();
         db.updateAgentStats(gameWon);
