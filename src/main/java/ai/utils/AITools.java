@@ -7,7 +7,6 @@ import main.java.game.entity.GameBoardPiece;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.stream.Collectors;
 
 import static main.java.game.entity.GameBoardPiece.PieceColor.DUSKY;
 import static main.java.game.entity.GameBoardPiece.PieceColor.LIGHT;
@@ -56,10 +55,11 @@ public final class AITools {
     }
 
     public String getHexadecimalEncodingOfArr(int[] gameState) {
-        return new BigInteger(Arrays.stream(gameState)
-                .mapToObj(String::valueOf)
-                .collect(Collectors.joining()))
-                .toString(16);
+        StringBuilder sb = new StringBuilder();
+        for (int i : gameState) {
+            sb.append(i);
+        }
+        return new BigInteger(sb.toString()).toString(16);
     }
 
     public int getMaximumOpponentReward(PieceManager pMgr) {
