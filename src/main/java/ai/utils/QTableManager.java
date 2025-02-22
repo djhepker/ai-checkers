@@ -14,59 +14,62 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class QTableManager {
-    private HashMap<String, double[]> qTable;
     private HashMap<String, double[]> updatedQValues;
 
-    private DataBaseHandler db;
+    private final DataBaseHandler db;
 
     public QTableManager() {
         this.db = new DataBaseHandler();
-        this.qTable = new HashMap<>();
         this.db.createTable();
-        this.qTable = db.fetchQTable();
         this.updatedQValues = new HashMap<>();
     }
 
     public int getMaxQIndex(String serialKey) {
-        int maxQIndex = 0;
-        double maxQValue = Double.MIN_VALUE;
-        double[] qValues = qTable.get(serialKey);
-        if (qValues != null) {
-            for (int i = 0; i < qValues.length; i++) {
-                if (maxQValue < qValues[i]) {
-                    maxQValue = qValues[i];
-                    maxQIndex = i;
-                }
-            }
-            return maxQIndex;
-        }
-        return maxQIndex;
+        return db.getMaxQAction(serialKey);
     }
 
     public boolean isWithinSize(String serialKey, int qIndex) {
-        return qTable.containsKey(serialKey) && qTable.get(serialKey).length > qIndex;
+        return updatedQValues.containsKey(serialKey) && updatedQValues.get(serialKey).length > qIndex;
     }
 
-    public double getQValue(String serialKey, int qIndex) {
-        return qTable.get(serialKey)[qIndex];
+    public double queryQTableForValue(String serialKey, int moveChoice) {
+        return db.getQValueFromTable(serialKey, moveChoice);
     }
 
-    public void setQValue(String serialKey, int index, double inputQ) {
-        if (!qTable.containsKey(serialKey)) {
-            qTable.put(serialKey, new double[index + 1]);
-        }
-        double[] qValues = qTable.get(serialKey);
-        if (index >= qValues.length) {
-            qValues = Arrays.copyOf(qValues, index + 1);
-            updatedQValues.put(serialKey, qValues);
-        }
-        qValues[index] = inputQ;
+    public double getMaxQValue(String serialKey) {
+        return db.getMaxQValue(serialKey);
+    }
+
+    public void putUpdatedValue(String serialKey, int index, double inputQ) {
+        updatedQValues.compute(serialKey, (key, existingArray) -> {
+            if (existingArray == null) {
+                double[] newArray = new double[index + 1];
+                newArray[index] = inputQ;
+                return newArray;
+            } else if (index >= existingArray.length) {
+                double[] newArray = Arrays.copyOf(existingArray, index + 1);
+                newArray[index] = inputQ;
+                return newArray;
+            } else {
+                existingArray[index] = inputQ;
+                return existingArray;
+            }
+        });
     }
 
     public void updateQData(boolean gameWon) {
+        printUpdatedValues();
         db.updateQTable(updatedQValues);
         db.updateEpisodes();
         db.updateAgentStats(gameWon);
+    }
+
+    private void printUpdatedValues() {
+        for (String key : updatedQValues.keySet()) {
+            for (int i = 0; i < updatedQValues.get(key).length; i++) {
+                System.out.println(key + ": " + updatedQValues.get(key)[i]);
+            }
+        }
     }
 
     private class DataBaseHandler {
@@ -81,53 +84,85 @@ public class QTableManager {
         }
 
         public void createTable() {
-            final String sql = "CREATE TABLE IF NOT EXISTS QTable (\n"
-                    + "key TEXT NOT NULL,\n"
-                    + "q_index INTEGER NOT NULL,\n"
-                    + "q_value REAL NOT NULL,\n"
-                    + "PRIMARY KEY (key, q_index)\n"
-                    + ");";
+            final String sqlCreateTable = "CREATE TABLE IF NOT EXISTS QTable ("
+                    + "HexKey TEXT NOT NULL, "
+                    + "Action INTEGER NOT NULL, "
+                    + "QValue REAL NOT NULL, "
+                    + "PRIMARY KEY (HexKey, Action) "
+                    + ") WITHOUT ROWID;";
+
+            final String sqlCreateIndex = "CREATE INDEX IF NOT EXISTS idx_qvalue ON QTable (HexKey, QValue DESC);";
+
             try (Connection conn = DriverManager.getConnection(url);
                  Statement stmt = conn.createStatement()) {
-                stmt.execute(sql);
+                stmt.execute(sqlCreateTable);  // Create table if not exists
+                stmt.execute(sqlCreateIndex);  // Create index if not exists
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Error creating table or index: " + e.getMessage());
             }
         }
 
-        public HashMap<String, double[]> fetchQTable() {
-            HashMap<String, double[]> qTable = new HashMap<>();
-            final String sql = "SELECT key, q_index, q_value FROM QTable";
+        public int getMaxQAction(String serialKey) {
+            final String sql = "SELECT Action FROM QTable WHERE HexKey = ? ORDER BY QValue DESC LIMIT 1";
             try (Connection connection = DriverManager.getConnection(url);
-                 Statement stmt = connection.createStatement();
-                 ResultSet rs = stmt.executeQuery(sql)) {
-                while (rs.next()) {
-                    String key = rs.getString("key");
-                    int qIndex = rs.getInt("q_index");
-                    double qValue = rs.getDouble("q_value");
-                    double[] qValues = qTable.getOrDefault(key, new double[qIndex + 1]);
-                    if (qValues.length <= qIndex) {
-                        qValues = Arrays.copyOf(qValues, qIndex + 1);
-                        qTable.put(key, qValues);
+                 PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, serialKey);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt("Action");
                     }
-                    qValues[qIndex] = qValue;
                 }
             } catch (SQLException e) {
-                System.out.println("Error fetching Q-table data: " + e.getMessage());
+                System.out.println("Error fetching max Q-action: " + e.getMessage());
             }
-            return qTable;
+            return 0;
+        }
+
+        public double getQValueFromTable(String serialKey, int moveChoice) {
+            final String sql = "SELECT QValue FROM QTable WHERE HexKey = ? AND Action = ?";
+            try (Connection connection = DriverManager.getConnection(url);
+                 PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, serialKey);
+                pstmt.setInt(2, moveChoice);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getDouble("QValue");
+                    }
+                }
+            } catch (SQLException e) {
+                System.out.println("Error fetching Q-value: " + e.getMessage());
+            }
+            return 0.0;
+        }
+
+        public double getMaxQValue(String serialKey) {
+            final String sql = "SELECT MAX(QValue) AS maxQValue FROM QTable WHERE HexKey = ?";
+            try (Connection connection = DriverManager.getConnection(url);
+                 PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, serialKey);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getDouble("maxQValue");
+                    }
+                }
+            } catch (SQLException e) {
+                System.out.println("Error fetching max Q-value: " + e.getMessage());
+            }
+            return 0.0;
         }
 
         public void updateQTable(Map<String, double[]> qTable) {
-            final String sql = "INSERT OR REPLACE INTO QTable (key, q_index, q_value) VALUES (?, ?, ?)";
+            final String sql = "INSERT OR REPLACE INTO QTable (HexKey, Action, QValue) VALUES (?, ?, ?)";
             try (Connection connection = DriverManager.getConnection(url);
                  PreparedStatement ppdStmt = connection.prepareStatement(sql)) {
+                connection.setAutoCommit(false); // Speed optimization for batch inserts
+
                 for (Map.Entry<String, double[]> entry : qTable.entrySet()) {
                     String key = entry.getKey();
                     double[] qValues = entry.getValue();
                     for (int i = 0; i < qValues.length; i++) {
                         if (Double.isNaN(qValues[i])) {
-                            continue;  // Skip NaN values
+                            continue;
                         }
                         ppdStmt.setString(1, key);
                         ppdStmt.setInt(2, i);
@@ -135,7 +170,8 @@ public class QTableManager {
                         ppdStmt.addBatch();
                     }
                 }
-                int[] result = ppdStmt.executeBatch();
+                ppdStmt.executeBatch();
+                connection.commit();
             } catch (SQLException e) {
                 System.out.println("Error updating QTable: " + e.getMessage());
                 e.printStackTrace();
@@ -154,4 +190,5 @@ public class QTableManager {
             agentStatsHandler.processEpisode(gameWon);
         }
     }
+
 }

@@ -87,34 +87,29 @@ public class Agent {
 
     private double getQValue(String stateKey, int moveChoice) {
         if (qTableMgr.isWithinSize(stateKey, moveChoice)) {
-            return qTableMgr.getQValue(stateKey, moveChoice);
+            return qTableMgr.queryQTableForValue(stateKey, moveChoice);
         } else {
             return 0.0;
         }
     }
 
-    public void updateRho(AIDecisionHandler handler) {
+    private void updateRho(AIDecisionHandler handler) {
         this.RHO = handler.getDecisionReward();
     }
 
     private void calculateMaxQPrime(Environment env) {
-        String statePrimeKey = env.getEncodedGameState(pMgr);
-        int maxQPrimeIndex = qTableMgr.getMaxQIndex(statePrimeKey);
-        this.maxQPrime = getQValue(statePrimeKey, maxQPrimeIndex);
+        this.maxQPrime = qTableMgr.getMaxQValue(env.getEncodedGameState(pMgr));
     }
 
     private void updateQValue(int moveChoice) {
         double updatedQ = currentQ + ALPHA * (RHO + GAMMA * maxQPrime - currentQ);
-        System.out.printf("Putting q updatedQ of: %.6f\n", updatedQ);
-        qTableMgr.setQValue(stateKey, moveChoice, updatedQ);
+        if (Math.abs(updatedQ - currentQ) > 0.01) {
+            qTableMgr.putUpdatedValue(stateKey, moveChoice, updatedQ);
+        }
     }
 
     public void finalizeQTableUpdate(boolean gameWon) {
         qTableMgr.updateQData(gameWon);
 
-    }
-
-    public void printQueue() {
-        toolbox.printQueue(pMgr);
     }
 }
