@@ -2,7 +2,7 @@ package main.java.engine;
 
 public class GameLoop implements Runnable {
     private final GameEngine game;
-    // 10^9 / FRAME_TIME = framerate
+    // 10^9 / FRAME_TIME = Frames Per Second
     private final long FRAME_TIME = 8_333_333;
     private Thread thread;
 

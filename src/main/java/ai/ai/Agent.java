@@ -110,6 +110,5 @@ public class Agent {
 
     public void finalizeQTableUpdate(boolean gameWon) {
         qTableMgr.updateData(gameWon);
-
     }
 }

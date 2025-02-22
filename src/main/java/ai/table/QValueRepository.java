@@ -21,11 +21,9 @@ class QValueRepository {
     private void setupDataSource() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(url);
-        config.setUsername("yourUsername"); // Set the username
-        config.setPassword("yourPassword"); // Set the password
-        config.setMaximumPoolSize(10); // Set the max pool size
-        config.setIdleTimeout(600000); // Set idle timeout in milliseconds
-        config.setConnectionTimeout(30000); // Set connection timeout in milliseconds
+        config.setMaximumPoolSize(10);
+        config.setIdleTimeout(600000);
+        config.setConnectionTimeout(30000);
 
         dataSource = new HikariDataSource(config);
     }
@@ -104,7 +102,7 @@ class QValueRepository {
         final String sql = "INSERT OR REPLACE INTO QTable (HexKey, Action, QValue) VALUES (?, ?, ?)";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement ppdStmt = connection.prepareStatement(sql)) {
-            connection.setAutoCommit(false); // Speed optimization for batch inserts
+            connection.setAutoCommit(false);
 
             for (Map.Entry<String, double[]> entry : qTable.entrySet()) {
                 String key = entry.getKey();

@@ -31,8 +31,8 @@ public class DataManager {
         return updatedQValues.containsKey(serialKey) && updatedQValues.get(serialKey).length > qIndex;
     }
 
-    public double queryQTableForValue(String serialKey, int moveChoice) {
-        return db.getQValueFromTable(serialKey, moveChoice);
+    public double queryQTableForValue(String serialKey, int decisionNumber) {
+        return db.getQValueFromTable(serialKey, decisionNumber);
     }
 
     public double getMaxQValue(String serialKey) {
@@ -56,11 +56,10 @@ public class DataManager {
         });
     }
 
-    public void updateData(boolean gameWon) {
-        //printUpdatedValues();
+    public void updateData(boolean episodeOver) {
         db.updateQTable(updatedQValues);
         updateEpisodes();
-        updateAgentStats(gameWon);
+        updateAgentStats(episodeOver);
     }
 
     private void printUpdatedValues() {
