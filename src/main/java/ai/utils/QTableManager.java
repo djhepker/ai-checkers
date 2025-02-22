@@ -1,10 +1,10 @@
 package main.java.ai.utils;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import main.java.game.utils.EnvLoader;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
@@ -72,15 +72,29 @@ public class QTableManager {
         }
     }
 
-    private class DataBaseHandler {
+    public class DataBaseHandler {
         private final String SQL_URL_KEY = "SQL_URL";
         private final String ENV_FILEPATH = ".env";
         private final String url;
         private EnvLoader envLoader;
+        private HikariDataSource dataSource;
 
         public DataBaseHandler() {
             this.envLoader = new EnvLoader(ENV_FILEPATH);
             this.url = envLoader.get(SQL_URL_KEY);
+            setupDataSource();
+        }
+
+        private void setupDataSource() {
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(url);
+            config.setUsername("yourUsername"); // Set the username
+            config.setPassword("yourPassword"); // Set the password
+            config.setMaximumPoolSize(10); // Set the max pool size
+            config.setIdleTimeout(600000); // Set idle timeout in milliseconds
+            config.setConnectionTimeout(30000); // Set connection timeout in milliseconds
+
+            dataSource = new HikariDataSource(config);
         }
 
         public void createTable() {
@@ -93,10 +107,12 @@ public class QTableManager {
 
             final String sqlCreateIndex = "CREATE INDEX IF NOT EXISTS idx_qvalue ON QTable (HexKey, QValue DESC);";
 
-            try (Connection conn = DriverManager.getConnection(url);
-                 Statement stmt = conn.createStatement()) {
-                stmt.execute(sqlCreateTable);  // Create table if not exists
-                stmt.execute(sqlCreateIndex);  // Create index if not exists
+            try (Connection conn = dataSource.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sqlCreateTable)) {
+                stmt.execute();
+                try (PreparedStatement stmtIndex = conn.prepareStatement(sqlCreateIndex)) {
+                    stmtIndex.execute();
+                }
             } catch (SQLException e) {
                 System.out.println("Error creating table or index: " + e.getMessage());
             }
@@ -104,7 +120,7 @@ public class QTableManager {
 
         public int getMaxQAction(String serialKey) {
             final String sql = "SELECT Action FROM QTable WHERE HexKey = ? ORDER BY QValue DESC LIMIT 1";
-            try (Connection connection = DriverManager.getConnection(url);
+            try (Connection connection = dataSource.getConnection();
                  PreparedStatement pstmt = connection.prepareStatement(sql)) {
                 pstmt.setString(1, serialKey);
                 try (ResultSet rs = pstmt.executeQuery()) {
@@ -120,7 +136,7 @@ public class QTableManager {
 
         public double getQValueFromTable(String serialKey, int moveChoice) {
             final String sql = "SELECT QValue FROM QTable WHERE HexKey = ? AND Action = ?";
-            try (Connection connection = DriverManager.getConnection(url);
+            try (Connection connection = dataSource.getConnection();
                  PreparedStatement pstmt = connection.prepareStatement(sql)) {
                 pstmt.setString(1, serialKey);
                 pstmt.setInt(2, moveChoice);
@@ -137,7 +153,7 @@ public class QTableManager {
 
         public double getMaxQValue(String serialKey) {
             final String sql = "SELECT MAX(QValue) AS maxQValue FROM QTable WHERE HexKey = ?";
-            try (Connection connection = DriverManager.getConnection(url);
+            try (Connection connection = dataSource.getConnection();
                  PreparedStatement pstmt = connection.prepareStatement(sql)) {
                 pstmt.setString(1, serialKey);
                 try (ResultSet rs = pstmt.executeQuery()) {
@@ -153,7 +169,7 @@ public class QTableManager {
 
         public void updateQTable(Map<String, double[]> qTable) {
             final String sql = "INSERT OR REPLACE INTO QTable (HexKey, Action, QValue) VALUES (?, ?, ?)";
-            try (Connection connection = DriverManager.getConnection(url);
+            try (Connection connection = dataSource.getConnection();
                  PreparedStatement ppdStmt = connection.prepareStatement(sql)) {
                 connection.setAutoCommit(false); // Speed optimization for batch inserts
 
@@ -190,5 +206,4 @@ public class QTableManager {
             agentStatsHandler.processEpisode(gameWon);
         }
     }
-
 }
