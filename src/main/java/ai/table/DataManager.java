@@ -19,7 +19,6 @@ public class DataManager {
     public DataManager() {
         this.envLoader = new EnvLoader(ENV_FILEPATH);
         this.db = new QValueRepository(envLoader.get(SQL_URL_KEY));
-        this.db.createTable();
         this.updatedQValues = new HashMap<>();
     }
 
@@ -58,6 +57,7 @@ public class DataManager {
 
     public void updateData(boolean episodeOver) {
         db.updateQTable(updatedQValues);
+        db.close();
         updateEpisodes();
         updateAgentStats(episodeOver);
     }
