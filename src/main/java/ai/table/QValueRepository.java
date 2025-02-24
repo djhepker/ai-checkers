@@ -2,8 +2,6 @@ package main.java.ai.table;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,13 +12,11 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 class QValueRepository {
-
-    private static final Logger logger = LoggerFactory.getLogger(QValueRepository.class);
     private static final int BATCH_SIZE = 1000;
     private final AtomicBoolean isInitialized;
     private final HikariDataSource dataSource;
 
-    QValueRepository(String url) {
+    QValueRepository(String url) throws SQLException {
         this.isInitialized = new AtomicBoolean(false);
 
         HikariConfig config = new HikariConfig();
@@ -37,7 +33,7 @@ class QValueRepository {
         initializeDatabase();
     }
 
-    int getMaxQAction(String serialKey) {
+    int getMaxQAction(String serialKey) throws SQLException {
         final String sql = "SELECT Action FROM QTable WHERE HexKey = ? ORDER BY QValue DESC LIMIT 1";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -45,13 +41,10 @@ class QValueRepository {
             try (ResultSet rs = pstmt.executeQuery()) {
                 return rs.next() ? rs.getInt("Action") : 0;
             }
-        } catch (SQLException e) {
-            logger.error("Failed to fetch max Q-action for serialKey: {}", serialKey, e);
         }
-        return 0;
     }
 
-    double getQValueFromTable(String serialKey, int action) {
+    double getQValueFromTable(String serialKey, int action) throws SQLException {
         final String sql = "SELECT QValue FROM QTable WHERE HexKey = ? AND Action = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -60,29 +53,21 @@ class QValueRepository {
             try (ResultSet rs = pstmt.executeQuery()) {
                 return rs.next() ? rs.getDouble("QValue") : 0.0;
             }
-        } catch (SQLException e) {
-            logger.error("Failed to fetch Q-value for serialKey: {}, action: {}", serialKey, action, e);
         }
-        return 0.0;
     }
 
-    double getMaxQValue(String serialKey) {
+    double getMaxQValue(String serialKey) throws SQLException {
         final String sql = "SELECT MAX(QValue) AS maxQValue FROM QTable WHERE HexKey = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, serialKey);
             try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getDouble("maxQValue");
-                }
+                return rs.next() ? rs.getDouble("maxQValue") : 0.0;
             }
-        } catch (SQLException e) {
-            System.out.println("Error fetching max Q-value: " + e.getMessage());
         }
-        return 0.0;
     }
 
-    void updateQTable(Map<String, double[]> qTable) {
+    void updateQTable(Map<String, double[]> qTable) throws SQLException {
         final String sql = "INSERT OR REPLACE INTO QTable (HexKey, Action, QValue) VALUES (?, ?, ?)";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement ppdStmt = connection.prepareStatement(sql)) {
@@ -114,25 +99,22 @@ class QValueRepository {
                 ppdStmt.executeBatch();
             }
             connection.commit();
-        } catch (SQLException e) {
-            logger.error("Failed to update QTable", e);
         }
     }
 
-    void close() {
+    void close() throws SQLException {
         if (dataSource != null && !dataSource.isClosed()) {
             dataSource.close();
-            logger.info("Database connection pool closed");
         }
     }
 
-    private void initializeDatabase() {
+    private void initializeDatabase() throws SQLException {
         if (isInitialized.compareAndSet(false, true)) {
             createTable();
         }
     }
 
-    private void createTable() {
+    private void createTable() throws SQLException {
         final String sqlCreateTable = """
                 CREATE TABLE IF NOT EXISTS QTable (
                     HexKey TEXT NOT NULL,
@@ -149,9 +131,6 @@ class QValueRepository {
             stmt.execute(sqlCreateTable);
             stmt.execute(sqlCreateIndex);
             conn.commit();
-        } catch (SQLException e) {
-            logger.error("Failed to create table/index", e);
-            throw new RuntimeException("Database initialization failed", e);
         }
     }
 }
