@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class DataManager {
+
     private HashMap<String, double[]> updatedQValues;
 
     private final QValueRepository db;
