@@ -68,6 +68,8 @@ public class GameEngine {
             if (!IS_TRAINING) {
                 graphicsHandler.repaint();
             }
+        } catch (Exception e) {
+            logger.error("Unexpected error in updateGame()" , e);
         } catch (AssertionError e) {
             logger.error("Invalid mouse selection in InputHandler" , e);
         }
