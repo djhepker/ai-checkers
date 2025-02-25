@@ -1,7 +1,6 @@
 package main.java.engine;
 
 import main.java.ai.NPCManager;
-import main.java.game.gameworld.BoardManager;
 import main.java.game.graphics.GraphicsHandler;
 import main.java.game.gameworld.PieceManager;
 import main.java.game.graphics.InputHandler;
@@ -18,7 +17,6 @@ public class GameEngine {
     private final boolean IS_TRAINING;
 
     private EntityCreator creator;
-    private BoardManager bMgr;
     private PieceManager pMgr;
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
@@ -55,7 +53,7 @@ public class GameEngine {
         try {
             if (HAS_PLAYER) {
                 inputHandler.update();
-                if (playerTurn) {
+                if (playerTurn) { // TODO: Continue error logging here
                     handleInput();
                 } else {
                     npcMgr.update();
@@ -124,8 +122,7 @@ public class GameEngine {
     }
 
     private void renderUI() {
-        this.bMgr = new BoardManager(creator);
-        this.graphicsHandler = new GraphicsHandler(bMgr.getCachedTiles(), pMgr, inputHandler);
+        this.graphicsHandler = new GraphicsHandler(creator.getCachedCells(), pMgr, inputHandler);
     }
 
     private void printSelectedPiece() {

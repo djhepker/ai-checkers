@@ -60,7 +60,9 @@ public class Agent {
         }
         int moveChoice = getMoveChoice(numDecisions);
         this.currentQ = getQValue(stateKey, moveChoice);
+
         decisionHandler.calculateDecisionReward(moveChoice);
+
         decisionHandler.movePiece(moveChoice);
         decisionHandler.updateDecisionArray();
         environment.generateStatePrime();
