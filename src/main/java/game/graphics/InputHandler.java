@@ -36,7 +36,7 @@ public class InputHandler {
             case SECOND_CLICK:
                 return;
             default:
-                System.out.println("Invalid input state");
+                throw new AssertionError();
         }
     }
 

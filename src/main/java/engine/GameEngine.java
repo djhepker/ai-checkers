@@ -6,18 +6,23 @@ import main.java.game.graphics.GraphicsHandler;
 import main.java.game.gameworld.PieceManager;
 import main.java.game.graphics.InputHandler;
 import main.java.game.entity.GameBoardPiece;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GameEngine {
+
+    private static final Logger logger = LoggerFactory.getLogger(GameEngine.class);
+
+    private final boolean LIGHT_CHOICE;
+    private final boolean HAS_PLAYER;
+    private final boolean IS_TRAINING;
+
     private EntityCreator creator;
     private BoardManager bMgr;
     private PieceManager pMgr;
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
     private NPCManager npcMgr;
-
-    private final boolean LIGHT_CHOICE;
-    private final boolean HAS_PLAYER;
-    private final boolean IS_TRAINING;
 
     private boolean playerTurn;
     private boolean gameOver;
@@ -47,22 +52,26 @@ public class GameEngine {
     }
 
     public void updateGame() {
-        if (HAS_PLAYER) {
-            inputHandler.update();
-            if (playerTurn) {
-                handleInput();
+        try {
+            if (HAS_PLAYER) {
+                inputHandler.update();
+                if (playerTurn) {
+                    handleInput();
+                } else {
+                    npcMgr.update();
+                    playerTurn = !playerTurn;
+                }
             } else {
                 npcMgr.update();
-                playerTurn = !playerTurn;
             }
-        } else {
-            npcMgr.update();
-        }
-        if (pMgr.sideDefeated()) {
-            this.gameOver = true;
-        }
-        if (!IS_TRAINING) {
-            graphicsHandler.repaint();
+            if (pMgr.sideDefeated()) {
+                this.gameOver = true;
+            }
+            if (!IS_TRAINING) {
+                graphicsHandler.repaint();
+            }
+        } catch (AssertionError e) {
+            logger.error("Invalid mouse selection in InputHandler" , e);
         }
     }
 
