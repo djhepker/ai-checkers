@@ -12,14 +12,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class DataManager {
+
     private static final Logger logger = LoggerFactory.getLogger(DataManager.class);
 
     private HashMap<String, double[]> updatedQValues;
-    private final QValueRepository db;
-    private final EnvLoader envLoader;
 
     private final String SQL_URL_KEY = "SQL_URL";
     private final String ENV_FILEPATH = ".env";
+
+    private final QValueRepository db;
+    private final EnvLoader envLoader;
+
 
     public DataManager() {
         this.envLoader = new EnvLoader(ENV_FILEPATH);
@@ -108,14 +111,6 @@ public class DataManager {
 
         updateEpisodes();
         updateAgentStats(episodeOver);
-    }
-
-    private void printUpdatedValues() {
-        for (String key : updatedQValues.keySet()) {
-            for (int i = 0; i < updatedQValues.get(key).length; i++) {
-                System.out.println(key + ": " + updatedQValues.get(key)[i]);
-            }
-        }
     }
 
     private void updateEpisodes() {
