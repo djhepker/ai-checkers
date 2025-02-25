@@ -36,9 +36,10 @@ public class GameEngine {
             String gameMode = graphicsHandler.showGameModeDialog();
             this.HAS_PLAYER = gameMode.endsWith("Player");
             if (HAS_PLAYER) {
-                this.graphicsHandler.showPopUpColorDialog();
+                this.LIGHT_CHOICE = this.graphicsHandler.showPopUpColorDialog();
+            } else {
+                this.LIGHT_CHOICE = false;
             }
-            this.LIGHT_CHOICE = !HAS_PLAYER || graphicsHandler.lightChosen();
             this.playerTurn = LIGHT_CHOICE;
             this.npcMgr = new NPCManager(pMgr, LIGHT_CHOICE, gameMode);
         }
@@ -69,7 +70,7 @@ public class GameEngine {
         if (!IS_TRAINING) {
             if (!graphicsHandler.windowOpen() || gameOver) {
                 this.gameOver = true;
-                if (graphicsHandler.lightChosen()) {
+                if (LIGHT_CHOICE) {
                     npcMgr.finishGame(pMgr.getNumLight() == 0);
                 } else {
                     npcMgr.finishGame(pMgr.getNumDusky() == 0);

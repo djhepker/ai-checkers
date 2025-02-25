@@ -4,19 +4,27 @@ import main.java.game.entity.movement.ActionNode;
 import main.java.game.gameworld.PieceManager;
 import main.java.game.entity.GameBoardPiece;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.border.Border;
 import java.awt.Image;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.BasicStroke;
-import java.awt.event.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class GraphicsHandler extends JPanel {
 
-    private InputHandler inputHandler;
-    private PieceManager pMgr;
+    private final InputHandler inputHandler;
+    private final PieceManager pMgr;
 
     private final Image[] cachedTiles;
 
@@ -25,12 +33,8 @@ public class GraphicsHandler extends JPanel {
     private int highlightRectangleX;
     private int highlightRectangleY;
 
-    private boolean windowOpen;
     private boolean lightChosen;
     private final JFrame frame;
-
-
-    private boolean windowResized;
 
     public GraphicsHandler(Image[] cachedTiles,
                            PieceManager pMgr,
@@ -42,7 +46,6 @@ public class GraphicsHandler extends JPanel {
         this.entityHeight = 0;
         this.highlightRectangleX = 0;
         this.highlightRectangleY = 0;
-        this.windowResized = true;
         this.lightChosen = false;
 
         Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 8);
@@ -50,7 +53,7 @@ public class GraphicsHandler extends JPanel {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                windowResized = true;
+                updateEntitySize();
                 super.componentResized(e);
             }
         });
@@ -67,13 +70,11 @@ public class GraphicsHandler extends JPanel {
         this.frame.setSize(800,800);
         this.frame.setLocationRelativeTo(null); // centered
         this.frame.setVisible(true);
-        this.windowOpen = true;
 
         this.frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
-                windowOpen = false;
             }
         });
     }
@@ -82,9 +83,6 @@ public class GraphicsHandler extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        if (windowResized) {
-            updateEntitySize();
-        }
         drawBoard(g2d);
         drawPieces(g2d);
         if (inputHandler.hasSelectedPiece()) {
@@ -92,17 +90,19 @@ public class GraphicsHandler extends JPanel {
         }
     }
 
-    public void showPopUpColorDialog() {
+    public boolean showPopUpColorDialog() {
         try {
             String[] colors = {"White", "Black"};
             String selectedColor = (String) JOptionPane.showInputDialog(
                     this, "Choose your battle color", "Checkers", JOptionPane.QUESTION_MESSAGE,
                     null, colors, colors[0]);
             lightChosen = selectedColor.equals("White");
+            return lightChosen;
         } catch (Exception e) {
             System.out.println("Color dialog was closed");
             System.exit(0);
         }
+        return false;
     }
 
     public String showGameModeDialog() {
@@ -121,12 +121,8 @@ public class GraphicsHandler extends JPanel {
         return selectedGameMode;
     }
 
-    public boolean lightChosen() {
-        return lightChosen;
-    }
-
     public boolean windowOpen() {
-        return windowOpen;
+        return frame.isVisible();
     }
 
     private void drawHighlightRectangles(Graphics2D g2d) {
@@ -154,7 +150,6 @@ public class GraphicsHandler extends JPanel {
     private void updateEntitySize() {
         entityWidth = getWidth() / 8;
         entityHeight = getHeight() / 8;
-        windowResized = false;
     }
 
     private void drawBoard(Graphics2D g2d) {
