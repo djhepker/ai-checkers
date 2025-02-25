@@ -1,21 +1,22 @@
 package hepker.engine;
 
-import hepker.ai.NPCManager;
-import hepker.game.gameworld.BoardManager;
-import hepker.game.graphics.GameWindow;
+import hepker.ai.AgentManager;
 import hepker.game.graphics.GraphicsHandler;
 import hepker.game.gameworld.PieceManager;
 import hepker.game.graphics.InputHandler;
 import hepker.game.entity.GameBoardPiece;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GameEngine {
+
+    private static final Logger logger = LoggerFactory.getLogger(GameEngine.class);
+
     private EntityCreator creator;
-    private BoardManager bMgr;
     private PieceManager pMgr;
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
-    private GameWindow window;
-    private NPCManager npcMgr;
+    private AgentManager agentMgr;
 
     private final boolean LIGHT_CHOICE;
     private final boolean HAS_PLAYER;
@@ -33,55 +34,62 @@ public class GameEngine {
         if (IS_TRAINING) {
             this.LIGHT_CHOICE = true;
             this.HAS_PLAYER = false;
-            this.npcMgr = new NPCManager(pMgr, LIGHT_CHOICE, "Agent Vs Stochastic");
+            this.agentMgr = new AgentManager(pMgr, LIGHT_CHOICE, "Agent Vs Stochastic");
         } else {
-            String gameMode = window.showGameModeDialog();
+            String gameMode = graphicsHandler.showGameModeDialog();
             this.HAS_PLAYER = gameMode.endsWith("Player");
             if (HAS_PLAYER) {
-                this.window.showPopUpColorDialog();
+                this.LIGHT_CHOICE = this.graphicsHandler.showPopUpColorDialog();
+            } else {
+                this.LIGHT_CHOICE = false;
             }
-            this.LIGHT_CHOICE = !HAS_PLAYER || window.lightChosen();
             this.playerTurn = LIGHT_CHOICE;
-            this.npcMgr = new NPCManager(pMgr, LIGHT_CHOICE, gameMode);
+            this.agentMgr = new AgentManager(pMgr, LIGHT_CHOICE, gameMode);
         }
         this.gameOver = false;
     }
 
     public void updateGame() {
-        if (HAS_PLAYER) {
-            inputHandler.update();
-            if (playerTurn) {
-                handleInput();
+        try {
+            if (HAS_PLAYER) {
+                inputHandler.update();
+                if (playerTurn) {
+                    handleInput();
+                } else {
+                    agentMgr.update();
+                    playerTurn = !playerTurn;
+                }
             } else {
-                npcMgr.update();
-                playerTurn = !playerTurn;
+                agentMgr.update();
             }
-        } else {
-            npcMgr.update();
-        }
-        if (pMgr.sideDefeated()) {
-            this.gameOver = true;
-        }
-        if (!IS_TRAINING) {
-            graphicsHandler.repaint();
+            if (pMgr.sideDefeated()) {
+                this.gameOver = true;
+            }
+            if (!IS_TRAINING) {
+                graphicsHandler.repaint();
+            }
+        } catch (Exception e) {
+            logger.error("Unexpected error in updateGame()" , e);
+        } catch (AssertionError e) {
+            logger.error("Invalid mouse selection in InputHandler" , e);
         }
     }
 
     public boolean gameOver() {
         if (!IS_TRAINING) {
-            if (!window.isOpen() || gameOver) {
+            if (!graphicsHandler.windowOpen() || gameOver) {
                 this.gameOver = true;
-                if (window.lightChosen()) {
-                    npcMgr.finishGame(pMgr.getNumLight() == 0);
+                if (LIGHT_CHOICE) {
+                    agentMgr.finishGame(pMgr.getNumLight() == 0);
                 } else {
-                    npcMgr.finishGame(pMgr.getNumDusky() == 0);
+                    agentMgr.finishGame(pMgr.getNumDusky() == 0);
                 }
             }
         } else if (gameOver) {
             if (LIGHT_CHOICE) {
-                npcMgr.finishGame(pMgr.getNumLight() == 0);
+                agentMgr.finishGame(pMgr.getNumLight() == 0);
             } else {
-                npcMgr.finishGame(pMgr.getNumDusky() == 0);
+                agentMgr.finishGame(pMgr.getNumDusky() == 0);
             }
         }
         return gameOver;
@@ -111,10 +119,7 @@ public class GameEngine {
     }
 
     private void renderUI() {
-        this.bMgr = new BoardManager(creator);
-        this.graphicsHandler = new GraphicsHandler(bMgr.getCachedTiles(), pMgr, inputHandler);
-        this.inputHandler.setGraphicsHandler(graphicsHandler);
-        this.window = new GameWindow(graphicsHandler);
+        this.graphicsHandler = new GraphicsHandler(creator.getCachedCells(), pMgr, inputHandler);
     }
 
     private void printSelectedPiece() {
@@ -122,9 +127,5 @@ public class GameEngine {
         if (piece != null) {
             piece.printData();
         }
-    }
-
-    public void printAllPiecesInPlay() {
-        pMgr.printAllPiecesInPlay();
     }
 }
