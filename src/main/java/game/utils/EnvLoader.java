@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class EnvLoader {
+
     private final Map<String, String> envVars = new HashMap<>();
 
     public EnvLoader(String filePath) {
