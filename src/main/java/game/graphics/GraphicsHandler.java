@@ -60,7 +60,7 @@ public class GraphicsHandler extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                inputHandler.handleMouseClick(e);
+                inputHandler.handleMouseClick(e, getWidth(), getHeight());
             }
         });
 

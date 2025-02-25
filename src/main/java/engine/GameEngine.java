@@ -117,7 +117,6 @@ public class GameEngine {
     private void renderUI() {
         this.bMgr = new BoardManager(creator);
         this.graphicsHandler = new GraphicsHandler(bMgr.getCachedTiles(), pMgr, inputHandler);
-        this.inputHandler.setGraphicsHandler(graphicsHandler);
     }
 
     private void printSelectedPiece() {
