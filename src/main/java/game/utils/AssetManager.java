@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 public class AssetManager {
-    private final String spriteSheetFilePath = "src/main/assets/images/chckers_spritesheet.png";
+    private final String spriteSheetFilePath = "src/main/resources/img/chckers_spritesheet.png";
 
     private final int cellWidth = 16;
     private final int cellHeight = 16;

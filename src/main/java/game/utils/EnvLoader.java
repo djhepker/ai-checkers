@@ -8,13 +8,9 @@ import java.util.Map;
 public class EnvLoader {
     private final Map<String, String> envVars = new HashMap<>();
 
-    public EnvLoader(String filePath) {
-        try {
-            FileLoader fileLoader = new FileLoader(filePath);
-            loadEnv(fileLoader.readLines());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public EnvLoader(String filePath) throws IOException {
+        FileLoader fileLoader = new FileLoader(filePath);
+        loadEnv(fileLoader.readLines());
     }
 
     private void loadEnv(List<String> lines) {

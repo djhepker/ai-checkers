@@ -4,6 +4,7 @@ import main.java.ai.utils.AgentStats;
 import main.java.ai.utils.EpisodeCounter;
 import main.java.game.utils.EnvLoader;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -17,10 +18,14 @@ public class DataManager {
     private final String ENV_FILEPATH = ".env";
 
     public DataManager() {
-        this.envLoader = new EnvLoader(ENV_FILEPATH);
-        this.db = new QValueRepository(envLoader.get(SQL_URL_KEY));
-        this.db.createTable();
-        this.updatedQValues = new HashMap<>();
+        try {
+            this.envLoader = new EnvLoader(ENV_FILEPATH);
+            this.db = new QValueRepository(envLoader.get(SQL_URL_KEY));
+            this.db.createTable();
+            this.updatedQValues = new HashMap<>();
+        } catch (IOException e) {
+            //todo
+        }
     }
 
     public int getMaxQIndex(String serialKey) {
