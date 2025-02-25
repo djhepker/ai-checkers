@@ -34,7 +34,7 @@ public class AIDecisionHandler {
         return decisionArray.length;
     }
 
-    public void calculateDecisionReward(int moveChoice) {
+    public void calculateDecisionReward(int moveChoice) throws Exception {
         calculator.calculateDecisionReward(env, decisionArray, moveChoice);
     }
 

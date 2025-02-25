@@ -53,7 +53,7 @@ public class GameEngine {
         try {
             if (HAS_PLAYER) {
                 inputHandler.update();
-                if (playerTurn) { // TODO: Continue error logging here
+                if (playerTurn) {
                     handleInput();
                 } else {
                     npcMgr.update();

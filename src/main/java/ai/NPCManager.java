@@ -4,8 +4,13 @@ import main.java.ai.ai.Agent;
 import main.java.ai.ai.StochasticNPC;
 import main.java.ai.utils.AITools;
 import main.java.game.gameworld.PieceManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NPCManager {
+
+    private static final Logger logger = LoggerFactory.getLogger(NPCManager.class);
+
     private final boolean IS_DUSKY;
 
     private PieceManager pMgr;
@@ -21,13 +26,17 @@ public class NPCManager {
     }
 
     public void update() {
-        if (gameType == GameState.AGENT_VS_PLAYER) {
-            zero.update();
-        } else if (gameType == GameState.STOCHASTIC_VS_PLAYER) {
-            kane.update();
-        } else if (gameType == GameState.AGENT_VS_STOCHASTIC) {
-            zero.update();
-            kane.update();
+        try {
+            if (gameType == GameState.AGENT_VS_PLAYER) {
+                zero.update();
+            } else if (gameType == GameState.STOCHASTIC_VS_PLAYER) {
+                kane.update();
+            } else if (gameType == GameState.AGENT_VS_STOCHASTIC) {
+                zero.update();
+                kane.update();
+            }
+        } catch (Exception e) {
+            logger.error("NPC Manager Exception", e);
         }
     }
 
