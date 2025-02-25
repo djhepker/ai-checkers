@@ -8,10 +8,11 @@ import main.java.game.entity.GameBoardPiece;
 import java.awt.Image;
 
 public class EntityCreator {
-    private final AssetManager assetManager;
 
-    public EntityCreator() {
-        this.assetManager = new AssetManager();
+    public Image[] getCachedCells() {
+        return new Image[]{
+                AssetManager.getSpriteByName("LightTile"),
+                AssetManager.getSpriteByName("DuskyTile")};
     }
 
     public GameBoardPiece createPiece(String name, int x, int y) {
@@ -27,16 +28,10 @@ public class EntityCreator {
     }
 
     private Checker createChecker(String name, int x, int y) {
-        return new Checker(name, x, y, assetManager.getSpriteByName(name));
+        return new Checker(name, x, y, AssetManager.getSpriteByName(name));
     }
 
     private KingChecker createKingChecker(String name, int x, int y) {
-        return new KingChecker(name, x, y, assetManager.getSpriteByName(name));
-    }
-
-    public Image[] getCachedCells() {
-        return new Image[]{
-                assetManager.getSpriteByName("LightTile"),
-                assetManager.getSpriteByName("DuskyTile")};
+        return new KingChecker(name, x, y, AssetManager.getSpriteByName(name));
     }
 }

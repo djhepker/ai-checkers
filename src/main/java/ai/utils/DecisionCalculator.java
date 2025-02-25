@@ -19,7 +19,7 @@ public class DecisionCalculator {
         this.pMgr = pMgr;
     }
 
-    public void calculateDecisionReward(Environment env, ActionNode[] decisionArray, int moveChoice) {
+    public void calculateDecisionReward(Environment env, ActionNode[] decisionArray, int moveChoice)  throws Exception {
         this.numEnemiesNaught = env.getNumEnemyPieces();
         this.numOptionsNaught = decisionArray.length;
         this.numEnemyOptionsNaught = toolbox.getNumOpponentOptions(pMgr);

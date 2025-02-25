@@ -5,7 +5,7 @@ import main.java.engine.GameLoop;
 
 public class Main {
     public static void main(String[] args) {
-        boolean TRAINING_MODE = true;
+        boolean TRAINING_MODE = false;
         int epochs = 10;
         int episode = 0;
         GameLoop gameLoop;

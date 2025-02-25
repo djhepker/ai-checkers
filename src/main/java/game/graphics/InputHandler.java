@@ -3,11 +3,12 @@ package main.java.game.graphics;
 import java.awt.event.MouseEvent;
 
 public class InputHandler {
-    private GraphicsHandler gHandler;
+
     private int selectedRow;
     private int selectedCol;
     private int firstXPos;
     private int firstYPos;
+
     private InputState inputState;
 
     private enum InputState {
@@ -35,11 +36,11 @@ public class InputHandler {
             case SECOND_CLICK:
                 return;
             default:
-                System.out.println("Invalid input state");
+                throw new AssertionError();
         }
     }
 
-    public void handleMouseClick(MouseEvent e) {
+    public void handleMouseClick(MouseEvent e, int width, int height) {
         switch (inputState) {
             case NO_CLICK:
                 inputState = InputState.FIRST_CLICK;
@@ -54,13 +55,8 @@ public class InputHandler {
                 System.out.println("Invalid input state");
                 return;
         }
-        selectedCol = e.getX() / (gHandler.getWidth() / 8);
-        selectedRow = e.getY() / (gHandler.getHeight() / 8);
-        // System.out.println("Mouse clicked with selection of: (" + selectedCol + ", " + selectedRow + ")");
-    }
-
-    public void setGraphicsHandler(GraphicsHandler gHandler) {
-        this.gHandler = gHandler;
+        selectedCol = e.getX() / (width / 8);
+        selectedRow = e.getY() / (height / 8);
     }
 
     public void resetClicks() {

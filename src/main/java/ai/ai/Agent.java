@@ -48,7 +48,7 @@ public class Agent {
         this.RHO = 0.0;
     }
 
-    public void update() {
+    public void update() throws Exception {
         Environment environment = new Environment(toolbox, pMgr);
         AIDecisionHandler decisionHandler = new AIDecisionHandler(pMgr, toolbox, environment);
         this.stateKey = environment.getEncodedGameState(pMgr);
