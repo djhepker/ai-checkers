@@ -2,7 +2,6 @@ package main.java.engine;
 
 import main.java.ai.NPCManager;
 import main.java.game.gameworld.BoardManager;
-import main.java.game.graphics.GameWindow;
 import main.java.game.graphics.GraphicsHandler;
 import main.java.game.gameworld.PieceManager;
 import main.java.game.graphics.InputHandler;
@@ -14,7 +13,6 @@ public class GameEngine {
     private PieceManager pMgr;
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
-    private GameWindow window;
     private NPCManager npcMgr;
 
     private final boolean LIGHT_CHOICE;
@@ -35,12 +33,12 @@ public class GameEngine {
             this.HAS_PLAYER = false;
             this.npcMgr = new NPCManager(pMgr, LIGHT_CHOICE, "Agent Vs Stochastic");
         } else {
-            String gameMode = window.showGameModeDialog();
+            String gameMode = graphicsHandler.showGameModeDialog();
             this.HAS_PLAYER = gameMode.endsWith("Player");
             if (HAS_PLAYER) {
-                this.window.showPopUpColorDialog();
+                this.graphicsHandler.showPopUpColorDialog();
             }
-            this.LIGHT_CHOICE = !HAS_PLAYER || window.lightChosen();
+            this.LIGHT_CHOICE = !HAS_PLAYER || graphicsHandler.lightChosen();
             this.playerTurn = LIGHT_CHOICE;
             this.npcMgr = new NPCManager(pMgr, LIGHT_CHOICE, gameMode);
         }
@@ -69,9 +67,9 @@ public class GameEngine {
 
     public boolean gameOver() {
         if (!IS_TRAINING) {
-            if (!window.isOpen() || gameOver) {
+            if (!graphicsHandler.windowOpen() || gameOver) {
                 this.gameOver = true;
-                if (window.lightChosen()) {
+                if (graphicsHandler.lightChosen()) {
                     npcMgr.finishGame(pMgr.getNumLight() == 0);
                 } else {
                     npcMgr.finishGame(pMgr.getNumDusky() == 0);
@@ -114,7 +112,6 @@ public class GameEngine {
         this.bMgr = new BoardManager(creator);
         this.graphicsHandler = new GraphicsHandler(bMgr.getCachedTiles(), pMgr, inputHandler);
         this.inputHandler.setGraphicsHandler(graphicsHandler);
-        this.window = new GameWindow(graphicsHandler);
     }
 
     private void printSelectedPiece() {
@@ -122,9 +119,5 @@ public class GameEngine {
         if (piece != null) {
             piece.printData();
         }
-    }
-
-    public void printAllPiecesInPlay() {
-        pMgr.printAllPiecesInPlay();
     }
 }
