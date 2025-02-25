@@ -9,11 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
-import java.awt.Image;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.BasicStroke;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
@@ -99,8 +95,7 @@ public class GraphicsHandler extends JPanel {
             lightChosen = selectedColor.equals("White");
             return lightChosen;
         } catch (Exception e) {
-            System.out.println("Color dialog was closed");
-            System.exit(0);
+            frame.dispose();
         }
         return false;
     }
@@ -114,7 +109,6 @@ public class GraphicsHandler extends JPanel {
                 JOptionPane.QUESTION_MESSAGE,
                 null, playerOptions, playerOptions[0]);
         if (selectedGameMode == null) {
-            System.out.println("Game Mode Dialog closed.");
             frame.dispose();
             System.exit(0);
         }
