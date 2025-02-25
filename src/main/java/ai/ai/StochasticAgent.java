@@ -6,13 +6,13 @@ import main.java.game.gameworld.PieceManager;
 
 import java.util.Random;
 
-public class StochasticNPC {
+public class StochasticAgent {
     private final boolean isDusky;
 
     private PieceManager pMgr;
     private AITools toolbox;
 
-    public StochasticNPC(PieceManager pMgr, AITools toolbox, boolean vsLight) {
+    public StochasticAgent(PieceManager pMgr, AITools toolbox, boolean vsLight) {
         this.isDusky = vsLight;
         this.pMgr = pMgr;
         this.toolbox = toolbox;
@@ -26,7 +26,7 @@ public class StochasticNPC {
         }
         int moveChoice = new Random().nextInt(decisionArr.length);
         if (!pMgr.machineMovePiece(decisionArr[moveChoice])) {
-            throw new RuntimeException("StochasticNPC update failed");
+            throw new RuntimeException("StochasticAgent update failed");
         }
         pMgr.updateAllPieces();
     }

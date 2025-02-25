@@ -1,6 +1,6 @@
 package main.java.engine;
 
-import main.java.ai.NPCManager;
+import main.java.ai.AgentManager;
 import main.java.game.graphics.GraphicsHandler;
 import main.java.game.gameworld.PieceManager;
 import main.java.game.graphics.InputHandler;
@@ -20,7 +20,7 @@ public class GameEngine {
     private PieceManager pMgr;
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
-    private NPCManager npcMgr;
+    private AgentManager npcMgr;
 
     private boolean playerTurn;
     private boolean gameOver;
@@ -34,7 +34,7 @@ public class GameEngine {
         if (IS_TRAINING) {
             this.LIGHT_CHOICE = true;
             this.HAS_PLAYER = false;
-            this.npcMgr = new NPCManager(pMgr, LIGHT_CHOICE, "Agent Vs Stochastic");
+            this.npcMgr = new AgentManager(pMgr, LIGHT_CHOICE, "Agent Vs Stochastic");
         } else {
             String gameMode = graphicsHandler.showGameModeDialog();
             this.HAS_PLAYER = gameMode.endsWith("Player");
@@ -44,7 +44,7 @@ public class GameEngine {
                 this.LIGHT_CHOICE = false;
             }
             this.playerTurn = LIGHT_CHOICE;
-            this.npcMgr = new NPCManager(pMgr, LIGHT_CHOICE, gameMode);
+            this.npcMgr = new AgentManager(pMgr, LIGHT_CHOICE, gameMode);
         }
         this.gameOver = false;
     }
@@ -107,7 +107,7 @@ public class GameEngine {
                             inputHandler.getFirstXPos(), inputHandler.getFirstYPos())) {
 
                 if (piece.isReadyForPromotion()) {
-                    pMgr.promotePiece(piece);
+                    pMgr.promoteChecker(piece);
                 }
                 pMgr.updateAllPieces();
                 playerTurn = !playerTurn;

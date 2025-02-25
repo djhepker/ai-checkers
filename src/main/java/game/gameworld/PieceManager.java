@@ -28,7 +28,7 @@ public class PieceManager {
         }
     }
 
-    public void promotePiece(GameBoardPiece piece) {
+    public void promoteChecker(GameBoardPiece piece) {
         if (piece != null) {
             insertPieceToBoard(creator.createPiece(piece.getName() + "King", piece.getX(), piece.getY()));
         }
@@ -78,7 +78,7 @@ public class PieceManager {
         nullifyPiece(xNaught, yNaught);
         boolean result = insertPieceToBoard(piece);
         if (piece.isReadyForPromotion()) {
-            promotePiece(piece);
+            promoteChecker(piece);
         }
         return result;
     }

@@ -110,14 +110,6 @@ public class DataManager {
         updateAgentStats(episodeOver);
     }
 
-    private void printUpdatedValues() {
-        for (String key : updatedQValues.keySet()) {
-            for (int i = 0; i < updatedQValues.get(key).length; i++) {
-                System.out.println(key + ": " + updatedQValues.get(key)[i]);
-            }
-        }
-    }
-
     private void updateEpisodes() {
         final String EPISODE_KEY = "EPISODE_COUNT_FILEPATH";
         EpisodeCounter episodeCounter = new EpisodeCounter(envLoader.get(EPISODE_KEY));
