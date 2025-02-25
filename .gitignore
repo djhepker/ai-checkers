@@ -1,11 +1,18 @@
+# Maven-specific
+/target/
+/pom.xml.versionsBackup
+/pom.xml.releaseBackup
+/release.properties
+dependency-reduced-pom.xml
+
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 .idea/
 *.iml
-#.env
-#/data/
+*.ipr
+*.iws
 
 ### Eclipse ###
 .apt_generated
