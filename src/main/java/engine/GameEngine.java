@@ -91,7 +91,12 @@ public class GameEngine {
             int firstXPos = inputHandler.getFirstXPos();
             int firstYPos = inputHandler.getFirstYPos();
             GameBoardPiece piece = pMgr.getPiece(firstXPos, firstYPos);
-            if (piece != null && LIGHT_CHOICE == piece.isLight() && pMgr.movePiece(piece)) {
+            if (piece != null
+                    && LIGHT_CHOICE == piece.isLight()
+                    && pMgr.movePiece(piece,
+                            inputHandler.getSelectedCol(), inputHandler.getSelectedRow(),
+                            inputHandler.getFirstXPos(), inputHandler.getFirstYPos())) {
+
                 if (piece.isReadyForPromotion()) {
                     pMgr.promotePiece(piece);
                 }
@@ -106,7 +111,7 @@ public class GameEngine {
     private void loadGameWorld() {
         this.inputHandler = new InputHandler();
         this.creator = new EntityCreator();
-        this.pMgr = new PieceManager(creator, inputHandler);
+        this.pMgr = new PieceManager(creator);
     }
 
     private void renderUI() {

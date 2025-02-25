@@ -9,7 +9,11 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
@@ -86,6 +90,10 @@ public class GraphicsHandler extends JPanel {
         }
     }
 
+    public boolean windowOpen() {
+        return frame.isVisible();
+    }
+
     public boolean showPopUpColorDialog() {
         try {
             String[] colors = {"White", "Black"};
@@ -113,10 +121,6 @@ public class GraphicsHandler extends JPanel {
             System.exit(0);
         }
         return selectedGameMode;
-    }
-
-    public boolean windowOpen() {
-        return frame.isVisible();
     }
 
     private void drawHighlightRectangles(Graphics2D g2d) {

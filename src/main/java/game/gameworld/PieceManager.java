@@ -2,22 +2,19 @@ package main.java.game.gameworld;
 
 import main.java.game.entity.movement.CapturedNode;
 import main.java.game.entity.movement.ActionNode;
-import main.java.game.graphics.InputHandler;
 import main.java.engine.EntityCreator;
 import main.java.game.entity.GameBoardPiece;
 
 public class PieceManager {
     private GameBoardPiece[] pieces;
     private EntityCreator creator;
-    private InputHandler input;
     private int numDusky;
     private int numLight;
     private boolean gameOver;
 
-    public PieceManager(EntityCreator creator, InputHandler inputHandler) {
+    public PieceManager(EntityCreator creator) {
         this.creator = creator;
         this.pieces = generateBeginningCheckers();
-        this.input = inputHandler;
         generateBeginningCheckers();
         updateAllPieces();
         this.gameOver = false;
@@ -53,9 +50,7 @@ public class PieceManager {
         return pieces[y * 8 + x];
     }
 
-    public boolean movePiece(GameBoardPiece piece) {
-        int postX = input.getSelectedCol();
-        int postY = input.getSelectedRow();
+    public boolean movePiece(GameBoardPiece piece, int postX, int postY, int firstXPos, int firstYPos) {
         if (spaceIsNull(postX, postY)) {
             ActionNode cursor = piece.getMoveListPointer();
             while (cursor != null) {
@@ -63,7 +58,7 @@ public class PieceManager {
                     processCapturedPieces(cursor);
                     piece.setX(postX);
                     piece.setY(postY);
-                    nullifyPiece(input.getFirstXPos(), input.getFirstYPos());
+                    nullifyPiece(firstXPos, firstYPos);
                     insertPieceToBoard(piece);
                     return true;
                 }
@@ -90,12 +85,6 @@ public class PieceManager {
 
     public boolean spaceIsNull(int inputX, int inputY) {
         return pieces[inputY * 8 + inputX] == null;
-    }
-
-    public void printAllPiecesInPlay() {
-        for (GameBoardPiece piece : pieces) {
-            piece.printData();
-        }
     }
 
     public boolean insertPieceToBoard(GameBoardPiece piece) {
