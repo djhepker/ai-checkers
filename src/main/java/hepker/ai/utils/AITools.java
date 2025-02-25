@@ -1,15 +1,15 @@
-package main.java.hepker.ai.utils;
+package hepker.ai.utils;
 
-import main.java.hepker.game.entity.movement.ActionNode;
-import main.java.hepker.game.gameworld.PieceManager;
-import main.java.hepker.game.entity.GameBoardPiece;
+import hepker.game.entity.movement.ActionNode;
+import hepker.game.gameworld.PieceManager;
+import hepker.game.entity.GameBoardPiece;
 
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import static main.java.hepker.game.entity.GameBoardPiece.PieceColor.DUSKY;
-import static main.java.hepker.game.entity.GameBoardPiece.PieceColor.LIGHT;
+import static hepker.game.entity.GameBoardPiece.PieceColor.DUSKY;
+import static hepker.game.entity.GameBoardPiece.PieceColor.LIGHT;
 
 /*
 * STATE REPRESENTATION: Hexadecimal String

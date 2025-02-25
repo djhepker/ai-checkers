@@ -1,4 +1,4 @@
-package main.java.hepker.game.entity;
+package hepker.game.entity;
 
 import java.awt.image.BufferedImage;
 

@@ -1,4 +1,4 @@
-package main.java.hepker.game.utils;
+package hepker.game.utils;
 
 import java.io.IOException;
 import java.nio.file.Files;

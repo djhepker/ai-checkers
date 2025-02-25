@@ -51,7 +51,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>main.java.hepker.Main</mainClass>
+                            <mainClass>hepker.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

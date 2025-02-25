@@ -1,10 +1,10 @@
-package main.java.hepker.game.gameworld;
+package hepker.game.gameworld;
 
-import main.java.hepker.game.entity.movement.CapturedNode;
-import main.java.hepker.game.entity.movement.ActionNode;
-import main.java.hepker.game.graphics.InputHandler;
-import main.java.hepker.engine.EntityCreator;
-import main.java.hepker.game.entity.GameBoardPiece;
+import hepker.game.entity.movement.CapturedNode;
+import hepker.game.entity.movement.ActionNode;
+import hepker.game.graphics.InputHandler;
+import hepker.engine.EntityCreator;
+import hepker.game.entity.GameBoardPiece;
 
 public class PieceManager {
     private GameBoardPiece[] pieces;

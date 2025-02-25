@@ -1,12 +1,12 @@
-package main.java.hepker.engine;
+package hepker.engine;
 
-import main.java.hepker.ai.NPCManager;
-import main.java.hepker.game.gameworld.BoardManager;
-import main.java.hepker.game.graphics.GameWindow;
-import main.java.hepker.game.graphics.GraphicsHandler;
-import main.java.hepker.game.gameworld.PieceManager;
-import main.java.hepker.game.graphics.InputHandler;
-import main.java.hepker.game.entity.GameBoardPiece;
+import hepker.ai.NPCManager;
+import hepker.game.gameworld.BoardManager;
+import hepker.game.graphics.GameWindow;
+import hepker.game.graphics.GraphicsHandler;
+import hepker.game.gameworld.PieceManager;
+import hepker.game.graphics.InputHandler;
+import hepker.game.entity.GameBoardPiece;
 
 public class GameEngine {
     private EntityCreator creator;

@@ -1,9 +1,9 @@
-package main.java.hepker.engine;
+package hepker.engine;
 
-import main.java.hepker.game.entity.piece.Checker;
-import main.java.hepker.game.entity.piece.KingChecker;
-import main.java.hepker.game.utils.AssetManager;
-import main.java.hepker.game.entity.GameBoardPiece;
+import hepker.game.entity.piece.Checker;
+import hepker.game.entity.piece.KingChecker;
+import hepker.game.utils.AssetManager;
+import hepker.game.entity.GameBoardPiece;
 
 import java.awt.Image;
 

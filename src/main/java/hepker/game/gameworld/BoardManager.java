@@ -1,6 +1,6 @@
-package main.java.hepker.game.gameworld;
+package hepker.game.gameworld;
 
-import main.java.hepker.engine.EntityCreator;
+import hepker.engine.EntityCreator;
 
 import java.awt.Image;
 

@@ -1,8 +1,8 @@
-package main.java.hepker.ai.table;
+package hepker.ai.table;
 
-import main.java.hepker.ai.utils.AgentStats;
-import main.java.hepker.ai.utils.EpisodeCounter;
-import main.java.hepker.game.utils.EnvLoader;
+import hepker.ai.utils.AgentStats;
+import hepker.ai.utils.EpisodeCounter;
+import hepker.game.utils.EnvLoader;
 
 import java.io.IOException;
 import java.util.Arrays;

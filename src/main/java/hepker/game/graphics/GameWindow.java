@@ -1,4 +1,4 @@
-package main.java.hepker.game.graphics;
+package hepker.game.graphics;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;

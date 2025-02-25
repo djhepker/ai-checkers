@@ -1,9 +1,9 @@
-package main.java.hepker.game.entity.piece;
+package hepker.game.entity.piece;
 
-import main.java.hepker.game.entity.movement.ActionNode;
-import main.java.hepker.game.entity.movement.MovementManager;
-import main.java.hepker.game.gameworld.PieceManager;
-import main.java.hepker.game.entity.GameBoardPiece;
+import hepker.game.entity.movement.ActionNode;
+import hepker.game.entity.movement.MovementManager;
+import hepker.game.gameworld.PieceManager;
+import hepker.game.entity.GameBoardPiece;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;

@@ -1,4 +1,4 @@
-package main.java.hepker.engine;
+package hepker.engine;
 
 public class GameLoop implements Runnable {
     private final GameEngine game;

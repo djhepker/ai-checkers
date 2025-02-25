@@ -1,8 +1,8 @@
-package main.java.hepker.ai.ai;
+package hepker.ai.ai;
 
-import main.java.hepker.ai.utils.AITools;
-import main.java.hepker.game.entity.movement.ActionNode;
-import main.java.hepker.game.gameworld.PieceManager;
+import hepker.ai.utils.AITools;
+import hepker.game.entity.movement.ActionNode;
+import hepker.game.gameworld.PieceManager;
 
 import java.util.Random;
 

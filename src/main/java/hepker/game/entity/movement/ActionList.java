@@ -1,4 +1,4 @@
-package main.java.hepker.game.entity.movement;
+package hepker.game.entity.movement;
 
 class ActionList {
     private ActionNode head;

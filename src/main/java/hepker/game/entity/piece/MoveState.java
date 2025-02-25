@@ -1,6 +1,6 @@
-package main.java.hepker.game.entity.piece;
+package hepker.game.entity.piece;
 
-import main.java.hepker.game.entity.movement.CapturedNode;
+import hepker.game.entity.movement.CapturedNode;
 
 class MoveState {
     private final int xCell;

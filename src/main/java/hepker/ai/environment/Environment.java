@@ -1,7 +1,7 @@
-package main.java.hepker.ai.environment;
+package hepker.ai.environment;
 
-import main.java.hepker.ai.utils.AITools;
-import main.java.hepker.game.gameworld.PieceManager;
+import hepker.ai.utils.AITools;
+import hepker.game.gameworld.PieceManager;
 
 public class Environment {
     private AITools toolbox;

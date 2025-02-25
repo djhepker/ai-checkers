@@ -1,7 +1,7 @@
-package main.java.hepker;
+package hepker;
 
-import main.java.hepker.engine.GameEngine;
-import main.java.hepker.engine.GameLoop;
+import hepker.engine.GameEngine;
+import hepker.engine.GameLoop;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,8 +1,8 @@
-package main.java.hepker.ai.utils;
+package hepker.ai.utils;
 
-import main.java.hepker.ai.environment.Environment;
-import main.java.hepker.game.entity.movement.ActionNode;
-import main.java.hepker.game.gameworld.PieceManager;
+import hepker.ai.environment.Environment;
+import hepker.game.entity.movement.ActionNode;
+import hepker.game.gameworld.PieceManager;
 
 public class DecisionCalculator {
     private AITools toolbox;

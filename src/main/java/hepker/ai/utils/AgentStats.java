@@ -1,6 +1,6 @@
-package main.java.hepker.ai.utils;
+package hepker.ai.utils;
 
-import main.java.hepker.game.utils.FileLoader;
+import hepker.game.utils.FileLoader;
 
 import java.io.IOException;
 import java.math.BigDecimal;

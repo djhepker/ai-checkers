@@ -1,7 +1,7 @@
-package main.java.hepker.game.entity;
+package hepker.game.entity;
 
-import main.java.hepker.game.entity.movement.ActionNode;
-import main.java.hepker.game.gameworld.PieceManager;
+import hepker.game.entity.movement.ActionNode;
+import hepker.game.gameworld.PieceManager;
 
 import java.awt.image.BufferedImage;
 import java.util.stream.Stream;

@@ -1,4 +1,4 @@
-package main.java.hepker.ai.table;
+package hepker.ai.table;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

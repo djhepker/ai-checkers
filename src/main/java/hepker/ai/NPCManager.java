@@ -1,9 +1,9 @@
-package main.java.hepker.ai;
+package hepker.ai;
 
-import main.java.hepker.ai.ai.Agent;
-import main.java.hepker.ai.ai.StochasticNPC;
-import main.java.hepker.ai.utils.AITools;
-import main.java.hepker.game.gameworld.PieceManager;
+import hepker.ai.ai.Agent;
+import hepker.ai.ai.StochasticNPC;
+import hepker.ai.utils.AITools;
+import hepker.game.gameworld.PieceManager;
 
 public class NPCManager {
     private final boolean IS_DUSKY;

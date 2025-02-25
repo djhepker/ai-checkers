@@ -1,8 +1,8 @@
-package main.java.hepker.game.graphics;
+package hepker.game.graphics;
 
-import main.java.hepker.game.entity.movement.ActionNode;
-import main.java.hepker.game.gameworld.PieceManager;
-import main.java.hepker.game.entity.GameBoardPiece;
+import hepker.game.entity.movement.ActionNode;
+import hepker.game.gameworld.PieceManager;
+import hepker.game.entity.GameBoardPiece;
 
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;

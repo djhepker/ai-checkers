@@ -1,4 +1,4 @@
-package main.java.hepker.game.utils;
+package hepker.game.utils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
