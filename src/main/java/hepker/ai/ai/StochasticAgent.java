@@ -6,13 +6,13 @@ import hepker.game.gameworld.PieceManager;
 
 import java.util.Random;
 
-public class StochasticNPC {
+public class StochasticAgent {
     private final boolean isDusky;
 
     private PieceManager pMgr;
     private AITools toolbox;
 
-    public StochasticNPC(PieceManager pMgr, AITools toolbox, boolean vsLight) {
+    public StochasticAgent(PieceManager pMgr, AITools toolbox, boolean vsLight) {
         this.isDusky = vsLight;
         this.pMgr = pMgr;
         this.toolbox = toolbox;
