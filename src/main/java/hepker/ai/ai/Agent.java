@@ -25,13 +25,16 @@ import java.util.Random;
 public class Agent implements AI {
     private final boolean isDusky;
 
-    private AITools toolbox;
-    private DataManager qTableMgr;
+    // All agents same the same database as to not create multiple or wear memory
+    private static DataManager qTableMgr;
+
+    private final AITools toolbox;
+
     private PieceManager pMgr;
 
-    private final double GAMMA = 0.9; // value of knowledge
-    private final double ALPHA = 0.82; // learning rate
-    private final double EPSILON = 0.8; // exploration rate
+    private double GAMMA = 0.9; // value of knowledge
+    private double ALPHA = 0.82; // learning rate
+    private double EPSILON = 0.8; // exploration rate
     private double RHO;
     private double currentQ;
     private double maxQPrime;
