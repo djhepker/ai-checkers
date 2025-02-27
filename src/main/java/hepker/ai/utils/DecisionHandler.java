@@ -16,4 +16,11 @@ public interface DecisionHandler {
      * is an array, for example, this is simply myArr.length
      * */
     int getNumDecisions();
+
+    /**
+     * Implement logic to return the outcome of the Agent's decision. Reward is placed into learning calculation
+     * for future use.
+     * @return The reward the Agent receives for choosing this action in this state.
+     */
+    double getDecisionReward();
 }

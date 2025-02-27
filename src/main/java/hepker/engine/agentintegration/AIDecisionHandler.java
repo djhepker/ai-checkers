@@ -2,19 +2,23 @@ package hepker.engine.agentintegration;
 
 import hepker.ai.utils.DecisionHandler;
 import hepker.ai.utils.AITools;
-import hepker.ai.utils.DecisionCalculator;
 import hepker.game.entity.movement.ActionNode;
 import hepker.game.gameworld.PieceManager;
 
 /**
  * AI Utility for calculations
  * */
-public class AIDecisionHandler implements DecisionHandler {
+public final class AIDecisionHandler implements DecisionHandler {
 
     private PieceManager pMgr;
     private final AITools toolbox;
-    private final DecisionCalculator calculator;
     private Environment env;
+
+    private int numOptionsNaught;
+    private int numEnemyOptionsNaught;
+
+    private int pointsFromDecision;
+    private int numEnemiesNaught;
 
     private ActionNode[] decisionArray;
 
@@ -22,7 +26,6 @@ public class AIDecisionHandler implements DecisionHandler {
         this.pMgr = pMgr;
         this.toolbox = toolbox;
         this.env = env;
-        this.calculator = new DecisionCalculator(toolbox, pMgr);
         updateDecisionContainer();
     }
 
@@ -34,16 +37,33 @@ public class AIDecisionHandler implements DecisionHandler {
         return decisionArray.length;
     }
 
-    public void calculateDecisionReward(int moveChoice) {
-        calculator.calculateDecisionReward(env, decisionArray, moveChoice);
-    }
-
     public void movePiece(int moveChoice) {
         pMgr.machineMovePiece(decisionArray[moveChoice]);
         pMgr.updateAllPieces();
     }
 
+    public void setPreDecisionRewardParameters(int moveChoice) {
+        setPreDecisionRewardParameters(env, decisionArray, moveChoice);
+    }
+
+    /**
+     * Should be handled by game
+     * @return Double of the reward the Agent recieves for taking action in state.
+     */
     public double getDecisionReward() {
-        return calculator.getReward(env, decisionArray);
+        double ratioOptions = (double) decisionArray.length / toolbox.getNumOpponentOptions(pMgr) -
+                (double) numOptionsNaught / numEnemyOptionsNaught;
+        int numAlliedPieces = env.getNumAlliedPieces();
+        double ratioPieces = (double) numAlliedPieces / env.getNumEnemyPieces() -
+                (double) numAlliedPieces / numEnemiesNaught;
+        int pointsEarned = pointsFromDecision - toolbox.getMaximumOpponentReward(pMgr);
+        return ratioOptions + ratioPieces + pointsEarned;
+    }
+
+    public void setPreDecisionRewardParameters(Environment env, ActionNode[] decisionArray, int moveChoice) {
+        this.numEnemiesNaught = env.getNumEnemyPieces();
+        this.numOptionsNaught = decisionArray.length;
+        this.numEnemyOptionsNaught = toolbox.getNumOpponentOptions(pMgr);
+        pointsFromDecision = decisionArray[moveChoice].getReward();
     }
 }

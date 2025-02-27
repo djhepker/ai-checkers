@@ -69,17 +69,16 @@ public final class Agent implements AI {
         }
         this.moveChoice = getActionInt(numDecisions);
         this.currentQ = getQValue(stateKey, moveChoice);
-        decisionHandler.calculateDecisionReward(moveChoice);
+        decisionHandler.setPreDecisionRewardParameters(moveChoice);
         decisionHandler.movePiece(moveChoice);
 
-        decisionHandler.updateDecisionContainer();
+        decisionHandler.updateDecisionContainer(); // settup for updateRho()
 
         String stateKeyPrimeString = environment.getEncodedGameState(pMgr); // stateKeyPrime is required
 
-        updateRho(decisionHandler);
+        updateRho(decisionHandler.getDecisionReward()); // need to move decisionhandler elsewhere
 
-        calculateMaxQPrime(stateKeyPrimeString); // for updateQValue
-
+        calculateMaxQPrime(stateKeyPrimeString); // VALID
         updateQValue(moveChoice); // VALID
     }
 
@@ -107,8 +106,8 @@ public final class Agent implements AI {
         }
     }
 
-    private void updateRho(AIDecisionHandler handler) {
-        this.RHO = handler.getDecisionReward();
+    public void updateRho(double updatedReward) {
+        this.RHO = updatedReward;
     }
 
     /**
