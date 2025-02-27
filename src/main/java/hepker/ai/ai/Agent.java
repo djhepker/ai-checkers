@@ -71,10 +71,10 @@ public final class Agent implements AI {
         this.currentQ = getQValue(stateKey, moveChoice);
         decisionHandler.calculateDecisionReward(moveChoice);
         decisionHandler.movePiece(moveChoice);
+
         decisionHandler.updateDecisionContainer();
 
-        environment.generateStatePrime();
-        String stateKeyPrimeString = environment.getEncodedGameState(pMgr);
+        String stateKeyPrimeString = environment.getEncodedGameState(pMgr); // stateKeyPrime is required
 
         updateRho(decisionHandler);
 

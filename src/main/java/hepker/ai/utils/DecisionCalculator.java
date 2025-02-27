@@ -4,6 +4,9 @@ import hepker.engine.agentintegration.Environment;
 import hepker.game.entity.movement.ActionNode;
 import hepker.game.gameworld.PieceManager;
 
+/**
+ * TODO: Serious untangling
+ */
 public class DecisionCalculator {
     private AITools toolbox;
     private PieceManager pMgr;

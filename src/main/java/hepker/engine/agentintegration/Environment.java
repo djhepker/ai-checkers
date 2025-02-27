@@ -4,17 +4,13 @@ import hepker.ai.utils.AITools;
 import hepker.game.gameworld.PieceManager;
 
 public class Environment {
-    private AITools toolbox;
-    private PieceManager pMgr;
 
-    int[] gameStateArr;
-    int[] gameStateArrPrime;
+    private final AITools toolbox;
+    private final PieceManager pMgr;
 
     public Environment(AITools toolbox, PieceManager pMgr) {
         this.pMgr = pMgr;
         this.toolbox = toolbox;
-        generateStatePrime();
-        updateEnvironment();
     }
 
     public int getNumAlliedPieces() {
@@ -35,14 +31,6 @@ public class Environment {
 
     public String getEncodedGameState(PieceManager pMgr) {
         return toolbox.getHexadecimalEncodingOfArr(getStateArray(pMgr));
-    }
-
-    public void generateStatePrime() {
-        this.gameStateArrPrime = getStateArray(pMgr);
-    }
-
-    private void updateEnvironment() {
-        this.gameStateArr = getStateArray(pMgr);
     }
 
     private int[] getStateArray(PieceManager pMgr) {
