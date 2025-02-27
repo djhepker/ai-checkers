@@ -6,7 +6,7 @@ import hepker.game.gameworld.PieceManager;
 
 import java.util.Random;
 
-public class StochasticAgent {
+public class StochasticAgent implements AI {
     private final boolean isDusky;
 
     private PieceManager pMgr;
@@ -18,13 +18,17 @@ public class StochasticAgent {
         this.toolbox = toolbox;
     }
 
+    public int getActionInt(int numDecisions) {
+        return new Random().nextInt(numDecisions);
+    }
+
     public void update() {
         ActionNode[] decisionArr = toolbox.getDecisionArray(pMgr);
         if (decisionArr.length == 0) {
             pMgr.flagGameOver();
             return;
         }
-        int moveChoice = new Random().nextInt(decisionArr.length);
+        int moveChoice = getActionInt(decisionArr.length);
         if (!pMgr.machineMovePiece(decisionArr[moveChoice])) {
             throw new RuntimeException("StochasticNPC update failed");
         }
