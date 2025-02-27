@@ -1,12 +1,16 @@
-package hepker.ai.environment;
+package hepker.engine.agentintegration;
 
-import hepker.ai.DecisionHandler;
+import hepker.ai.utils.DecisionHandler;
 import hepker.ai.utils.AITools;
 import hepker.ai.utils.DecisionCalculator;
 import hepker.game.entity.movement.ActionNode;
 import hepker.game.gameworld.PieceManager;
 
+/**
+ * AI Utility for calculations
+ * */
 public class AIDecisionHandler implements DecisionHandler {
+
     private PieceManager pMgr;
     private final AITools toolbox;
     private final DecisionCalculator calculator;
@@ -22,11 +26,6 @@ public class AIDecisionHandler implements DecisionHandler {
         updateDecisionContainer();
     }
 
-    public void movePiece(int moveChoice) {
-        pMgr.machineMovePiece(decisionArray[moveChoice]);
-        pMgr.updateAllPieces();
-    }
-
     public void updateDecisionContainer() {
         decisionArray = toolbox.getDecisionArray(pMgr);
     }
@@ -37,6 +36,11 @@ public class AIDecisionHandler implements DecisionHandler {
 
     public void calculateDecisionReward(int moveChoice) {
         calculator.calculateDecisionReward(env, decisionArray, moveChoice);
+    }
+
+    public void movePiece(int moveChoice) {
+        pMgr.machineMovePiece(decisionArray[moveChoice]);
+        pMgr.updateAllPieces();
     }
 
     public double getDecisionReward() {

@@ -21,6 +21,7 @@ import static hepker.game.entity.GameBoardPiece.PieceColor.LIGHT;
 * */
 
 public final class AITools {
+
     private final GameBoardPiece.PieceColor pieceColor;
 
     public AITools(boolean isDusky) {

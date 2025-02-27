@@ -1,4 +1,4 @@
-package hepker.ai.environment;
+package hepker.engine.agentintegration;
 
 import hepker.ai.utils.AITools;
 import hepker.game.gameworld.PieceManager;

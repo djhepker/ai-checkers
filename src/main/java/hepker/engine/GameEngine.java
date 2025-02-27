@@ -1,6 +1,6 @@
 package hepker.engine;
 
-import hepker.ai.AgentManager;
+import hepker.engine.agentintegration.AIEngine;
 import hepker.game.graphics.GraphicsHandler;
 import hepker.game.gameworld.PieceManager;
 import hepker.game.graphics.InputHandler;
@@ -16,7 +16,7 @@ public class GameEngine {
     private PieceManager pMgr;
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
-    private AgentManager agentMgr;
+    private AIEngine agentMgr;
 
     private final boolean LIGHT_CHOICE;
     private final boolean HAS_PLAYER;
@@ -34,7 +34,7 @@ public class GameEngine {
         if (IS_TRAINING) {
             this.LIGHT_CHOICE = true;
             this.HAS_PLAYER = false;
-            this.agentMgr = new AgentManager(pMgr, LIGHT_CHOICE, "Agent Vs Stochastic");
+            this.agentMgr = new AIEngine(pMgr, LIGHT_CHOICE, "Agent Vs Stochastic");
         } else {
             String gameMode = graphicsHandler.showGameModeDialog();
             this.HAS_PLAYER = gameMode.endsWith("Player");
@@ -44,7 +44,7 @@ public class GameEngine {
                 this.LIGHT_CHOICE = false;
             }
             this.playerTurn = LIGHT_CHOICE;
-            this.agentMgr = new AgentManager(pMgr, LIGHT_CHOICE, gameMode);
+            this.agentMgr = new AIEngine(pMgr, LIGHT_CHOICE, gameMode);
         }
         this.gameOver = false;
     }

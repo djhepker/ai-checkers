@@ -1,7 +1,7 @@
 package hepker.ai.ai;
 
-import hepker.ai.environment.AIDecisionHandler;
-import hepker.ai.environment.Environment;
+import hepker.engine.agentintegration.AIDecisionHandler;
+import hepker.engine.agentintegration.Environment;
 import hepker.ai.utils.AITools;
 import hepker.ai.table.DataManager;
 import hepker.game.gameworld.PieceManager;
@@ -22,7 +22,8 @@ import java.util.Random;
 * action "a" is to be taken while in state "S"
 * */
 
-public class Agent implements AI {
+public final class Agent implements AI {
+
     private final boolean isDusky;
 
     // All agents same the same database as to not create multiple or wear memory
@@ -39,6 +40,8 @@ public class Agent implements AI {
     private double currentQ;
     private double maxQPrime;
 
+    private int moveChoice;
+
     private String stateKey;
 
     public Agent (PieceManager pMgr, AITools toolbox, boolean vsLight) {
@@ -49,27 +52,35 @@ public class Agent implements AI {
         this.currentQ = 0.0;
         this.maxQPrime = 0.0;
         this.RHO = 0.0;
+        this.moveChoice = -1;
     }
 
     public void update() {
         Environment environment = new Environment(toolbox, pMgr); // remove pMgr usage, toolbox made abstract,static
         AIDecisionHandler decisionHandler = new AIDecisionHandler(pMgr, toolbox, environment); // eliminate decisionhandler
+
         this.stateKey = environment.getEncodedGameState(pMgr); // update needs to take gameState as an array of char/string/int/double
+
         decisionHandler.updateDecisionContainer(); //  export decisionArray logic to non-ai handler
         int numDecisions = decisionHandler.getNumDecisions(); // logic needs to be handled outside ai
         if (numDecisions == 0) {
             pMgr.flagGameOver();
             return;
         }
-        int moveChoice = getActionInt(numDecisions);
+        this.moveChoice = getActionInt(numDecisions);
         this.currentQ = getQValue(stateKey, moveChoice);
         decisionHandler.calculateDecisionReward(moveChoice);
         decisionHandler.movePiece(moveChoice);
         decisionHandler.updateDecisionContainer();
+
         environment.generateStatePrime();
+        String stateKeyPrimeString = environment.getEncodedGameState(pMgr);
+
         updateRho(decisionHandler);
-        calculateMaxQPrime(environment);
-        updateQValue(moveChoice);
+
+        calculateMaxQPrime(stateKeyPrimeString); // for updateQValue
+
+        updateQValue(moveChoice); // VALID
     }
 
     public int getActionInt(int numDecisions) {
@@ -100,8 +111,12 @@ public class Agent implements AI {
         this.RHO = handler.getDecisionReward();
     }
 
-    private void calculateMaxQPrime(Environment env) {
-        this.maxQPrime = qTableMgr.getMaxQValue(env.getEncodedGameState(pMgr));
+    /**
+     * Updates maxQPrime
+     * @param stateKeyPrimeString String representation of the gamestate, used to query sqlite table
+     */
+    public void calculateMaxQPrime(String stateKeyPrimeString) {
+        this.maxQPrime = qTableMgr.getMaxQValue(stateKeyPrimeString);
     }
 
     private void updateQValue(int moveChoice) {

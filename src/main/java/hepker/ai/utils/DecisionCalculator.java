@@ -1,6 +1,6 @@
 package hepker.ai.utils;
 
-import hepker.ai.environment.Environment;
+import hepker.engine.agentintegration.Environment;
 import hepker.game.entity.movement.ActionNode;
 import hepker.game.gameworld.PieceManager;
 

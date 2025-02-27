@@ -1,4 +1,4 @@
-package hepker.ai;
+package hepker.ai.utils;
 
 /**
  * Outlines logic required by Agent for AI integration
