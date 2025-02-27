@@ -55,7 +55,7 @@ public class Agent implements AI {
         Environment environment = new Environment(toolbox, pMgr); // remove pMgr usage, toolbox made abstract,static
         AIDecisionHandler decisionHandler = new AIDecisionHandler(pMgr, toolbox, environment); // eliminate decisionhandler
         this.stateKey = environment.getEncodedGameState(pMgr); // update needs to take gameState as an array of char/string/int/double
-        decisionHandler.updateDecisionArray(); //  export decisionArray logic to non-ai handler
+        decisionHandler.updateDecisionContainer(); //  export decisionArray logic to non-ai handler
         int numDecisions = decisionHandler.getNumDecisions(); // logic needs to be handled outside ai
         if (numDecisions == 0) {
             pMgr.flagGameOver();
@@ -65,7 +65,7 @@ public class Agent implements AI {
         this.currentQ = getQValue(stateKey, moveChoice);
         decisionHandler.calculateDecisionReward(moveChoice);
         decisionHandler.movePiece(moveChoice);
-        decisionHandler.updateDecisionArray();
+        decisionHandler.updateDecisionContainer();
         environment.generateStatePrime();
         updateRho(decisionHandler);
         calculateMaxQPrime(environment);
