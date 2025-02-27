@@ -22,7 +22,7 @@ import java.util.Random;
 * action "a" is to be taken while in state "S"
 * */
 
-public class Agent {
+public class Agent implements AI {
     private final boolean isDusky;
 
     private AITools toolbox;
@@ -58,7 +58,7 @@ public class Agent {
             pMgr.flagGameOver();
             return;
         }
-        int moveChoice = getMoveChoice(numDecisions);
+        int moveChoice = getActionInt(numDecisions);
         this.currentQ = getQValue(stateKey, moveChoice);
         decisionHandler.calculateDecisionReward(moveChoice);
         decisionHandler.movePiece(moveChoice);
@@ -69,7 +69,7 @@ public class Agent {
         updateQValue(moveChoice);
     }
 
-    private int getMoveChoice(int numDecisions) {
+    public int getActionInt(int numDecisions) {
         if (Math.random() < EPSILON) {
             return explore(numDecisions);
         } else {
