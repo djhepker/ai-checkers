@@ -6,7 +6,7 @@ import hepker.game.gameworld.PieceManager;
 public class Environment {
 
     private final AITools toolbox;
-    private final PieceManager pMgr;
+    private PieceManager pMgr;
 
     public Environment(AITools toolbox, PieceManager pMgr) {
         this.pMgr = pMgr;

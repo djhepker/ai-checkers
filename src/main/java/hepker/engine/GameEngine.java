@@ -41,7 +41,7 @@ public class GameEngine {
             if (HAS_PLAYER) {
                 this.LIGHT_CHOICE = this.graphicsHandler.showPopUpColorDialog();
             } else {
-                this.LIGHT_CHOICE = false;
+                this.LIGHT_CHOICE = true;
             }
             this.playerTurn = LIGHT_CHOICE;
             this.agentMgr = new AIEngine(pMgr, LIGHT_CHOICE, gameMode);

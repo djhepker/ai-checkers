@@ -23,8 +23,8 @@ import java.awt.event.WindowEvent;
 
 public class GraphicsHandler extends JPanel {
 
-    private final InputHandler inputHandler;
-    private final PieceManager pMgr;
+    private InputHandler inputHandler;
+    private PieceManager pMgr;
 
     private final Image[] cachedTiles;
 

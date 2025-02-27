@@ -10,42 +10,68 @@ import org.slf4j.LoggerFactory;
 /**
  * Class for connecting game to AI
  * */
-public class AIEngine {
+public final class AIEngine {
 
     private static final Logger logger = LoggerFactory.getLogger(AIEngine.class);
 
     private final boolean IS_DUSKY;
 
-    private final PieceManager pMgr;
+    private final AIDecisionHandler decisionHandler;
+    private final Environment envClass;
+    private PieceManager pMgr;
     private Agent zero;
     private StochasticAgent kane;
 
-    private GameState gameType;
+    private final GameState gameType;
 
     public AIEngine(PieceManager pMgr, boolean playerLight, String gameTypeString) {
         this.IS_DUSKY = playerLight;
         this.pMgr = pMgr;
         this.gameType = loadGameState(gameTypeString);
+
+        AITools shippedToolbox = new AITools(IS_DUSKY);
+        this.envClass = new Environment(shippedToolbox, pMgr);
+        this.decisionHandler = new AIDecisionHandler(pMgr, shippedToolbox, envClass);
     }
 
-    // TODO: Accommodate line 47
     public void update() {
         try {
-
             if (gameType == GameState.AGENT_VS_PLAYER) {
-                zero.update();
-
+                updateZero();
             } else if (gameType == GameState.STOCHASTIC_VS_PLAYER) {
                 kane.update();
-
             } else if (gameType == GameState.AGENT_VS_STOCHASTIC) {
-                zero.update();
+                updateZero();
                 kane.update();
             }
 
         } catch (Exception e) {
             logger.error("Agent Manager Exception", e);
         }
+    }
+
+    private void updateZero() {
+        String stateKey = envClass.getEncodedGameState(pMgr);
+
+        zero.setStateKey(stateKey);
+        decisionHandler.updateDecisionContainer();
+
+        int numDecisions = decisionHandler.getNumDecisions();
+        if (numDecisions == 0) {
+            pMgr.flagGameOver();
+            return;
+        }
+
+        int actionChoiceInt = zero.getActionInt(numDecisions);
+        zero.updateCurrentQ(stateKey, actionChoiceInt);
+        decisionHandler.setPreDecisionRewardParameters(actionChoiceInt);
+        decisionHandler.movePiece(actionChoiceInt);
+        decisionHandler.updateDecisionContainer();
+
+        String stateKeyPrime = envClass.getEncodedGameState(pMgr);
+        zero.updateRho(decisionHandler.getDecisionReward());
+
+        zero.update(stateKeyPrime, actionChoiceInt);
     }
 
     // TODO: Untangle pMgr and dusky boolean from Agent

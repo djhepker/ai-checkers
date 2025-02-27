@@ -40,8 +40,6 @@ public final class Agent implements AI {
     private double currentQ;
     private double maxQPrime;
 
-    private int moveChoice;
-
     private String stateKey;
 
     public Agent (PieceManager pMgr, AITools toolbox, boolean vsLight) {
@@ -52,34 +50,16 @@ public final class Agent implements AI {
         this.currentQ = 0.0;
         this.maxQPrime = 0.0;
         this.RHO = 0.0;
-        this.moveChoice = -1;
+        System.out.println("Agent boolean isDusky is: " + isDusky);
     }
 
-    public void update() {
-        Environment environment = new Environment(toolbox, pMgr); // remove pMgr usage, toolbox made abstract,static
-        AIDecisionHandler decisionHandler = new AIDecisionHandler(pMgr, toolbox, environment); // eliminate decisionhandler
+    public void update(String stateKeyPrime, int actionChoiceInt) {
+        calculateMaxQPrime(stateKeyPrime); // VALID
+        updateQValue(actionChoiceInt); // VALID
+    }
 
-        this.stateKey = environment.getEncodedGameState(pMgr); // update needs to take gameState as an array of char/string/int/double
-
-        decisionHandler.updateDecisionContainer(); //  export decisionArray logic to non-ai handler
-        int numDecisions = decisionHandler.getNumDecisions(); // logic needs to be handled outside ai
-        if (numDecisions == 0) {
-            pMgr.flagGameOver();
-            return;
-        }
-        this.moveChoice = getActionInt(numDecisions);
-        this.currentQ = getQValue(stateKey, moveChoice);
-        decisionHandler.setPreDecisionRewardParameters(moveChoice);
-        decisionHandler.movePiece(moveChoice);
-
-        decisionHandler.updateDecisionContainer(); // settup for updateRho()
-
-        String stateKeyPrimeString = environment.getEncodedGameState(pMgr); // stateKeyPrime is required
-
-        updateRho(decisionHandler.getDecisionReward()); // need to move decisionhandler elsewhere
-
-        calculateMaxQPrime(stateKeyPrimeString); // VALID
-        updateQValue(moveChoice); // VALID
+    public void setStateKey(String stateKey) {
+        this.stateKey = stateKey;
     }
 
     public int getActionInt(int numDecisions) {
@@ -88,6 +68,10 @@ public final class Agent implements AI {
         } else {
             return exploit();
         }
+    }
+
+    public void updateCurrentQ(String stateKey, int actionChoiceInt) {
+        this.currentQ = getQValue(stateKey, actionChoiceInt);
     }
 
     private int exploit() {

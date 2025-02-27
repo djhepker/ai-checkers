@@ -46,10 +46,6 @@ public final class AIDecisionHandler implements DecisionHandler {
         setPreDecisionRewardParameters(env, decisionArray, moveChoice);
     }
 
-    /**
-     * Should be handled by game
-     * @return Double of the reward the Agent recieves for taking action in state.
-     */
     public double getDecisionReward() {
         double ratioOptions = (double) decisionArray.length / toolbox.getNumOpponentOptions(pMgr) -
                 (double) numOptionsNaught / numEnemyOptionsNaught;
