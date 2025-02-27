@@ -52,11 +52,11 @@ public class Agent implements AI {
     }
 
     public void update() {
-        Environment environment = new Environment(toolbox, pMgr);
-        AIDecisionHandler decisionHandler = new AIDecisionHandler(pMgr, toolbox, environment);
-        this.stateKey = environment.getEncodedGameState(pMgr);
-        decisionHandler.updateDecisionArray();
-        int numDecisions = decisionHandler.getNumDecisions();
+        Environment environment = new Environment(toolbox, pMgr); // remove pMgr usage, toolbox made abstract,static
+        AIDecisionHandler decisionHandler = new AIDecisionHandler(pMgr, toolbox, environment); // eliminate decisionhandler
+        this.stateKey = environment.getEncodedGameState(pMgr); // update needs to take gameState as an array of char/string/int/double
+        decisionHandler.updateDecisionArray(); //  export decisionArray logic to non-ai handler
+        int numDecisions = decisionHandler.getNumDecisions(); // logic needs to be handled outside ai
         if (numDecisions == 0) {
             pMgr.flagGameOver();
             return;
