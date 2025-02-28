@@ -3,9 +3,7 @@ package hepker.engine.agentintegration;
 import hepker.ai.ai.Agent;
 import hepker.ai.utils.AITools;
 import hepker.ai.utils.AgentStats;
-import hepker.ai.utils.EpisodeCounter;
 import hepker.game.gameworld.PieceManager;
-import hepker.game.utils.EnvLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,13 +22,12 @@ public final class AIEngine {
     private List<AgentRecord> agents;
     private PieceManager pMgr;
 
-    private final GameState gameType;
 
     public AIEngine(PieceManager pMgr, boolean playerLight, String gameTypeString) {
         this.IS_DUSKY = playerLight;
         this.pMgr = pMgr;
         this.agents = new ArrayList<>();
-        this.gameType = loadGameState(gameTypeString);
+        loadGameState(gameTypeString);
     }
 
     public void update() {
@@ -68,76 +65,40 @@ public final class AIEngine {
     }
 
     private GameState loadGameState(String gameTypeString) {
-        Environment env;
-        AIDecisionHandler dH;
-        AITools tools;
-
         switch (gameTypeString) {
             case "Agent Vs Player" -> {
-                AITools agentZeroToolBox = new AITools(IS_DUSKY);
-                env = new Environment(agentZeroToolBox, pMgr);
-                dH = new AIDecisionHandler(pMgr, agentZeroToolBox, env);
-                agents.add(new AgentRecord(new Agent(), env, dH));
+                generateAgent(false, IS_DUSKY);
                 return GameState.AGENT_VS_PLAYER;
             }
             case "Stochastic Vs Player" -> {
-                Agent stochasticAgent = new Agent();
-                stochasticAgent.setEpsilon(1.0);
-                tools = new AITools(IS_DUSKY);
-                env = new Environment(tools, pMgr);
-                dH = new AIDecisionHandler(pMgr, tools, env);
-                agents.add(new AgentRecord(stochasticAgent, env, dH));
+                generateAgent(true, IS_DUSKY);
                 return GameState.STOCHASTIC_VS_PLAYER;
             }
             case "Agent Vs Stochastic" -> {
-                tools = new AITools(IS_DUSKY);
-                env = new Environment(tools, pMgr);
-                dH = new AIDecisionHandler(pMgr, tools, env);
-                agents.add(new AgentRecord(new Agent(), env, dH));
-
-                Agent stochasticAgent = new Agent();
-                stochasticAgent.setEpsilon(1.0);
-                tools = new AITools(IS_DUSKY);
-                env = new Environment(tools, pMgr);
-                dH = new AIDecisionHandler(pMgr, tools, env);
-                agents.add(new AgentRecord(stochasticAgent, env, dH));
-
+                generateAgent(false, true);
+                generateAgent(true, false);
                 return GameState.AGENT_VS_STOCHASTIC;
             }
         }
         return null;
     }
 
-    public void finishGame() {
+    public void finishGame(boolean gameWon) {
+        new AgentStats("src/main/resources/data/agentstats").processEpisode(gameWon);
         for (AgentRecord agentRecord : agents) {
             agentRecord.getAgent().finalizeQTableUpdate();
         }
     }
 
-    private void updateEpisodes() {
-        final String ENV_FILEPATH = ".env";
-        final String EPISODE_KEY = "EPISODE_COUNT_FILEPATH";
-        try {
-            EnvLoader envLoader = new EnvLoader(ENV_FILEPATH);
-            EpisodeCounter episodeCounter = new EpisodeCounter(envLoader.get(EPISODE_KEY));
-            episodeCounter.processEpisode();
-            logger.info("Successfully updated episode count");
-        } catch (Exception e) {
-            logger.error("Failed to update episode count", e);
+    private void generateAgent(boolean isStochastic, boolean duskyAgent) {
+        Agent zero = new Agent();
+        if (isStochastic) {
+            zero.setEpsilon(1.0);
         }
-    }
-
-    private void updateAgentStats(boolean gameWon) {
-        final String STATS_KEY = "AGENT_STATS_FILEPATH";
-        final String ENV_FILEPATH = ".env";
-        try {
-            EnvLoader envLoader = new EnvLoader(ENV_FILEPATH);
-            AgentStats agentStatsHandler = new AgentStats(envLoader.get(STATS_KEY));
-            agentStatsHandler.processEpisode(gameWon);
-            logger.info("Successfully updated agent stats, gameWon: {}", gameWon);
-        } catch (Exception e) { // Assuming processEpisode might throw a generic Exception
-            logger.error("Failed to update agent stats, gameWon: {}", gameWon, e);
-        }
+        AITools tools = new AITools(duskyAgent);
+        Environment env = new Environment(tools, pMgr);
+        agents.add(new AgentRecord(
+                zero, env, new AIDecisionHandler(pMgr, tools, env)));
     }
 
     // VALID

@@ -41,7 +41,7 @@ public class AgentStats {
             agentLossCount++;
             fileLoader.updateLineByKey(AGENT_LOSS_KEY, Integer.toString(agentLossCount));
         }
-        BigDecimal winRatio = new BigDecimal((float) agentWinCount / (agentWinCount + agentLossCount))
+        BigDecimal winRatio = new BigDecimal(((float) agentWinCount / (agentWinCount + agentLossCount)) * 100)
                 .setScale(2, RoundingMode.HALF_UP);
         fileLoader.updateLineByKey(AGENT_WINRATE_KEY, winRatio.toString());
     }

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class FileLoader {
+
     private final String filePath;
 
     public FileLoader(String filePath) {
