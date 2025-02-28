@@ -5,6 +5,7 @@ import hepker.ai.utils.AITools;
 import hepker.ai.utils.AgentStats;
 import hepker.ai.utils.EpisodeCounter;
 import hepker.game.gameworld.PieceManager;
+import hepker.game.utils.EnvLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,27 +114,31 @@ public final class AIEngine {
         }
     }
 
-//    private void updateEpisodes() {
-//        final String EPISODE_KEY = "EPISODE_COUNT_FILEPATH";
-//        EpisodeCounter episodeCounter = new EpisodeCounter(envLoader.get(EPISODE_KEY));
-//        try {
-//            episodeCounter.processEpisode();
-//            logger.info("Successfully updated episode count");
-//        } catch (Exception e) {
-//            logger.error("Failed to update episode count", e);
-//        }
-//    }
-//
-//    private void updateAgentStats(boolean gameWon) {
-//        final String STATS_KEY = "AGENT_STATS_FILEPATH";
-//        AgentStats agentStatsHandler = new AgentStats(envLoader.get(STATS_KEY));
-//        try {
-//            agentStatsHandler.processEpisode(gameWon);
-//            logger.info("Successfully updated agent stats, gameWon: {}", gameWon);
-//        } catch (Exception e) { // Assuming processEpisode might throw a generic Exception
-//            logger.error("Failed to update agent stats, gameWon: {}", gameWon, e);
-//        }
-//    }
+    private void updateEpisodes() {
+        final String ENV_FILEPATH = ".env";
+        final String EPISODE_KEY = "EPISODE_COUNT_FILEPATH";
+        try {
+            EnvLoader envLoader = new EnvLoader(ENV_FILEPATH);
+            EpisodeCounter episodeCounter = new EpisodeCounter(envLoader.get(EPISODE_KEY));
+            episodeCounter.processEpisode();
+            logger.info("Successfully updated episode count");
+        } catch (Exception e) {
+            logger.error("Failed to update episode count", e);
+        }
+    }
+
+    private void updateAgentStats(boolean gameWon) {
+        final String STATS_KEY = "AGENT_STATS_FILEPATH";
+        final String ENV_FILEPATH = ".env";
+        try {
+            EnvLoader envLoader = new EnvLoader(ENV_FILEPATH);
+            AgentStats agentStatsHandler = new AgentStats(envLoader.get(STATS_KEY));
+            agentStatsHandler.processEpisode(gameWon);
+            logger.info("Successfully updated agent stats, gameWon: {}", gameWon);
+        } catch (Exception e) { // Assuming processEpisode might throw a generic Exception
+            logger.error("Failed to update agent stats, gameWon: {}", gameWon, e);
+        }
+    }
 
     // VALID
     private enum GameState {

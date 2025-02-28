@@ -80,6 +80,7 @@ public class GameEngine {
             if (!graphicsHandler.windowOpen() || gameOver) {
                 this.gameOver = true;
                 if (LIGHT_CHOICE) {
+                    // TODO: Logic for maintaining agent stats
                     agentMgr.finishGame(pMgr.getNumLight() == 0);
                 } else {
                     agentMgr.finishGame(pMgr.getNumDusky() == 0);
