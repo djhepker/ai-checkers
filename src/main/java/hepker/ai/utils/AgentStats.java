@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class AgentStats {
+
     private final String AGENT_WIN_KEY = "win_count=";
     private final String AGENT_LOSS_KEY = "loss_count=";
     private final String AGENT_WINRATE_KEY = "win_percentage=";

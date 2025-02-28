@@ -1,8 +1,6 @@
 package hepker.ai.ai;
 
-import hepker.ai.utils.AITools;
 import hepker.ai.table.DataManager;
-import hepker.game.gameworld.PieceManager;
 
 import java.util.Random;
 
@@ -22,14 +20,12 @@ import java.util.Random;
 
 public final class Agent implements AI {
 
-    private final boolean isDusky;
-
     // All agents same the same database as to not create multiple or wear memory
     private static DataManager qTableMgr;
 
-    private final AITools toolbox;
-
-    private PieceManager pMgr;
+    static {
+        qTableMgr = new DataManager();
+    }
 
     private double GAMMA = 0.9; // value of knowledge
     private double ALPHA = 0.82; // learning rate
@@ -40,19 +36,15 @@ public final class Agent implements AI {
 
     private String stateKey;
 
-    public Agent (PieceManager pMgr, AITools toolbox, boolean vsLight) {
-        this.pMgr = pMgr;
-        this.isDusky = vsLight;
-        this.toolbox = toolbox;
-        this.qTableMgr = new DataManager();
+    public Agent () {
         this.currentQ = 0.0;
         this.maxQPrime = 0.0;
         this.RHO = 0.0;
     }
 
     public void update(String stateKeyPrime, int actionChoiceInt) {
-        calculateMaxQPrime(stateKeyPrime); // VALID
-        updateQValue(actionChoiceInt); // VALID
+        calculateMaxQPrime(stateKeyPrime);
+        updateQValue(actionChoiceInt);
     }
 
     public void setStateKey(String stateKey) {
@@ -102,6 +94,12 @@ public final class Agent implements AI {
         this.maxQPrime = qTableMgr.getMaxQValue(stateKeyPrimeString);
     }
 
+    public void finalizeQTableUpdate() {
+        if (EPSILON != 1.0) {
+            qTableMgr.updateData();
+        }
+    }
+
     /**
      * Mutator for Epsilon. Epsilon is the probability that Agent will select a random action. The probability that
      * Agent will select the learned optimal decision is 1 - Epsilon
@@ -111,11 +109,7 @@ public final class Agent implements AI {
     public void setEpsilon(double epsilon) {
         if (epsilon < 0.0) {
             this.EPSILON = 0.0;
-        } else if (epsilon > 1.0) {
-            this.EPSILON = 1.0;
-        } else {
-            this.EPSILON = epsilon;
-        }
+        } else this.EPSILON = Math.min(epsilon, 1.0);
     }
 
     private void updateQValue(int moveChoice) {
@@ -123,9 +117,5 @@ public final class Agent implements AI {
         if (Math.abs(updatedQ - currentQ) > 0.01) {
             qTableMgr.putUpdatedValue(stateKey, moveChoice, updatedQ);
         }
-    }
-
-    public void finalizeQTableUpdate(boolean gameWon) {
-        qTableMgr.updateData(gameWon);
     }
 }

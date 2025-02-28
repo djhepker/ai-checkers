@@ -1,7 +1,5 @@
 package hepker.ai.table;
 
-import hepker.ai.utils.AgentStats;
-import hepker.ai.utils.EpisodeCounter;
 import hepker.game.utils.EnvLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,17 +19,19 @@ public class DataManager {
     private final String ENV_FILEPATH = ".env";
 
     private final QValueRepository db;
-    private EnvLoader envLoader;
 
 
     public DataManager() {
         QValueRepository tempDb;
+        EnvLoader envLoader;
+        String sqlKey = "No URL";
         try {
-            this.envLoader = new EnvLoader(ENV_FILEPATH);
-            tempDb = new QValueRepository(envLoader.get(SQL_URL_KEY));
-            logger.info("Successfully initialized QValueRepository with URL: {}", envLoader.get(SQL_URL_KEY));
+            envLoader = new EnvLoader(ENV_FILEPATH);
+            sqlKey = envLoader.get(SQL_URL_KEY);
+            tempDb = new QValueRepository(sqlKey);
+            logger.info("Successfully initialized QValueRepository with URL: {}", sqlKey);
         } catch (SQLException | IOException e) {
-            logger.error("Failed to initialize QValueRepository with URL: {}", envLoader.get(SQL_URL_KEY), e);
+            logger.error("Failed to initialize QValueRepository with URL: {}", sqlKey, e);
             throw new RuntimeException("Database initialization failed", e);
         }
         this.db = tempDb;
@@ -95,7 +95,7 @@ public class DataManager {
         });
     }
 
-    public void updateData(boolean episodeOver) {
+    public void updateData() {
         try {
             db.updateQTable(updatedQValues);
             logger.info("Successfully updated QTable with {} entries", updatedQValues.size());
@@ -107,31 +107,6 @@ public class DataManager {
             logger.info("Database connection pool closed successfully");
         } catch (SQLException e) {
             logger.error("Failed to close database connection pool", e);
-        }
-
-        updateEpisodes();
-        updateAgentStats(episodeOver);
-    }
-
-    private void updateEpisodes() {
-        final String EPISODE_KEY = "EPISODE_COUNT_FILEPATH";
-        EpisodeCounter episodeCounter = new EpisodeCounter(envLoader.get(EPISODE_KEY));
-        try {
-            episodeCounter.processEpisode();
-            logger.info("Successfully updated episode count");
-        } catch (Exception e) {
-            logger.error("Failed to update episode count", e);
-        }
-    }
-
-    private void updateAgentStats(boolean gameWon) {
-        final String STATS_KEY = "AGENT_STATS_FILEPATH";
-        AgentStats agentStatsHandler = new AgentStats(envLoader.get(STATS_KEY));
-        try {
-            agentStatsHandler.processEpisode(gameWon);
-            logger.info("Successfully updated agent stats, gameWon: {}", gameWon);
-        } catch (Exception e) { // Assuming processEpisode might throw a generic Exception
-            logger.error("Failed to update agent stats, gameWon: {}", gameWon, e);
         }
     }
 }
