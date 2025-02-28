@@ -16,7 +16,6 @@ public class StochasticAgent implements AI {
         this.isDusky = vsLight;
         this.pMgr = pMgr;
         this.toolbox = toolbox;
-        System.out.println("StochasticAgent boolean isDusky is: " + isDusky);
     }
 
     public int getActionInt(int numDecisions) {

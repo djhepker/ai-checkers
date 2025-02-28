@@ -1,7 +1,5 @@
 package hepker.ai.ai;
 
-import hepker.engine.agentintegration.AIDecisionHandler;
-import hepker.engine.agentintegration.Environment;
 import hepker.ai.utils.AITools;
 import hepker.ai.table.DataManager;
 import hepker.game.gameworld.PieceManager;
@@ -50,7 +48,6 @@ public final class Agent implements AI {
         this.currentQ = 0.0;
         this.maxQPrime = 0.0;
         this.RHO = 0.0;
-        System.out.println("Agent boolean isDusky is: " + isDusky);
     }
 
     public void update(String stateKeyPrime, int actionChoiceInt) {
@@ -99,7 +96,26 @@ public final class Agent implements AI {
      * @param stateKeyPrimeString String representation of the gamestate, used to query sqlite table
      */
     public void calculateMaxQPrime(String stateKeyPrimeString) {
+        if (EPSILON == 0.0) {
+            return;
+        }
         this.maxQPrime = qTableMgr.getMaxQValue(stateKeyPrimeString);
+    }
+
+    /**
+     * Mutator for Epsilon. Epsilon is the probability that Agent will select a random action. The probability that
+     * Agent will select the learned optimal decision is 1 - Epsilon
+     * @param epsilon The new value we will set Epsilon to [0, 1]. Epsilon will be 1 if argument greater than one, and
+     *                0 if argument less than zero.
+     */
+    public void setEpsilon(double epsilon) {
+        if (epsilon < 0.0) {
+            this.EPSILON = 0.0;
+        } else if (epsilon > 1.0) {
+            this.EPSILON = 1.0;
+        } else {
+            this.EPSILON = epsilon;
+        }
     }
 
     private void updateQValue(int moveChoice) {
