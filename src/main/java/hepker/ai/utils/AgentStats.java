@@ -6,18 +6,18 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class AgentStats {
+public final class AgentStats {
 
-    private final String AGENT_WIN_KEY = "win_count=";
-    private final String AGENT_LOSS_KEY = "loss_count=";
-    private final String AGENT_WINRATE_KEY = "win_percentage=";
-    private final FileLoader fileLoader;
+    private static final String AGENT_WIN_KEY = "win_count=";
+    private static final String AGENT_LOSS_KEY = "loss_count=";
+    private static final String AGENT_WINRATE_KEY = "win_percentage=";
+    private final FileLoader fileMgr;
     private int agentWinCount;
     private int agentLossCount;
 
     public AgentStats(String filePath) {
-        this.fileLoader = new FileLoader(filePath);
-        initializeAgentStats(this.fileLoader);
+        this.fileMgr = new FileLoader(filePath);
+        initializeAgentStats(this.fileMgr);
     }
 
     public void initializeAgentStats(FileLoader fileLoader) {
@@ -36,13 +36,13 @@ public class AgentStats {
     public void processEpisode(boolean gameWon) {
         if (gameWon) {
             agentWinCount++;
-            fileLoader.updateLineByKey(AGENT_WIN_KEY, Integer.toString(agentWinCount));
+            fileMgr.updateLineByKey(AGENT_WIN_KEY, Integer.toString(agentWinCount));
         } else {
             agentLossCount++;
-            fileLoader.updateLineByKey(AGENT_LOSS_KEY, Integer.toString(agentLossCount));
+            fileMgr.updateLineByKey(AGENT_LOSS_KEY, Integer.toString(agentLossCount));
         }
         BigDecimal winRatio = new BigDecimal(((float) agentWinCount / (agentWinCount + agentLossCount)) * 100)
                 .setScale(2, RoundingMode.HALF_UP);
-        fileLoader.updateLineByKey(AGENT_WINRATE_KEY, winRatio.toString());
+        fileMgr.updateLineByKey(AGENT_WINRATE_KEY, winRatio.toString());
     }
 }

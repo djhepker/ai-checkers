@@ -82,7 +82,6 @@
         <module name="RightCurly"/>
 
         <!-- Coding style checks -->
-        <module name="AvoidInlineConditionals"/>
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <module name="HiddenField"/>

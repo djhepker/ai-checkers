@@ -9,14 +9,14 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class DataManager {
+public final class DataManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataManager.class);
 
     private HashMap<String, double[]> updatedQValues;
 
-    private final String SQL_URL_KEY = "SQL_URL";
-    private final String ENV_FILEPATH = ".env";
+    private static final String SQL_URL_KEY = "SQL_URL";
+    private static final String ENV_FILEPATH = ".env";
 
     private final QValueRepository db;
 
@@ -29,9 +29,9 @@ public class DataManager {
             envLoader = new EnvLoader(ENV_FILEPATH);
             sqlKey = envLoader.get(SQL_URL_KEY);
             tempDb = new QValueRepository(sqlKey);
-            logger.info("Successfully initialized QValueRepository with URL: {}", sqlKey);
+            LOGGER.info("Successfully initialized QValueRepository with URL: {}", sqlKey);
         } catch (SQLException | IOException e) {
-            logger.error("Failed to initialize QValueRepository with URL: {}", sqlKey, e);
+            LOGGER.error("Failed to initialize QValueRepository with URL: {}", sqlKey, e);
             throw new RuntimeException("Database initialization failed", e);
         }
         this.db = tempDb;
@@ -41,10 +41,10 @@ public class DataManager {
     public int getMaxQIndex(String serialKey) {
         try {
             int maxQIndex = db.getMaxQAction(serialKey);
-            logger.debug("Retrieved max Q index {} for serialKey: {}", maxQIndex, serialKey);
+            LOGGER.debug("Retrieved max Q index {} for serialKey: {}", maxQIndex, serialKey);
             return maxQIndex;
         } catch (SQLException e) {
-            logger.error("Failed to get max Q index for serialKey: {}", serialKey, e);
+            LOGGER.error("Failed to get max Q index for serialKey: {}", serialKey, e);
             return 0;
         }
     }
@@ -56,10 +56,10 @@ public class DataManager {
     public double queryQTableForValue(String serialKey, int decisionNumber) {
         try {
             double qValue = db.getQValueFromTable(serialKey, decisionNumber);
-            logger.debug("Queried Q value {} for serialKey: {}, decision: {}", qValue, serialKey, decisionNumber);
+            LOGGER.debug("Queried Q value {} for serialKey: {}, decision: {}", qValue, serialKey, decisionNumber);
             return qValue;
         } catch (SQLException e) {
-            logger.error("Failed to query Q value for serialKey: {}, decision: {}", serialKey, decisionNumber, e);
+            LOGGER.error("Failed to query Q value for serialKey: {}, decision: {}", serialKey, decisionNumber, e);
             return 0.0;
         }
     }
@@ -67,10 +67,10 @@ public class DataManager {
     public double getMaxQValue(String serialKey) {
         try {
             double maxQValue = db.getMaxQValue(serialKey);
-            logger.debug("Retrieved max Q value {} for serialKey: {}", maxQValue, serialKey);
+            LOGGER.debug("Retrieved max Q value {} for serialKey: {}", maxQValue, serialKey);
             return maxQValue;
         } catch (SQLException e) {
-            logger.error("Failed to get max Q value for serialKey: {}", serialKey, e);
+            LOGGER.error("Failed to get max Q value for serialKey: {}", serialKey, e);
             return 0.0;
         }
     }
@@ -80,16 +80,16 @@ public class DataManager {
             if (existingArray == null) {
                 double[] newArray = new double[index + 1];
                 newArray[index] = inputQ;
-                logger.debug("Created new Q array for serialKey: {}, index: {}, value: {}", serialKey, index, inputQ);
+                LOGGER.debug("Created new Q array for serialKey: {}, index: {}, value: {}", serialKey, index, inputQ);
                 return newArray;
             } else if (index >= existingArray.length) {
                 double[] newArray = Arrays.copyOf(existingArray, index + 1);
                 newArray[index] = inputQ;
-                logger.debug("Expanded Q array for serialKey: {}, index: {}, value: {}", serialKey, index, inputQ);
+                LOGGER.debug("Expanded Q array for serialKey: {}, index: {}, value: {}", serialKey, index, inputQ);
                 return newArray;
             } else {
                 existingArray[index] = inputQ;
-                logger.debug("Updated Q value for serialKey: {}, index: {}, value: {}", serialKey, index, inputQ);
+                LOGGER.debug("Updated Q value for serialKey: {}, index: {}, value: {}", serialKey, index, inputQ);
                 return existingArray;
             }
         });
@@ -98,15 +98,15 @@ public class DataManager {
     public void updateData() {
         try {
             db.updateQTable(updatedQValues);
-            logger.info("Successfully updated QTable with {} entries", updatedQValues.size());
+            LOGGER.info("Successfully updated QTable with {} entries", updatedQValues.size());
         } catch (SQLException e) {
-            logger.error("Failed to update QTable with {} entries", updatedQValues.size(), e);
+            LOGGER.error("Failed to update QTable with {} entries", updatedQValues.size(), e);
         }
         try {
             db.close();
-            logger.info("Database connection pool closed successfully");
+            LOGGER.info("Database connection pool closed successfully");
         } catch (SQLException e) {
-            logger.error("Failed to close database connection pool", e);
+            LOGGER.error("Failed to close database connection pool", e);
         }
     }
 }

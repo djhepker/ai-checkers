@@ -36,7 +36,7 @@ public final class Agent implements AI {
 
     private String stateKey;
 
-    public Agent () {
+    public Agent() {
         this.currentQ = 0.0;
         this.maxQPrime = 0.0;
         this.rho = 0.0;
@@ -47,8 +47,8 @@ public final class Agent implements AI {
         updateQValue(actionChoiceInt);
     }
 
-    public void setStateKey(String stateKey) {
-        this.stateKey = stateKey;
+    public void setStateKey(String inputStateKey) {
+        this.stateKey = inputStateKey;
     }
 
     public int getActionInt(int numDecisions) {
@@ -59,8 +59,8 @@ public final class Agent implements AI {
         }
     }
 
-    public void updateCurrentQ(String stateKey, int actionChoiceInt) {
-        this.currentQ = getQValue(stateKey, actionChoiceInt);
+    public void updateCurrentQ(String inputStateKey, int actionChoiceInt) {
+        this.currentQ = getQValue(inputStateKey, actionChoiceInt);
     }
 
     private int exploit() {
@@ -71,9 +71,9 @@ public final class Agent implements AI {
         return new Random().nextInt(numDecisions);
     }
 
-    private double getQValue(String stateKey, int moveChoice) {
-        if (qTableMgr.isWithinSize(stateKey, moveChoice)) {
-            return qTableMgr.queryQTableForValue(stateKey, moveChoice);
+    private double getQValue(String inputStateKey, int moveChoice) {
+        if (qTableMgr.isWithinSize(inputStateKey, moveChoice)) {
+            return qTableMgr.queryQTableForValue(inputStateKey, moveChoice);
         } else {
             return 0.0;
         }
@@ -103,13 +103,11 @@ public final class Agent implements AI {
     /**
      * Mutator for Epsilon. Epsilon is the probability that Agent will select a random action. The probability that
      * Agent will select the learned optimal decision is 1 - Epsilon
-     * @param epsilon The new value we will set Epsilon to [0, 1]. Epsilon will be 1 if argument greater than one, and
-     *                0 if argument less than zero.
+     * @param inputEpsilon The new value we will set Epsilon to [0, 1]. Epsilon will be 1 if argument greater
+     *                     than one, and 0 if argument less than zero.
      */
-    public void setEpsilon(double epsilon) {
-        if (epsilon < 0.0) {
-            this.epsilon = 0.0;
-        } else this.epsilon = Math.min(epsilon, 1.0);
+    public void setEpsilon(double inputEpsilon) {
+        this.epsilon = inputEpsilon < 0.0 ? 0.0 : Math.min(inputEpsilon, 1.0);
     }
 
     private void updateQValue(int moveChoice) {

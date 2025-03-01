@@ -4,14 +4,14 @@ import hepker.game.utils.FileLoader;
 
 import java.io.IOException;
 
-public class EpisodeCounter {
-    private final String EPISODE_COUNT_KEY = "episode_count=";
-    private final FileLoader fileLoader;
+public final class EpisodeCounter {
+    private static final String EPISODE_COUNT_KEY = "episode_count=";
+    private final FileLoader fileMgr;
     private int episodeCount;
 
     public EpisodeCounter(String filePath) {
-        this.fileLoader = new FileLoader(filePath);
-        this.episodeCount = getEpisodeCount(fileLoader);
+        this.fileMgr = new FileLoader(filePath);
+        this.episodeCount = getEpisodeCount(fileMgr);
     }
 
     public int getEpisodeCount(FileLoader fileLoader) {
@@ -27,7 +27,7 @@ public class EpisodeCounter {
 
     public void processEpisode() {
         episodeCount++;
-        fileLoader.updateLineByKey(EPISODE_COUNT_KEY, Integer.toString(episodeCount));
+        fileMgr.updateLineByKey(EPISODE_COUNT_KEY, Integer.toString(episodeCount));
     }
 
     public int getEpisodeCount() {

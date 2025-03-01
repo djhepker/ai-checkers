@@ -22,10 +22,10 @@ public final class AIDecisionHandler implements DecisionHandler {
 
     private ActionNode[] decisionArray;
 
-    public AIDecisionHandler(PieceManager pMgr, AITools toolbox, Environment env) {
-        this.pMgr = pMgr;
-        this.toolbox = toolbox;
-        this.env = env;
+    public AIDecisionHandler(PieceManager inputPMgr, AITools tools, Environment inputEnv) {
+        this.pMgr = inputPMgr;
+        this.toolbox = tools;
+        this.env = inputEnv;
         updateDecisionContainer();
     }
 
@@ -43,23 +43,27 @@ public final class AIDecisionHandler implements DecisionHandler {
     }
 
     public void setPreDecisionRewardParameters(int moveChoice) {
-        setPreDecisionRewardParameters(env, decisionArray, moveChoice);
+        setPreDecisionRewardParameters(env, decisionArray[moveChoice]);
     }
 
     public double getDecisionReward() {
-        double ratioOptions = (double) decisionArray.length / toolbox.getNumOpponentOptions(pMgr) -
-                (double) numOptionsNaught / numEnemyOptionsNaught;
+        double ratioOptions = (double) decisionArray.length
+                / toolbox.getNumOpponentOptions(pMgr)
+                - (double) numOptionsNaught
+                / numEnemyOptionsNaught;
         int numAlliedPieces = env.getNumAlliedPieces();
-        double ratioPieces = (double) numAlliedPieces / env.getNumEnemyPieces() -
-                (double) numAlliedPieces / numEnemiesNaught;
+        double ratioPieces = (double) numAlliedPieces
+                / env.getNumEnemyPieces()
+                - (double) numAlliedPieces
+                / numEnemiesNaught;
         int pointsEarned = pointsFromDecision - toolbox.getMaximumOpponentReward(pMgr);
         return ratioOptions + ratioPieces + pointsEarned;
     }
 
-    public void setPreDecisionRewardParameters(Environment env, ActionNode[] decisionArray, int moveChoice) {
-        this.numEnemiesNaught = env.getNumEnemyPieces();
+    public void setPreDecisionRewardParameters(Environment inputEnv, ActionNode actionChosen) {
+        this.numEnemiesNaught = inputEnv.getNumEnemyPieces();
         this.numOptionsNaught = decisionArray.length;
         this.numEnemyOptionsNaught = toolbox.getNumOpponentOptions(pMgr);
-        pointsFromDecision = decisionArray[moveChoice].getReward();
+        pointsFromDecision = actionChosen.getReward();
     }
 }
