@@ -16,17 +16,17 @@ import java.util.List;
  * */
 public final class AIEngine {
 
-    private static final Logger logger = LoggerFactory.getLogger(AIEngine.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AIEngine.class);
 
-    private final boolean IS_DUSKY;
+    private final boolean isDusky;
 
     private List<AgentRecord> agents;
     private PieceManager pMgr;
 
 
-    public AIEngine(PieceManager pMgr, boolean playerLight, String gameTypeString) {
-        this.IS_DUSKY = playerLight;
-        this.pMgr = pMgr;
+    public AIEngine(PieceManager inputPMgr, boolean playerLight, String gameTypeString) {
+        this.isDusky = playerLight;
+        this.pMgr = inputPMgr;
         this.agents = new ArrayList<>();
         loadGameState(gameTypeString);
     }
@@ -37,7 +37,7 @@ public final class AIEngine {
                 updateAgent(agentRecord.getAgent(), agentRecord.getEnvironment(), agentRecord.getDecisionHandler());
             }
         } catch (Exception e) {
-            logger.error("Agent Manager Exception", e);
+            LOGGER.error("Agent Manager Exception", e);
         }
     }
 
@@ -65,23 +65,21 @@ public final class AIEngine {
         inputAgent.update(stateKeyPrime, actionChoiceInt);
     }
 
-    private GameState loadGameState(String gameTypeString) {
+    private void loadGameState(String gameTypeString) {
         switch (gameTypeString) {
             case "Agent Vs Player" -> {
-                generateAgent(false, IS_DUSKY);
-                return GameState.AGENT_VS_PLAYER;
+                generateAgent(false, isDusky);
             }
             case "Stochastic Vs Player" -> {
-                generateAgent(true, IS_DUSKY);
-                return GameState.STOCHASTIC_VS_PLAYER;
+                generateAgent(true, isDusky);
             }
             case "Agent Vs Stochastic" -> {
                 generateAgent(false, true);
                 generateAgent(true, false);
-                return GameState.AGENT_VS_STOCHASTIC;
+            }
+            default -> {
             }
         }
-        return null;
     }
 
     public void finishGame(boolean gameWon) {
