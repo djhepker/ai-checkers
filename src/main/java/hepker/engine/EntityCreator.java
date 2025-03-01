@@ -7,7 +7,7 @@ import hepker.game.entity.GameBoardPiece;
 
 import java.awt.Image;
 
-public class EntityCreator {
+public final class EntityCreator {
     private final AssetManager assetManager;
 
     public EntityCreator() {

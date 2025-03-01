@@ -5,6 +5,7 @@ import hepker.game.entity.movement.MovementManager;
 import hepker.game.entity.movement.ActionNode;
 import hepker.game.gameworld.PieceManager;
 import hepker.game.entity.GameBoardPiece;
+import lombok.Getter;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
@@ -12,6 +13,8 @@ import java.util.Deque;
 import java.util.stream.Stream;
 
 public class Checker extends Entity implements GameBoardPiece {
+
+    @Getter
     private final MovementManager moveMgr;
     private final PieceColor color;
     private final int movementSign;
@@ -101,10 +104,6 @@ public class Checker extends Entity implements GameBoardPiece {
         return nextSpace;
     }
 
-    public MovementManager getMoveMgr() {
-        return moveMgr;
-    }
-
     @Override
     public BufferedImage getSprite() {
         return super.getSprite();
@@ -152,30 +151,9 @@ public class Checker extends Entity implements GameBoardPiece {
     public boolean isReadyForPromotion() {
         if (movementSign == 1 && getY() == 0) {
             return true;
-        } else if (movementSign == -1 && getY() == 7) {
-            return true;
+        } else {
+            return movementSign == -1 && getY() == 7;
         }
-        return false;
-    }
-
-    @Override
-    public void setX(int x) {
-        super.setX(x);
-    }
-
-    @Override
-    public void setY(int y) {
-        super.setY(y);
-    }
-
-    @Override
-    public int getX() {
-        return super.getX();
-    }
-
-    @Override
-    public int getY() {
-        return super.getY();
     }
 
     @Override

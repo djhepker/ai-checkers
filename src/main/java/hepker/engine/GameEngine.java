@@ -8,9 +8,9 @@ import hepker.game.entity.GameBoardPiece;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GameEngine {
+public final class GameEngine {
 
-    private static final Logger logger = LoggerFactory.getLogger(GameEngine.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
 
     private EntityCreator creator;
     private PieceManager pMgr;
@@ -18,40 +18,40 @@ public class GameEngine {
     private InputHandler inputHandler;
     private AIEngine agentMgr;
 
-    private final boolean LIGHT_CHOICE;
-    private final boolean HAS_PLAYER;
-    private final boolean IS_TRAINING;
+    private final boolean lightChoice;
+    private final boolean hasPlayer;
+    private final boolean isTraining;
 
     private boolean playerTurn;
     private boolean gameOver;
 
-    public GameEngine(boolean isTraining) {
-        this.IS_TRAINING = isTraining;
+    public GameEngine(boolean aiIsTraining) {
+        this.isTraining = aiIsTraining;
         loadGameWorld();
-        if (!IS_TRAINING) {
+        if (!this.isTraining) {
             renderUI();
         }
-        if (IS_TRAINING) {
-            this.LIGHT_CHOICE = true;
-            this.HAS_PLAYER = false;
-            this.agentMgr = new AIEngine(pMgr, LIGHT_CHOICE, "Agent Vs Stochastic");
+        if (this.isTraining) {
+            this.lightChoice = true;
+            this.hasPlayer = false;
+            this.agentMgr = new AIEngine(pMgr, lightChoice, "Agent Vs Stochastic");
         } else {
             String gameMode = graphicsHandler.showGameModeDialog();
-            this.HAS_PLAYER = gameMode.endsWith("Player");
-            if (HAS_PLAYER) {
-                this.LIGHT_CHOICE = this.graphicsHandler.showPopUpColorDialog();
+            this.hasPlayer = gameMode.endsWith("Player");
+            if (hasPlayer) {
+                this.lightChoice = this.graphicsHandler.showPopUpColorDialog();
             } else {
-                this.LIGHT_CHOICE = true;
+                this.lightChoice = true;
             }
-            this.playerTurn = LIGHT_CHOICE;
-            this.agentMgr = new AIEngine(pMgr, LIGHT_CHOICE, gameMode);
+            this.playerTurn = lightChoice;
+            this.agentMgr = new AIEngine(pMgr, lightChoice, gameMode);
         }
         this.gameOver = false;
     }
 
     public void updateGame() {
         try {
-            if (HAS_PLAYER) {
+            if (hasPlayer) {
                 inputHandler.update();
                 if (playerTurn) {
                     handleInput();
@@ -65,29 +65,28 @@ public class GameEngine {
             if (pMgr.sideDefeated()) {
                 this.gameOver = true;
             }
-            if (!IS_TRAINING) {
+            if (!isTraining) {
                 graphicsHandler.repaint();
             }
         } catch (Exception e) {
-            logger.error("Unexpected error in updateGame()" , e);
+            LOGGER.error("Unexpected error in updateGame()", e);
         } catch (AssertionError e) {
-            logger.error("Invalid mouse selection in InputHandler" , e);
+            LOGGER.error("Invalid mouse selection in InputHandler", e);
         }
     }
 
     public boolean gameOver() {
-        if (!IS_TRAINING) {
+        if (!isTraining) {
             if (!graphicsHandler.windowOpen() || gameOver) {
                 this.gameOver = true;
-                if (LIGHT_CHOICE) {
-                    // TODO: Logic for maintaining agent stats
+                if (lightChoice) {
                     agentMgr.finishGame(pMgr.getNumLight() == 0);
                 } else {
                     agentMgr.finishGame(pMgr.getNumDusky() == 0);
                 }
             }
         } else if (gameOver) {
-            if (LIGHT_CHOICE) {
+            if (lightChoice) {
                 agentMgr.finishGame(pMgr.getNumLight() == 0);
             } else {
                 agentMgr.finishGame(pMgr.getNumDusky() == 0);
@@ -101,7 +100,7 @@ public class GameEngine {
             int firstXPos = inputHandler.getFirstXPos();
             int firstYPos = inputHandler.getFirstYPos();
             GameBoardPiece piece = pMgr.getPiece(firstXPos, firstYPos);
-            if (piece != null && LIGHT_CHOICE == piece.isLight() && pMgr.movePiece(piece)) {
+            if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
                 if (piece.isReadyForPromotion()) {
                     pMgr.promotePiece(piece);
                 }

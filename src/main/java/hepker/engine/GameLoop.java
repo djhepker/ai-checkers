@@ -1,13 +1,16 @@
 package hepker.engine;
 
-public class GameLoop implements Runnable {
-    private final GameEngine game;
+public final class GameLoop implements Runnable {
+
     // 10^9 / FRAME_TIME = Frames Per Second
-    private final long FRAME_TIME = 8_333_333;
+    private static final long FRAME_TIME = 8_333_333;
+    private static final long FRAME_DELAY_CONSTANT = 1_000_000;
+
+    private final GameEngine game;
     private Thread thread;
 
-    public GameLoop(GameEngine game) {
-        this.game = game;
+    public GameLoop(GameEngine inputEngine) {
+        this.game = inputEngine;
     }
 
     @Override
@@ -19,8 +22,10 @@ public class GameLoop implements Runnable {
             if (elapsedTime < FRAME_TIME) {
                 long sleepTimeNanos = FRAME_TIME - elapsedTime;
                 try {
-
-                    Thread.sleep(sleepTimeNanos / 1_000_000, (int) (sleepTimeNanos % 1_000_000));
+                    Thread.sleep(sleepTimeNanos
+                            / FRAME_DELAY_CONSTANT,
+                            (int) (sleepTimeNanos % FRAME_DELAY_CONSTANT)
+                    );
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     return;
