@@ -16,7 +16,6 @@ public class Checker extends Entity implements GameBoardPiece {
 
     @Getter
     private final MovementManager moveMgr;
-    private final PieceColor color;
     private final int movementSign;
     private final short pieceValue;
 
@@ -24,7 +23,6 @@ public class Checker extends Entity implements GameBoardPiece {
         super(name, x, y, image, name.startsWith("LIGHT"));
         this.pieceValue = 1;
         this.moveMgr = new MovementManager();
-        this.color = super.isLight() ? PieceColor.LIGHT : PieceColor.DUSKY;
         this.movementSign = super.isLight() ? 1 : -1;
     }
 
@@ -79,7 +77,7 @@ public class Checker extends Entity implements GameBoardPiece {
                                         xNext, yNext, 3, nextSpace.getCapturedNodes()));
                                 moveMgr.addLocationNode(nextSpace);
                             }
-                        } else if (stateCode > 2 && target.getColor() != this.color) {  // target not open;
+                        } else if (stateCode > 2 && target.getColor() != super.getColor()) {  // target not open;
                             if (stateCode == 3) { // post-jump; target !null; stationary;
                                 taskQueue.push(new MoveState(xNext, yNext, xDirection, currState.getCapture()));
                             } else {    // beginning position
@@ -111,7 +109,7 @@ public class Checker extends Entity implements GameBoardPiece {
 
     @Override
     public PieceColor getColor() {
-        return color;
+        return super.getColor();
     }
 
     @Override

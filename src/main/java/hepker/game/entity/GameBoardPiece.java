@@ -7,12 +7,13 @@ import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
 
 public interface GameBoardPiece {
-    boolean isReadyForPromotion();
 
     enum PieceColor {
         LIGHT,
         DUSKY
     }
+
+    boolean isReadyForPromotion();
 
     Stream<ActionNode> getMoveListAsStream();
 
