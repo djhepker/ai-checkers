@@ -27,10 +27,10 @@ public final class Agent implements AI {
         qTableMgr = new DataManager();
     }
 
-    private double GAMMA = 0.9; // value of knowledge
-    private double ALPHA = 0.82; // learning rate
-    private double EPSILON = 0.8; // exploration rate
-    private double RHO;
+    private final double gamma = 0.9; // value of knowledge
+    private final double alpha = 0.82; // learning rate
+    private double epsilon = 0.8; // exploration rate
+    private double rho;
     private double currentQ;
     private double maxQPrime;
 
@@ -39,7 +39,7 @@ public final class Agent implements AI {
     public Agent () {
         this.currentQ = 0.0;
         this.maxQPrime = 0.0;
-        this.RHO = 0.0;
+        this.rho = 0.0;
     }
 
     public void update(String stateKeyPrime, int actionChoiceInt) {
@@ -52,7 +52,7 @@ public final class Agent implements AI {
     }
 
     public int getActionInt(int numDecisions) {
-        if (Math.random() < EPSILON) {
+        if (Math.random() < epsilon) {
             return explore(numDecisions);
         } else {
             return exploit();
@@ -80,7 +80,7 @@ public final class Agent implements AI {
     }
 
     public void updateRho(double updatedReward) {
-        this.RHO = updatedReward;
+        this.rho = updatedReward;
     }
 
     /**
@@ -88,14 +88,14 @@ public final class Agent implements AI {
      * @param stateKeyPrimeString String representation of the gamestate, used to query sqlite table
      */
     public void calculateMaxQPrime(String stateKeyPrimeString) {
-        if (EPSILON == 0.0) {
+        if (epsilon == 0.0) {
             return;
         }
         this.maxQPrime = qTableMgr.getMaxQValue(stateKeyPrimeString);
     }
 
     public void finalizeQTableUpdate() {
-        if (EPSILON != 1.0) {
+        if (epsilon != 1.0) {
             qTableMgr.updateData();
         }
     }
@@ -108,12 +108,12 @@ public final class Agent implements AI {
      */
     public void setEpsilon(double epsilon) {
         if (epsilon < 0.0) {
-            this.EPSILON = 0.0;
-        } else this.EPSILON = Math.min(epsilon, 1.0);
+            this.epsilon = 0.0;
+        } else this.epsilon = Math.min(epsilon, 1.0);
     }
 
     private void updateQValue(int moveChoice) {
-        double updatedQ = currentQ + ALPHA * (RHO + GAMMA * maxQPrime - currentQ);
+        double updatedQ = currentQ + alpha * (rho + gamma * maxQPrime - currentQ);
         if (Math.abs(updatedQ - currentQ) > 0.01) {
             qTableMgr.putUpdatedValue(stateKey, moveChoice, updatedQ);
         }

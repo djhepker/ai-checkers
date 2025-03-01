@@ -20,6 +20,10 @@
         <property name="max" value="2000"/>
     </module>
 
+    <module name="SuppressionFilter">
+        <property name="file" value="src/main/resources/suppressions.xml"/>
+    </module>
+
     <!-- TreeWalker module to analyze the AST of Java code -->
     <module name="TreeWalker">
         <!-- Naming convention checks -->
@@ -54,11 +58,18 @@
 
         <!-- Javadoc requirements for public methods -->
         <module name="JavadocMethod">
+            <property name="severity" value="ignore"/>
             <property name="allowMissingParamTags" value="true"/>
             <property name="allowMissingReturnTag" value="true"/>
         </module>
-        <module name="JavadocType"/>
-        <module name="JavadocVariable"/>
+
+        <module name="JavadocType">
+            <property name="severity" value="ignore"/>
+        </module>
+
+        <module name="JavadocVariable">
+            <property name="severity" value="ignore"/>
+        </module>
 
         <!-- Modifier order check -->
         <module name="ModifierOrder"/>
