@@ -5,12 +5,15 @@ import hepker.game.entity.movement.ActionNode;
 import hepker.game.graphics.InputHandler;
 import hepker.engine.EntityCreator;
 import hepker.game.entity.GameBoardPiece;
+import lombok.Getter;
 
 public class PieceManager {
     private GameBoardPiece[] pieces;
     private EntityCreator creator;
     private InputHandler input;
+    @Getter
     private int numDusky;
+    @Getter
     private int numLight;
     private boolean gameOver;
 
@@ -123,12 +126,8 @@ public class PieceManager {
         }
     }
 
-    public int getNumDusky() {
-        return numDusky;
-    }
-
-    public int getNumLight() {
-        return numLight;
+    public int getNumPiecesInPlay() {
+        return pieces.length;
     }
 
     private GameBoardPiece[] generateBeginningCheckers() {

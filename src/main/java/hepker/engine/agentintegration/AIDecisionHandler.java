@@ -16,9 +16,11 @@ public final class AIDecisionHandler implements DecisionHandler {
 
     private int numOptionsNaught;
     private int numEnemyOptionsNaught;
-
     private int pointsFromDecision;
     private int numEnemiesNaught;
+    private int reasonableTurnCount;
+
+    private double decayingScalar;
 
     private ActionNode[] decisionArray;
 
@@ -26,6 +28,8 @@ public final class AIDecisionHandler implements DecisionHandler {
         this.pMgr = inputPMgr;
         this.toolbox = tools;
         this.env = inputEnv;
+        this.reasonableTurnCount = 30;
+        this.decayingScalar = 1.0;
         updateDecisionContainer();
     }
 
@@ -47,17 +51,22 @@ public final class AIDecisionHandler implements DecisionHandler {
     }
 
     public double getDecisionReward() {
-        double ratioOptions = (double) decisionArray.length
-                / toolbox.getNumOpponentOptions(pMgr)
-                - (double) numOptionsNaught
-                / numEnemyOptionsNaught;
-        int numAlliedPieces = env.getNumAlliedPieces();
-        double ratioPieces = (double) numAlliedPieces
-                / env.getNumEnemyPieces()
-                - (double) numAlliedPieces
-                / numEnemiesNaught;
+        double ratioOptions = (double) decisionArray.length / toolbox.getNumOpponentOptions(pMgr)
+                - (double) numOptionsNaught / numEnemyOptionsNaught;
+        double alliedPieces = env.getNumAlliedPieces();
+        double ratioPieces = alliedPieces / env.getNumEnemyPieces()
+                - alliedPieces / numEnemiesNaught;
         int pointsEarned = pointsFromDecision - toolbox.getMaximumOpponentReward(pMgr);
-        return ratioOptions + ratioPieces + pointsEarned;
+
+        double summation = ratioOptions + ratioPieces + pointsEarned;
+
+        if (reasonableTurnCount < 0) {
+            decayingScalar -= 0.2;
+            return decayingScalar * Math.abs(summation);
+        } else {
+            --reasonableTurnCount;
+            return summation;
+        }
     }
 
     public void setPreDecisionRewardParameters(Environment inputEnv, ActionNode actionChosen) {

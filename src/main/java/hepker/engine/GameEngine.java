@@ -25,6 +25,8 @@ public final class GameEngine {
     private boolean playerTurn;
     private boolean gameOver;
 
+    private int numTurnsWithoutCapture;
+
     public GameEngine(boolean aiIsTraining) {
         this.isTraining = aiIsTraining;
         loadGameWorld();
@@ -47,6 +49,7 @@ public final class GameEngine {
             this.agentMgr = new AIEngine(pMgr, lightChoice, gameMode);
         }
         this.gameOver = false;
+        this.numTurnsWithoutCapture = 0;
     }
 
     public void updateGame() {
@@ -56,7 +59,13 @@ public final class GameEngine {
                 if (playerTurn) {
                     handleInput();
                 } else {
+                    int numPiecesNaught = pMgr.getNumPiecesInPlay();
                     agentMgr.update();
+                    if (numPiecesNaught == pMgr.getNumPiecesInPlay()) {
+                        ++numTurnsWithoutCapture;
+                    } else {
+                        numTurnsWithoutCapture = 0;
+                    }
                     playerTurn = !playerTurn;
                 }
             } else {
@@ -72,6 +81,9 @@ public final class GameEngine {
             LOGGER.error("Unexpected error in updateGame()", e);
         } catch (AssertionError e) {
             LOGGER.error("Invalid mouse selection in InputHandler", e);
+        }
+        if (numTurnsWithoutCapture >= 75) {
+            gameOver = true;
         }
     }
 

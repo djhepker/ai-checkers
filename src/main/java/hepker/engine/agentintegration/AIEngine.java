@@ -3,7 +3,7 @@ package hepker.engine.agentintegration;
 import hepker.ai.ai.Agent;
 import hepker.ai.utils.AITools;
 import hepker.ai.utils.AgentStats;
-import hepker.ai.utils.EpisodeCounter;
+import hepker.ai.utils.EpisodeStatistics;
 import hepker.game.gameworld.PieceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,18 +23,24 @@ public final class AIEngine {
     private List<AgentRecord> agents;
     private PieceManager pMgr;
 
+    private int numTurns;
+
+    private boolean pieceCaptured;
 
     public AIEngine(PieceManager inputPMgr, boolean playerLight, String gameTypeString) {
         this.isDusky = playerLight;
         this.pMgr = inputPMgr;
         this.agents = new ArrayList<>();
+        this.numTurns = 0;
         loadGameState(gameTypeString);
+        this.pieceCaptured = false;
     }
 
     public void update() {
+        ++numTurns;
         try {
             for (AgentRecord agentRecord : agents) {
-                updateAgent(agentRecord.getAgent(), agentRecord.getEnvironment(), agentRecord.getDecisionHandler());
+                updateAgent(agentRecord.agent(), agentRecord.environment(), agentRecord.decisionHandler());
             }
         } catch (Exception e) {
             LOGGER.error("Agent Manager Exception", e);
@@ -84,9 +90,9 @@ public final class AIEngine {
 
     public void finishGame(boolean gameWon) {
         new AgentStats("src/main/resources/data/agentstats").processEpisode(gameWon);
-        new EpisodeCounter("src/main/resources/data/episode").processEpisode();
+        new EpisodeStatistics("src/main/resources/data/episode").processEpisode(numTurns);
         for (AgentRecord agentRecord : agents) {
-            agentRecord.getAgent().finalizeQTableUpdate();
+            agentRecord.agent().finalizeQTableUpdate();
         }
     }
 
