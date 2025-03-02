@@ -25,8 +25,6 @@ public interface GameBoardPiece {
 
     ActionNode getMoveListPointer();
 
-    void printLegalMoves();
-
     String getName();
 
     BufferedImage getSprite();
@@ -42,6 +40,4 @@ public interface GameBoardPiece {
     short getPieceValue();
 
     PieceColor getColor();
-
-    void printData();
 }

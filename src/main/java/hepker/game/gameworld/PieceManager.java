@@ -95,12 +95,6 @@ public class PieceManager {
         return pieces[inputY * 8 + inputX] == null;
     }
 
-    public void printAllPiecesInPlay() {
-        for (GameBoardPiece piece : pieces) {
-            piece.printData();
-        }
-    }
-
     public boolean insertPieceToBoard(GameBoardPiece piece) {
         if (piece == null) {
             return false;

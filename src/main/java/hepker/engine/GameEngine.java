@@ -120,7 +120,6 @@ public final class GameEngine {
                 playerTurn = !playerTurn;
             }
             inputHandler.resetClicks();
-            printSelectedPiece();
         }
     }
 
@@ -132,12 +131,5 @@ public final class GameEngine {
 
     private void renderUI() {
         this.graphicsHandler = new GraphicsHandler(creator.getCachedCells(), pMgr, inputHandler);
-    }
-
-    private void printSelectedPiece() {
-        GameBoardPiece piece = pMgr.getPiece(inputHandler.getFirstXPos(), inputHandler.getFirstYPos());
-        if (piece != null) {
-            piece.printData();
-        }
     }
 }

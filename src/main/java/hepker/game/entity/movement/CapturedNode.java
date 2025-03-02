@@ -1,18 +1,23 @@
 package hepker.game.entity.movement;
 
-public class CapturedNode {
+import lombok.Getter;
+import lombok.Setter;
+
+public final class CapturedNode {
+
     private final short[] data;
+
+    @Getter
     private final short pointValue;
+
+    @Setter
+    @Getter
     private CapturedNode next;
 
-    public CapturedNode(short postX, short postY, short pointValue) {
+    public CapturedNode(short postX, short postY, short inputRewardValue) {
         this.data = new short[] {postX, postY};
         this.next = null;
-        this.pointValue = pointValue;
-    }
-
-    public short getPointValue() {
-        return pointValue;
+        this.pointValue = inputRewardValue;
     }
 
     public short getDataX() {
@@ -21,17 +26,5 @@ public class CapturedNode {
 
     public short getDataY() {
         return data[1];
-    }
-
-    public CapturedNode getNext() {
-        return next;
-    }
-
-    public void setNext(CapturedNode next) {
-        this.next = next;
-    }
-
-    public void printData() {
-        System.out.printf("CapturedNode (%d,%d)\n", data[0], data[1]);
     }
 }

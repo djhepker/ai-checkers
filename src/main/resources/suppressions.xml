@@ -4,10 +4,4 @@
 
 <suppressions>
     <suppress files=".*Agent\.java" checks="MagicNumber"/>
-    <suppress files=".*QValueRepository\.java" checks="MagicNumber"/>
-    <suppress files=".*AgentStats\.java" checks="MagicNumber"/>
-    <suppress files=".*AITools\.java" checks="MagicNumber"/>
-    <suppress files=".*Environment\.java" checks="MagicNumber"/>
-    <suppress files=".*EntityCreator\.java" checks="MagicNumber"/>
-    <suppress files=".*EntityCreator\.java" checks="MagicNumber"/>
 </suppressions>
