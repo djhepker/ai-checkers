@@ -6,7 +6,7 @@ import hepker.engine.GameLoop;
 public class Main {
     public static void main(String[] args) {
         boolean trainingMode = true;
-        int epochs = 1000;
+        int epochs = 5;
         int episodeCount = 0;
         GameLoop gameLoop;
 

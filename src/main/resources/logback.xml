@@ -1,12 +1,15 @@
 <configuration>
-    <!-- Console Appender -->
+    <!-- Console Appender (ERROR only) -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
         <encoder>
             <pattern>%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- File Appender -->
+    <!-- File Appender (everything) -->
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>target/logback-results.log</file>
         <encoder>
@@ -14,13 +17,17 @@
         </encoder>
     </appender>
 
-    <!-- Root Logger -->
-    <root level="ERROR">
+    <!-- Root Logger for Console (ERROR only) -->
+    <root level="INFO">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
     </root>
 
-    <!-- Hikari Logger -->
+    <!-- Logger for File (everything, from DEBUG upwards) -->
+    <logger name="root" level="DEBUG">
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <!-- Hikari Logger (ERROR only, specific to file) -->
     <logger name="com.zaxxer.hikari" level="ERROR">
         <appender-ref ref="FILE"/>
     </logger>

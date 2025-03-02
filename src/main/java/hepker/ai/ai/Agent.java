@@ -93,9 +93,7 @@ public final class Agent implements AI {
     }
 
     public void finalizeQTableUpdate() {
-        if (epsilon != 1.0) {
-            qTableMgr.updateData();
-        }
+        qTableMgr.updateData();
     }
 
     /**
