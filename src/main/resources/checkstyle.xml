@@ -5,7 +5,7 @@
 
 <module name="Checker">
     <!-- Define the severity level for violations -->
-    <property name="severity" value="warning"/>
+    <property name="severity" value="error"/>
 
     <!-- Specify that only Java files should be checked -->
     <property name="fileExtensions" value="java"/>
@@ -56,17 +56,14 @@
             <property name="throwsIndent" value="4"/>
         </module>
 
-        <!-- Javadoc requirements for public methods -->
         <module name="JavadocMethod">
             <property name="severity" value="ignore"/>
             <property name="allowMissingParamTags" value="true"/>
             <property name="allowMissingReturnTag" value="true"/>
         </module>
-
         <module name="JavadocType">
             <property name="severity" value="ignore"/>
         </module>
-
         <module name="JavadocVariable">
             <property name="severity" value="ignore"/>
         </module>
