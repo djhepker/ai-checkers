@@ -7,20 +7,21 @@ import hepker.engine.EntityCreator;
 import hepker.game.entity.GameBoardPiece;
 import lombok.Getter;
 
-public class PieceManager {
+public final class PieceManager {
+    @Getter
     private GameBoardPiece[] pieces;
-    private EntityCreator creator;
-    private InputHandler input;
+    private final EntityCreator creator;
+    private final InputHandler input;
     @Getter
     private int numDusky;
     @Getter
     private int numLight;
     private boolean gameOver;
 
-    public PieceManager(EntityCreator creator, InputHandler inputHandler) {
-        this.creator = creator;
+    public PieceManager(EntityCreator inputCreator, InputHandler inputInputHandler) {
+        this.creator = inputCreator;
         this.pieces = generateBeginningCheckers();
-        this.input = inputHandler;
+        this.input = inputInputHandler;
         generateBeginningCheckers();
         updateAllPieces();
         this.gameOver = false;
@@ -46,10 +47,6 @@ public class PieceManager {
 
     public void flagGameOver() {
         this.gameOver = true;
-    }
-
-    public GameBoardPiece[] getPieces() {
-        return pieces;
     }
 
     public GameBoardPiece getPiece(int x, int y) {
@@ -125,7 +122,7 @@ public class PieceManager {
     }
 
     private GameBoardPiece[] generateBeginningCheckers() {
-        GameBoardPiece[] pieces = new GameBoardPiece[64];
+        GameBoardPiece[] boardBuilder = new GameBoardPiece[64];
         int x = 1;
         int y = 0;
         while (y < 3) {
@@ -136,7 +133,7 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces[y * 8 + x] = creator.createPiece("DUSKYChecker", x, y);
+                boardBuilder[y * 8 + x] = creator.createPiece("DUSKYChecker", x, y);
                 x += 2;
             }
         }
@@ -149,12 +146,12 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces[y * 8 + x] = creator.createPiece("LIGHTChecker", x, y);
+                boardBuilder[y * 8 + x] = creator.createPiece("LIGHTChecker", x, y);
                 x += 2;
             }
         }
         numDusky = 12;
         numLight = 12;
-        return pieces;
+        return boardBuilder;
     }
 }

@@ -3,23 +3,24 @@ package hepker.game.entity.piece;
 import hepker.game.entity.movement.CapturedNode;
 
 class MoveState {
+
     private final int xCell;
     private final int yCell;
     private final int stateCode;
-    private CapturedNode capturedNode;
+    private final CapturedNode capturedNode;
 
-    MoveState(int xCell, int yCell, int stateCode) {
-        this.xCell = xCell;
-        this.yCell = yCell;
-        this.stateCode = stateCode;
+    MoveState(int xCoordinate, int yCoordinate, int stateIntRepresentation) {
+        this.xCell = xCoordinate;
+        this.yCell = yCoordinate;
+        this.stateCode = stateIntRepresentation;
         capturedNode = null;
     }
 
-    MoveState(int xCell, int yCell, int stateCode, CapturedNode capturedNode) {
-        this.xCell = xCell;
-        this.yCell = yCell;
-        this.stateCode = stateCode;
-        this.capturedNode = capturedNode;
+    MoveState(int xCoordinate, int yCoordinate, int stateIntRepresentation, CapturedNode inputCapturedNode) {
+        this.xCell = xCoordinate;
+        this.yCell = yCoordinate;
+        this.stateCode = stateIntRepresentation;
+        this.capturedNode = inputCapturedNode;
     }
 
     public int getX() {
