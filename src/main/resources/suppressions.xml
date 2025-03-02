@@ -9,4 +9,5 @@
     <suppress files=".*AITools\.java" checks="MagicNumber"/>
     <suppress files=".*Environment\.java" checks="MagicNumber"/>
     <suppress files=".*EntityCreator\.java" checks="MagicNumber"/>
+    <suppress files=".*EntityCreator\.java" checks="MagicNumber"/>
 </suppressions>
