@@ -3,6 +3,7 @@ package hepker;
 import hepker.engine.GameEngine;
 import hepker.engine.GameLoop;
 
+@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 public class Main {
     public static void main(String[] args) {
         boolean trainingMode = true;

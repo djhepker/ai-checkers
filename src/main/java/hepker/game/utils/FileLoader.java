@@ -5,12 +5,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class FileLoader {
+public final class FileLoader {
 
     private final String filePath;
 
-    public FileLoader(String filePath) {
-        this.filePath = filePath;
+    public FileLoader(String inputFilePath) {
+        this.filePath = inputFilePath;
     }
 
     public void updateLineByKey(String key, String updatedValue) {

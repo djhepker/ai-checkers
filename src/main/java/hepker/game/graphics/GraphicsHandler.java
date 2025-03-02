@@ -21,10 +21,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class GraphicsHandler extends JPanel {
-
-    private InputHandler inputHandler;
-    private PieceManager pMgr;
+public final class GraphicsHandler extends JPanel {
+    private final InputHandler inputHandler;
+    private final PieceManager pMgr;
 
     private final Image[] cachedTiles;
 
@@ -36,12 +35,12 @@ public class GraphicsHandler extends JPanel {
     private boolean lightChosen;
     private final JFrame frame;
 
-    public GraphicsHandler(Image[] cachedTiles,
-                           PieceManager pMgr,
-                           InputHandler inputHandler) {
-        this.inputHandler = inputHandler;
-        this.cachedTiles = cachedTiles;
-        this.pMgr = pMgr;
+    public GraphicsHandler(Image[] inputTileImgs,
+                           PieceManager inputPMgr,
+                           InputHandler inputInputHandler) {
+        this.inputHandler = inputInputHandler;
+        this.cachedTiles = inputTileImgs;
+        this.pMgr = inputPMgr;
         this.entityWidth = 0;
         this.entityHeight = 0;
         this.highlightRectangleX = 0;
@@ -60,14 +59,14 @@ public class GraphicsHandler extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                inputHandler.handleMouseClick(e, getWidth(), getHeight());
+                inputInputHandler.handleMouseClick(e, getWidth(), getHeight());
             }
         });
 
         this.frame = new JFrame("Checkers dev");
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.add(this);
-        this.frame.setSize(800,800);
+        this.frame.setSize(800, 800);
         this.frame.setLocationRelativeTo(null); // centered
         this.frame.setVisible(true);
 

@@ -1,13 +1,18 @@
 
 package hepker.game.graphics;
 
+import lombok.Getter;
+
 import java.awt.event.MouseEvent;
 
-public class InputHandler {
-
+public final class InputHandler {
+    @Getter
     private int selectedRow;
+    @Getter
     private int selectedCol;
+    @Getter
     private int firstXPos;
+    @Getter
     private int firstYPos;
 
     private InputState inputState;
@@ -70,21 +75,5 @@ public class InputHandler {
 
     public boolean movementChosen() {
         return inputState == InputState.SECOND_CLICK;
-    }
-
-    public int getFirstXPos() {
-        return firstXPos;
-    }
-
-    public int getFirstYPos() {
-        return firstYPos;
-    }
-
-    public int getSelectedRow() {
-        return selectedRow;
-    }
-
-    public int getSelectedCol() {
-        return selectedCol;
     }
 }
