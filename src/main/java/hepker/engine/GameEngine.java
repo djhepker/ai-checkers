@@ -26,6 +26,7 @@ public final class GameEngine {
     private boolean gameOver;
 
     private int numTurnsWithoutCapture;
+    private int totalTurnCount;
 
     public GameEngine(boolean aiIsTraining) {
         this.isTraining = aiIsTraining;
@@ -50,26 +51,28 @@ public final class GameEngine {
         }
         this.gameOver = false;
         this.numTurnsWithoutCapture = 0;
+        this.totalTurnCount = 0;
     }
 
     public void updateGame() {
+        ++totalTurnCount;
         try {
             if (hasPlayer) {
                 inputHandler.update();
                 if (playerTurn) {
                     handleInput();
                 } else {
-                    int numPiecesNaught = pMgr.getNumPiecesInPlay();
                     agentMgr.update();
-                    if (numPiecesNaught == pMgr.getNumPiecesInPlay()) {
-                        ++numTurnsWithoutCapture;
-                    } else {
-                        numTurnsWithoutCapture = 0;
-                    }
                     playerTurn = !playerTurn;
                 }
             } else {
+                int numPiecesNaught = pMgr.getNumPiecesInPlay();
                 agentMgr.update();
+                if (numPiecesNaught == pMgr.getNumPiecesInPlay()) {
+                    ++numTurnsWithoutCapture;
+                } else {
+                    numTurnsWithoutCapture = 0;
+                }
             }
             if (pMgr.sideDefeated()) {
                 this.gameOver = true;
@@ -103,6 +106,17 @@ public final class GameEngine {
             } else {
                 agentMgr.finishGame(pMgr.getNumDusky() == 0);
             }
+        }
+        if (gameOver) {
+            StringBuilder debugBuilder = new StringBuilder()
+                    .append("Total number of turns: ")
+                    .append(totalTurnCount)
+                    .append(" Turns without capture: ")
+                    .append(numTurnsWithoutCapture);
+            if (numTurnsWithoutCapture != 75) {
+                debugBuilder.append(" * Successful Game");
+            }
+            System.out.println(debugBuilder);
         }
         return gameOver;
     }

@@ -33,11 +33,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.12</version>
-        </dependency>
-        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.5.3</version>
@@ -51,11 +46,6 @@
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-dependency-analyzer</artifactId>
             <version>1.15.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <version>3.5.0</version>
         </dependency>
     </dependencies>
     <build>
@@ -92,8 +82,7 @@
                     <configLocation>src/main/resources/checkstyle.xml</configLocation>
                     <consoleOutput>false</consoleOutput>
                     <failOnViolation>true</failOnViolation>
-                    <outputFile>${project.build.directory}/checkstyle-result.xml</outputFile>
-                    <outputFile>checkstyle-report.xml</outputFile>
+                    <outputFile>target/checkstyle-result.xml</outputFile>
                 </configuration>
             </plugin>
             <plugin>
@@ -120,7 +109,7 @@
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>[23,24)</version>
+                                    <version>[21,24)</version>
                                 </requireJavaVersion>
                                 <requireMavenVersion>
                                     <version>[3.8,)</version>

@@ -61,7 +61,7 @@ public final class AIDecisionHandler implements DecisionHandler {
         double summation = ratioOptions + ratioPieces + pointsEarned;
 
         if (reasonableTurnCount < 0) {
-            decayingScalar -= 0.2;
+            decayingScalar -= 0.09;
             return decayingScalar * Math.abs(summation);
         } else {
             --reasonableTurnCount;

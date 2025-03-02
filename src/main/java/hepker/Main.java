@@ -3,11 +3,10 @@ package hepker;
 import hepker.engine.GameEngine;
 import hepker.engine.GameLoop;
 
-@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 public class Main {
     public static void main(String[] args) {
         boolean trainingMode = true;
-        int epochs = 5;
+        int epochs = 1000;
         int episodeCount = 0;
         GameLoop gameLoop;
 

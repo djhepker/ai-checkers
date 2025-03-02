@@ -1,6 +1,7 @@
 package hepker.ai.ai;
 
 import hepker.ai.table.DataManager;
+import lombok.Setter;
 
 import java.util.Random;
 
@@ -29,11 +30,12 @@ public final class Agent implements AI {
 
     private final double gamma = 0.9; // value of knowledge
     private final double alpha = 0.82; // learning rate
-    private double epsilon = 0.8; // exploration rate
+    private double epsilon = 0.7; // exploration rate
     private double rho;
     private double currentQ;
     private double maxQPrime;
 
+    @Setter
     private String stateKey;
 
     public Agent() {
@@ -45,10 +47,6 @@ public final class Agent implements AI {
     public void update(String stateKeyPrime, int actionChoiceInt) {
         calculateMaxQPrime(stateKeyPrime);
         updateQValue(actionChoiceInt);
-    }
-
-    public void setStateKey(String inputStateKey) {
-        this.stateKey = inputStateKey;
     }
 
     public int getActionInt(int numDecisions) {
