@@ -5,32 +5,16 @@ import lombok.Setter;
 
 import java.util.Random;
 
-/*
-* STATE: pieces[][] converted to a hexadecimal String
-* ACTION: Moving pieces when it is Agent's turn
-* REWARD: Positive, Negative, & Neutral
-* EPISODE: GameEngine calls updateGame() in-between episodes
-* Q-VALUE: Metrics used to evaluate actions at specific states
-* MODEL: Q(S,a,S') ─► Model "Q" is action "a" given state "S" results in "S'"
-* └► P(S'|S,a) = Probability of reaching a state "S'" if action "a" is taken in state "S"
-* "A" is the set of all possible actions
-* "A(s)" defines the set of actions that can be taken while in state "S"
-* POLICY: A mapping from "S" to "a"; a solution to the Markov decision process. Indicates
-* action "a" is to be taken while in state "S"
-* */
-
 public final class Agent implements AI {
-
-    // All agents same the same database as to not create multiple or wear memory
-    private static DataManager qTableMgr;
+    private static final DataManager Q_TABLE_MGR;
 
     static {
-        qTableMgr = new DataManager();
+        Q_TABLE_MGR = new DataManager();
     }
 
-    private final double gamma = 0.9; // value of knowledge
-    private final double alpha = 0.82; // learning rate
-    private double epsilon = 0.7; // exploration rate
+    private final double gamma = 0.9;
+    private final double alpha = 0.82;
+    private double epsilon = 0.7;
     private double rho;
     private double currentQ;
     private double maxQPrime;
@@ -62,7 +46,7 @@ public final class Agent implements AI {
     }
 
     private int exploit() {
-        return qTableMgr.getMaxQIndex(stateKey);
+        return Q_TABLE_MGR.getMaxQIndex(stateKey);
     }
 
     private int explore(int numDecisions) {
@@ -70,8 +54,8 @@ public final class Agent implements AI {
     }
 
     private double getQValue(String inputStateKey, int moveChoice) {
-        if (qTableMgr.isWithinSize(inputStateKey, moveChoice)) {
-            return qTableMgr.queryQTableForValue(inputStateKey, moveChoice);
+        if (Q_TABLE_MGR.isWithinSize(inputStateKey, moveChoice)) {
+            return Q_TABLE_MGR.queryQTableForValue(inputStateKey, moveChoice);
         } else {
             return 0.0;
         }
@@ -81,27 +65,17 @@ public final class Agent implements AI {
         this.rho = updatedReward;
     }
 
-    /**
-     * Updates maxQPrime
-     * @param stateKeyPrimeString String representation of the gamestate, used to query sqlite table
-     */
     public void calculateMaxQPrime(String stateKeyPrimeString) {
         if (epsilon == 0.0) {
             return;
         }
-        this.maxQPrime = qTableMgr.getMaxQValue(stateKeyPrimeString);
+        this.maxQPrime = Q_TABLE_MGR.getMaxQValue(stateKeyPrimeString);
     }
 
     public void finalizeQTableUpdate() {
-        qTableMgr.updateData();
+        Q_TABLE_MGR.updateData();
     }
 
-    /**
-     * Mutator for Epsilon. Epsilon is the probability that Agent will select a random action. The probability that
-     * Agent will select the learned optimal decision is 1 - Epsilon
-     * @param inputEpsilon The new value we will set Epsilon to [0, 1]. Epsilon will be 1 if argument greater
-     *                     than one, and 0 if argument less than zero.
-     */
     public void setEpsilon(double inputEpsilon) {
         this.epsilon = inputEpsilon < 0.0 ? 0.0 : Math.min(inputEpsilon, 1.0);
     }
@@ -109,7 +83,13 @@ public final class Agent implements AI {
     private void updateQValue(int moveChoice) {
         double updatedQ = currentQ + alpha * (rho + gamma * maxQPrime - currentQ);
         if (Math.abs(updatedQ - currentQ) > 0.01) {
-            qTableMgr.putUpdatedValue(stateKey, moveChoice, updatedQ);
+            Q_TABLE_MGR.putUpdatedValue(stateKey, moveChoice, updatedQ);
+        }
+    }
+
+    public static void closeDatabase() {
+        if (Q_TABLE_MGR != null) {
+            Q_TABLE_MGR.close();
         }
     }
 }
