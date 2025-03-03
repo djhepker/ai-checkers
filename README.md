@@ -1,6 +1,3 @@
-AI Checkers Game
-This project is a console-based implementation of the classic game of checkers featuring an AI opponent. The AI leverages a custom Q-learning algorithm, a form of reinforcement learning, to make decisions and enhance its gameplay over time. SQLite is used to manage game data, such as storing Q-values or game states, ensuring efficient data handling.
-Features
 • Play checkers against an AI opponent in a JFrame interface
 
 • Custom Q-learning algorithm for intelligent AI decision-making
