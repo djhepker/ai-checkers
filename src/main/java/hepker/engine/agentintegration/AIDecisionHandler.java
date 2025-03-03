@@ -46,6 +46,8 @@ public final class AIDecisionHandler implements DecisionHandler {
         pMgr.updateAllPieces();
     }
 
+    // Fix this, gamestate learned is based on the total board which means by default the color of Agent matters
+    // otherwise, maxq prime may select actions relevant to the opposite color
     public void setPreDecisionRewardParameters(int moveChoice) {
         setPreDecisionRewardParameters(env, decisionArray[moveChoice]);
     }

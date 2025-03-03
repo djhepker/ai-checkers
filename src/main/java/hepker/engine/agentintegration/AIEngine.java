@@ -73,15 +73,15 @@ public final class AIEngine {
 
     private void loadGameState(String gameTypeString) {
         switch (gameTypeString) {
-            case "Agent Vs Player" -> {
-                generateAgent(false, isDusky);
-            }
-            case "Stochastic Vs Player" -> {
-                generateAgent(true, isDusky);
-            }
+            case "Agent Vs Player" -> generateAgent(false, isDusky);
+            case "Stochastic Vs Player" -> generateAgent(true, isDusky);
             case "Agent Vs Stochastic" -> {
                 generateAgent(false, true);
                 generateAgent(true, false);
+            }
+            case "Agent vs Agent" -> {
+                generateAgent(false, false);
+                generateAgent(false, true);
             }
             default -> {
             }
@@ -103,11 +103,9 @@ public final class AIEngine {
         }
         AITools tools = new AITools(duskyAgent);
         Environment env = new Environment(tools, pMgr);
-        agents.add(new AgentRecord(
-                zero, env, new AIDecisionHandler(pMgr, tools, env)));
+        agents.add(new AgentRecord(zero, env, new AIDecisionHandler(pMgr, tools, env)));
     }
 
-    // VALID
     private enum GameState {
         AGENT_VS_PLAYER,
         STOCHASTIC_VS_PLAYER,

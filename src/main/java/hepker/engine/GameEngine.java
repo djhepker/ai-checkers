@@ -107,7 +107,7 @@ public final class GameEngine {
                 agentMgr.finishGame(pMgr.getNumDusky() == 0);
             }
         }
-        if (gameOver) {
+        if (false) {
             StringBuilder debugBuilder = new StringBuilder()
                     .append("Total number of turns: ")
                     .append(totalTurnCount)
