@@ -21,7 +21,6 @@ import static hepker.game.entity.GameBoardPiece.PieceColor.LIGHT;
 * */
 
 public final class AITools {
-
     private final GameBoardPiece.PieceColor pieceColor;
 
     public AITools(boolean isDusky) {
@@ -30,13 +29,6 @@ public final class AITools {
 
     public boolean isDusky() {
         return pieceColor == DUSKY;
-    }
-
-    public void printQueue(PieceManager pMgr) {
-        ActionNode[] printable = getDecisionArray(pMgr);
-        for (ActionNode node : printable) {
-            node.printData();
-        }
     }
 
     public ActionNode[] getDecisionArray(PieceManager pMgr) {
@@ -56,11 +48,31 @@ public final class AITools {
     }
 
     public String getHexadecimalEncodingOfArr(int[] gameState) {
-        StringBuilder sb = new StringBuilder();
-        for (int i : gameState) {
-            sb.append(i);
+        StringBuilder stateBuilder = new StringBuilder();
+        if (pieceColor == LIGHT) {
+            for (int i = gameState.length - 1; i >= 0; --i) {
+                int swapped = getSwapped(gameState[i]);
+                stateBuilder.append(swapped);
+            }
+        } else {
+            for (int val : gameState) {
+                stateBuilder.append(val);
+            }
         }
-        return new BigInteger(sb.toString()).toString(16);
+        return new BigInteger(stateBuilder.toString()).toString(16);
+    }
+
+    private int getSwapped(int gameState) {
+        int val = gameState;
+        int swapped = switch (val) {
+            case 0 -> 0;         // empty stays empty
+            case 1 -> 3;         // LIGHTChecker → DUSKYChecker
+            case 2 -> 4;         // LIGHTCheckerKing → DUSKYCheckerKing
+            case 3 -> 1;         // DUSKYChecker → LIGHTChecker
+            case 4 -> 2;         // DUSKYCheckerKing → LIGHTCheckerKing
+            default -> throw new IllegalArgumentException("Invalid gameState value: " + val);
+        };
+        return swapped;
     }
 
     public int getMaximumOpponentReward(PieceManager pMgr) {
@@ -79,8 +91,8 @@ public final class AITools {
         try {
             return switch (piece.getName()) {
                 case "LIGHTChecker" -> 1;
-                case "DUSKYChecker" -> 3;
                 case "LIGHTCheckerKing" -> 2;
+                case "DUSKYChecker" -> 3;
                 case "DUSKYCheckerKing" -> 4;
                 default -> throw new IllegalArgumentException("Invalid piece name: " + piece.getName());
             };
