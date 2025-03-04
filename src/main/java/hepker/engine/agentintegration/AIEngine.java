@@ -84,6 +84,7 @@ public final class AIEngine {
                 generateAgent(false, true);
             }
             default -> {
+                throw new IllegalArgumentException("Invalid gameTypeString: " + gameTypeString);
             }
         }
     }

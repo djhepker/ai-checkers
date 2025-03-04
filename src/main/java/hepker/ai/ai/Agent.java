@@ -54,11 +54,7 @@ public final class Agent implements AI {
     }
 
     private double getQValue(String inputStateKey, int moveChoice) {
-        if (Q_TABLE_MGR.isWithinSize(inputStateKey, moveChoice)) {
-            return Q_TABLE_MGR.queryQTableForValue(inputStateKey, moveChoice);
-        } else {
-            return 0.0;
-        }
+        return Q_TABLE_MGR.queryQTableForValue(inputStateKey, moveChoice);
     }
 
     public void updateRho(double updatedReward) {

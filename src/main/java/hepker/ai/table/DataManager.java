@@ -43,10 +43,6 @@ public final class DataManager {
         }
     }
 
-    public boolean isWithinSize(String serialKey, int qIndex) {
-        return updatedQValues.containsKey(serialKey) && updatedQValues.get(serialKey).length > qIndex;
-    }
-
     public double queryQTableForValue(String serialKey, int decisionNumber) {
         try {
             return db.getQValueFromTable(serialKey, decisionNumber);
