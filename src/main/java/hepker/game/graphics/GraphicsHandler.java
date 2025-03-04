@@ -23,9 +23,9 @@ import java.awt.event.WindowEvent;
 
 public final class GraphicsHandler extends JPanel {
     private final InputHandler inputHandler;
-    private final PieceManager pMgr;
 
     private final Image[] cachedTiles;
+    private final GameBoardPiece[] displayPieces;
 
     private int entityWidth;
     private int entityHeight;
@@ -38,7 +38,7 @@ public final class GraphicsHandler extends JPanel {
     public GraphicsHandler(Image[] inputTileImgs, PieceManager inputPMgr, InputHandler inputInputHandler) {
         this.inputHandler = inputInputHandler;
         this.cachedTiles = inputTileImgs;
-        this.pMgr = inputPMgr;
+        this.displayPieces = inputPMgr.getDisplayPieces();
         this.entityWidth = 0;
         this.entityHeight = 0;
         this.highlightRectangleX = 0;
@@ -124,7 +124,7 @@ public final class GraphicsHandler extends JPanel {
         int yCoordinate = inputHandler.getSelectedRow();
         highlightRectangleX = getWidth() / 8 * xCoordinate;
         highlightRectangleY = getHeight() / 8 * yCoordinate;
-        GameBoardPiece piece = pMgr.getPiece(xCoordinate, yCoordinate);
+        GameBoardPiece piece = displayPieces[yCoordinate * 8 + xCoordinate];
         if (piece != null) {
             g2d.drawRect(highlightRectangleX, highlightRectangleY, getWidth() / 8, getHeight() / 8);
             ActionNode cursor = piece.getMoveListPointer();
@@ -158,8 +158,8 @@ public final class GraphicsHandler extends JPanel {
     private void drawPieces(Graphics2D g2d) {
         for (int j = 0; j < 8; j++) {
             for (int i = 0; i < 8; i++) {
-                if (!pMgr.spaceIsNull(i, j)) {
-                    GameBoardPiece piece = pMgr.getPiece(i, j);
+                GameBoardPiece piece = displayPieces[8 * j + i];
+                if (piece != null) {
                     int xPos = piece.getX() * entityWidth;
                     int yPos = piece.getY() * entityHeight;
                     g2d.drawImage(piece.getSprite(), xPos, yPos, entityWidth, entityHeight, null);

@@ -22,7 +22,7 @@ public final class AITools {
     private static final Logger LOGGER = LoggerFactory.getLogger(AITools.class);
 
     public static ActionNode[] getDecisionArray(PieceManager pMgr, GameBoardPiece.PieceColor inputColor) { // verified as optimal
-        return Arrays.stream(pMgr.getPiecesLightPerspective())
+        return Arrays.stream(pMgr.getPiecesContainer())
                 .filter(piece -> piece != null && piece.getColor() == inputColor)
                 .flatMap(GameBoardPiece::getMoveListAsStream)
                 .sorted(Comparator.comparingInt(ActionNode::getoDataX).thenComparing(ActionNode::getoDataY)) // sorted for consistent action selection
@@ -30,7 +30,7 @@ public final class AITools {
     }
 
     public static int getNumOpponentOptions(PieceManager pMgr, GameBoardPiece.PieceColor inputColor) {
-        return Arrays.stream(pMgr.getPiecesLightPerspective())
+        return Arrays.stream(pMgr.getPiecesContainer())
                 .filter(piece -> piece != null && piece.getColor() != inputColor)
                 .flatMap(GameBoardPiece::getMoveListAsStream)
                 .toArray()
@@ -38,7 +38,7 @@ public final class AITools {
     }
 
     public static int getMaximumOpponentReward(PieceManager pMgr, GameBoardPiece.PieceColor inputColor) {
-        return Arrays.stream(pMgr.getPiecesLightPerspective())
+        return Arrays.stream(pMgr.getPiecesContainer())
                 .filter(piece -> piece != null && piece.getColor() != inputColor)
                 .flatMap(GameBoardPiece::getMoveListAsStream)
                 .mapToInt(ActionNode::getReward)

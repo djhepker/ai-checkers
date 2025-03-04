@@ -73,19 +73,19 @@ public class Checker extends Entity implements GameBoardPiece {
                     int xNext = currState.getX() + xDirection;
                     if (0 <= xNext && xNext < 8) {
                         GameBoardPiece target = pMgr.getPiece(xNext, yNext);
-                        if (target == null) {   // target open case
+                        if (target == null) { // target open case
                             if (stateCode == 4) { // target open; stationary;
                                 moveMgr.addLocationNode(getX(), getY(), xNext, yNext);
-                            } else if (stateCode < 3) {    //  target open; mid-jump; direction acknowledged;
+                            } else if (stateCode < 3) { //  target open; mid-jump; direction acknowledged;
                                 ActionNode nextSpace = getCaptureAction(currState, xNext, yNext, pMgr);
                                 taskQueue.push(new MoveState(
                                         xNext, yNext, 3, nextSpace.getCapturedNodes()));
                                 moveMgr.addLocationNode(nextSpace);
                             }
-                        } else if (stateCode > 2 && target.getColor() != super.getColor()) {  // target not open;
+                        } else if (stateCode > 2 && target.getColor() != super.getColor()) { // target not open;
                             if (stateCode == 3) { // post-jump; target !null; stationary;
                                 taskQueue.push(new MoveState(xNext, yNext, xDirection, currState.getCapture()));
-                            } else {    // beginning position
+                            } else { // beginning position
                                 taskQueue.push(new MoveState(xNext, yNext, xDirection));
                             }
                         }

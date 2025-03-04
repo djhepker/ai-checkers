@@ -7,11 +7,13 @@ import hepker.engine.EntityCreator;
 import hepker.game.entity.GameBoardPiece;
 import lombok.Getter;
 
+import java.util.Arrays;
+
 public final class PieceManager {
     @Getter
-    private GameBoardPiece[] piecesLightPerspective;
+    private GameBoardPiece[] piecesContainer;
     @Getter
-    private GameBoardPiece[] piecesDuskyPerspective;
+    private GameBoardPiece[] displayPieces;
     private final EntityCreator creator;
     private final InputHandler input;
     @Getter
@@ -22,16 +24,15 @@ public final class PieceManager {
 
     public PieceManager(EntityCreator inputCreator, InputHandler inputInputHandler) {
         this.creator = inputCreator;
-        this.piecesLightPerspective = generateBeginningCheckers();
+        this.piecesContainer = generateBeginningCheckers();
         this.input = inputInputHandler;
-        generateBeginningCheckers();
         updateAllPieces();
-        this.piecesDuskyPerspective = getInverseBoard(piecesLightPerspective);
+        this.displayPieces = piecesContainer;
         this.gameOver = false;
     }
 
     public void updateAllPieces() {
-        for (GameBoardPiece piece : piecesLightPerspective) {
+        for (GameBoardPiece piece : piecesContainer) {
             if (piece != null) {
                 piece.update(this);
             }
@@ -53,13 +54,13 @@ public final class PieceManager {
     }
 
     public GameBoardPiece getPiece(int x, int y) {
-        return piecesLightPerspective[y * 8 + x];
+        return piecesContainer[y * 8 + x];
     }
 
     public boolean movePiece(GameBoardPiece piece) {
         int postX = input.getSelectedCol();
         int postY = input.getSelectedRow();
-        if (spaceIsNull(postX, postY)) {
+        if (getPiece(postX, postY) == null) {
             ActionNode cursor = piece.getMoveListPointer();
             while (cursor != null) {
                 if (cursor.getfDataX() == postX && cursor.getfDataY() == postY) {
@@ -91,24 +92,38 @@ public final class PieceManager {
         return result;
     }
 
-    public boolean spaceIsNull(int inputX, int inputY) {
-        return piecesLightPerspective[inputY * 8 + inputX] == null;
-    }
-
     public boolean insertPieceToBoard(GameBoardPiece piece) {
         if (piece == null) {
             return false;
         }
-        piecesLightPerspective[piece.getY() * 8 + piece.getX()] = piece;
+        if (Arrays.equals(piecesContainer, displayPieces)) {
+            piecesContainer[piece.getY() * 8 + piece.getX()] = piece;
+            displayPieces[piece.getY() * 8 + piece.getX()] = piece;
+        } else {
+            piecesContainer[piece.getY() * 8 + piece.getX()] = piece;
+            displayPieces[(7 - piece.getY()) * 8 + (7 - piece.getX())] = piece;
+        }
         return true;
     }
 
     public void nullifyPiece(int x, int y) {
-        piecesLightPerspective[y * 8 + x] = null;
+        if (Arrays.equals(piecesContainer, displayPieces)) {
+            piecesContainer[y * 8 + x] = null;
+            displayPieces[y * 8 + x] = null;
+        } else {
+            piecesContainer[y * 8 + x] = null;
+            displayPieces[(7 - y) * 8 + (7 - x)] = null;
+        }
     }
 
     public int getNumPiecesInPlay() {
-        return piecesLightPerspective.length;
+        int count = 0;
+        for (GameBoardPiece piece : piecesContainer) {
+            if (piece != null) {
+                ++count;
+            }
+        }
+        return count;
     }
 
     /**
