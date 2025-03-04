@@ -35,9 +35,7 @@ public final class GraphicsHandler extends JPanel {
     private boolean lightChosen;
     private final JFrame frame;
 
-    public GraphicsHandler(Image[] inputTileImgs,
-                           PieceManager inputPMgr,
-                           InputHandler inputInputHandler) {
+    public GraphicsHandler(Image[] inputTileImgs, PieceManager inputPMgr, InputHandler inputInputHandler) {
         this.inputHandler = inputInputHandler;
         this.cachedTiles = inputTileImgs;
         this.pMgr = inputPMgr;
@@ -46,7 +44,6 @@ public final class GraphicsHandler extends JPanel {
         this.highlightRectangleX = 0;
         this.highlightRectangleY = 0;
         this.lightChosen = false;
-
         Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 8);
         setBorder(blackLine);
         addComponentListener(new ComponentAdapter() {
@@ -62,14 +59,12 @@ public final class GraphicsHandler extends JPanel {
                 inputInputHandler.handleMouseClick(e, getWidth(), getHeight());
             }
         });
-
         this.frame = new JFrame("Checkers dev");
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.add(this);
         this.frame.setSize(800, 800);
-        this.frame.setLocationRelativeTo(null); // centered
+        this.frame.setLocationRelativeTo(null);
         this.frame.setVisible(true);
-
         this.frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {

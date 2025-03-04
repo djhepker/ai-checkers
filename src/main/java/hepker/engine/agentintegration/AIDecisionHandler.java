@@ -30,7 +30,6 @@ public final class AIDecisionHandler implements DecisionHandler {
         this.env = inputEnv;
         this.reasonableTurnCount = 30;
         this.decayingScalar = 1.0;
-        updateDecisionContainer();
     }
 
     public void updateDecisionContainer() {
@@ -57,9 +56,7 @@ public final class AIDecisionHandler implements DecisionHandler {
         double ratioPieces = alliedPieces / env.getNumEnemyPieces()
                 - alliedPieces / numEnemiesNaught;
         int pointsEarned = pointsFromDecision - toolbox.getMaximumOpponentReward(pMgr);
-
         double summation = ratioOptions + ratioPieces + pointsEarned;
-
         if (reasonableTurnCount < 0) {
             decayingScalar -= 0.09;
             return decayingScalar * Math.abs(summation);

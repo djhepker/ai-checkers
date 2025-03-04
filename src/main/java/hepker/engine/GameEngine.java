@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class GameEngine {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
 
     private EntityCreator creator;
@@ -80,12 +79,12 @@ public final class GameEngine {
             if (!isTraining) {
                 graphicsHandler.repaint();
             }
-        } catch (Exception e) {
-            LOGGER.error("Unexpected error in updateGame()", e);
         } catch (AssertionError e) {
             LOGGER.error("Invalid mouse selection in InputHandler", e);
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error in updateGame()", e);
         }
-        if (numTurnsWithoutCapture >= 75) {
+        if (numTurnsWithoutCapture >= 50) {
             gameOver = true;
         }
     }

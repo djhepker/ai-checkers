@@ -30,7 +30,7 @@ public final class Environment {
     }
 
     public String getEncodedGameState(PieceManager inputPMgr) {
-        return toolbox.getHexadecimalEncodingOfArr(getStateArray(inputPMgr));
+        return toolbox.intArrTo64Encoding(getStateArray(inputPMgr));
     }
 
     private int[] getStateArray(PieceManager inputPMgr) {

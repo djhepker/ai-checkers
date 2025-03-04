@@ -60,8 +60,4 @@ public final class ActionNode {
         this.reward += capturedNode.getPointValue();
         this.capturedEnemies = capturedNode;
     }
-
-    public void printData() {
-        System.out.printf("Node (%d,%d)\n", data[0], data[1]);
-    }
 }

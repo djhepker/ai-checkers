@@ -27,7 +27,7 @@ public class Checker extends Entity implements GameBoardPiece {
     }
 
     /**
-     * Generates a stream of legal moves the checker can make
+     * Generates a stream of legal moves the checker can make for the AI
      * @return Stream of ActionNode
      */
     @Override

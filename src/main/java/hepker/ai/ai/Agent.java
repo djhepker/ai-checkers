@@ -5,6 +5,19 @@ import lombok.Setter;
 
 import java.util.Random;
 
+/**
+ * STATE: pieces[][] converted to a hexadecimal String
+ * ACTION: Moving pieces when it is Agent's turn
+ * REWARD: Positive, Negative, & Neutral
+ * EPISODE: GameEngine calls updateGame() in-between episodes
+ * Q-VALUE: Metrics used to evaluate actions at specific states
+ * MODEL: Q(S,a,S') ─► Model "Q" is action "a" given state "S" results in "S'"
+ * └► P(S'|S,a) = Probability of reaching a state "S'" if action "a" is taken in state "S"
+ * "A" is the set of all possible actions
+ * "A(s)" defines the set of actions that can be taken while in state "S"
+ * POLICY: A mapping from "S" to "a"; a solution to the Markov decision process. Indicates
+ * action "a" is to be taken while in state "S"
+ */
 public final class Agent implements AI {
     private static final DataManager Q_TABLE_MGR;
 
