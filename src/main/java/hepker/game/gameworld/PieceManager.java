@@ -9,7 +9,9 @@ import lombok.Getter;
 
 public final class PieceManager {
     @Getter
-    private GameBoardPiece[] pieces;
+    private GameBoardPiece[] piecesLightPerspective;
+    @Getter
+    private GameBoardPiece[] piecesDuskyPerspective;
     private final EntityCreator creator;
     private final InputHandler input;
     @Getter
@@ -20,15 +22,16 @@ public final class PieceManager {
 
     public PieceManager(EntityCreator inputCreator, InputHandler inputInputHandler) {
         this.creator = inputCreator;
-        this.pieces = generateBeginningCheckers();
+        this.piecesLightPerspective = generateBeginningCheckers();
         this.input = inputInputHandler;
         generateBeginningCheckers();
         updateAllPieces();
+        this.piecesDuskyPerspective = getInverseBoard(piecesLightPerspective);
         this.gameOver = false;
     }
 
     public void updateAllPieces() {
-        for (GameBoardPiece piece : pieces) {
+        for (GameBoardPiece piece : piecesLightPerspective) {
             if (piece != null) {
                 piece.update(this);
             }
@@ -50,7 +53,7 @@ public final class PieceManager {
     }
 
     public GameBoardPiece getPiece(int x, int y) {
-        return pieces[y * 8 + x];
+        return piecesLightPerspective[y * 8 + x];
     }
 
     public boolean movePiece(GameBoardPiece piece) {
@@ -89,19 +92,37 @@ public final class PieceManager {
     }
 
     public boolean spaceIsNull(int inputX, int inputY) {
-        return pieces[inputY * 8 + inputX] == null;
+        return piecesLightPerspective[inputY * 8 + inputX] == null;
     }
 
     public boolean insertPieceToBoard(GameBoardPiece piece) {
         if (piece == null) {
             return false;
         }
-        pieces[piece.getY() * 8 + piece.getX()] = piece;
+        piecesLightPerspective[piece.getY() * 8 + piece.getX()] = piece;
         return true;
     }
 
     public void nullifyPiece(int x, int y) {
-        pieces[y * 8 + x] = null;
+        piecesLightPerspective[y * 8 + x] = null;
+    }
+
+    public int getNumPiecesInPlay() {
+        return piecesLightPerspective.length;
+    }
+
+    /**
+     * Reverses all pieces in the game board, as if the board were rotated pi
+     */
+    private GameBoardPiece[] getInverseBoard(GameBoardPiece[] inputPieces) {
+        GameBoardPiece[] inverseBuilder = new GameBoardPiece[inputPieces.length];
+        int left = 0;
+        int right = inverseBuilder.length - 1;
+        while (left <= right) {
+            inverseBuilder[left] = inputPieces[right];
+            inverseBuilder[right--] = inputPieces[left++];
+        }
+        return inverseBuilder;
     }
 
     private void processCapturedPieces(ActionNode actionNode) {
@@ -115,10 +136,6 @@ public final class PieceManager {
             nullifyPiece(capturedPiece.getDataX(), capturedPiece.getDataY());
             capturedPiece = capturedPiece.getNext();
         }
-    }
-
-    public int getNumPiecesInPlay() {
-        return pieces.length;
     }
 
     private GameBoardPiece[] generateBeginningCheckers() {

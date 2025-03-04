@@ -10,9 +10,6 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Comparator;
 
-import static hepker.game.entity.GameBoardPiece.PieceColor.DUSKY;
-import static hepker.game.entity.GameBoardPiece.PieceColor.LIGHT;
-
 /**
  * STATE REPRESENTATION: Hexadecimal String
  * ACTION REPRESENTATION: Organize the priority queue by
@@ -24,43 +21,32 @@ import static hepker.game.entity.GameBoardPiece.PieceColor.LIGHT;
 public final class AITools {
     private static final Logger LOGGER = LoggerFactory.getLogger(AITools.class);
 
-    private final GameBoardPiece.PieceColor pieceColor;
-
-    public AITools(boolean isDusky) {
-        this.pieceColor = isDusky ? DUSKY : LIGHT;
-    }
-
-    public boolean isDusky() {
-        return pieceColor == DUSKY;
-    }
-
-    // TODO: just flip the pmgr board before updating the pieces?
-    public ActionNode[] getDecisionArray(PieceManager pMgr) { // verified as optimal
-        return Arrays.stream(pMgr.getPieces())
-                .filter(piece -> piece != null && piece.getColor() == pieceColor)
+    public static ActionNode[] getDecisionArray(PieceManager pMgr, GameBoardPiece.PieceColor inputColor) { // verified as optimal
+        return Arrays.stream(pMgr.getPiecesLightPerspective())
+                .filter(piece -> piece != null && piece.getColor() == inputColor)
                 .flatMap(GameBoardPiece::getMoveListAsStream)
                 .sorted(Comparator.comparingInt(ActionNode::getoDataX).thenComparing(ActionNode::getoDataY)) // sorted for consistent action selection
                 .toArray(ActionNode[]::new);
     }
 
-    public int getNumOpponentOptions(PieceManager pMgr) {
-        return Arrays.stream(pMgr.getPieces())
-                .filter(piece -> piece != null && piece.getColor() != pieceColor)
+    public static int getNumOpponentOptions(PieceManager pMgr, GameBoardPiece.PieceColor inputColor) {
+        return Arrays.stream(pMgr.getPiecesLightPerspective())
+                .filter(piece -> piece != null && piece.getColor() != inputColor)
                 .flatMap(GameBoardPiece::getMoveListAsStream)
                 .toArray()
                 .length;
     }
 
-    public int getMaximumOpponentReward(PieceManager pMgr) {
-        return Arrays.stream(pMgr.getPieces())
-                .filter(piece -> piece != null && piece.getColor() != pieceColor)
+    public static int getMaximumOpponentReward(PieceManager pMgr, GameBoardPiece.PieceColor inputColor) {
+        return Arrays.stream(pMgr.getPiecesLightPerspective())
+                .filter(piece -> piece != null && piece.getColor() != inputColor)
                 .flatMap(GameBoardPiece::getMoveListAsStream)
                 .mapToInt(ActionNode::getReward)
                 .max()
                 .orElse(0);
     }
 
-    public int pieceToInt(GameBoardPiece piece) {
+    public static int pieceToInt(GameBoardPiece piece) {
         if (piece == null) {
             return 0;
         }
@@ -85,7 +71,7 @@ public final class AITools {
      * @param gameState 32-element array (0=empty, 1=LIGHTChecker, etc.)
      * @return Base64-encoded string
      */
-    public String intArrTo64Encoding(int[] gameState) {
+    public static String intArrTo64Encoding(int[] gameState) {
         if (gameState == null) {
             LOGGER.error("Null gameState");
             throw new IllegalArgumentException("Null gameState");
@@ -113,18 +99,5 @@ public final class AITools {
             }
         }
         return Base64.getEncoder().encodeToString(bytes);
-    }
-
-    // TODO may use this in pmgr
-    private void reverseArray(int[] array) {
-        int left = 0;
-        int right = array.length - 1;
-        while (left < right) {
-            int temp = array[left];
-            array[left] = array[right];
-            array[right] = temp;
-            left++;
-            right--;
-        }
     }
 }

@@ -40,15 +40,15 @@ public final class AIEngine {
         ++numTurns;
         try {
             for (AgentRecord agentRecord : agents) {
-                updateAgent(agentRecord.agent(), agentRecord.environment(), agentRecord.decisionHandler());
+                updateAgent(agentRecord.agent(), agentRecord.decisionHandler());
             }
         } catch (Exception e) {
             LOGGER.error("Agent Manager Exception", e);
         }
     }
 
-    private void updateAgent(Agent inputAgent, Environment inputEnvironment, AIDecisionHandler inputDecisionHandler) {
-        String stateKey = inputEnvironment.getEncodedGameState(pMgr);
+    private void updateAgent(Agent inputAgent, AIDecisionHandler inputDecisionHandler) {
+        String stateKey = Environment.getEncodedGameState(pMgr);
 
         inputAgent.setStateKey(stateKey);
         inputDecisionHandler.updateDecisionContainer();
@@ -65,7 +65,7 @@ public final class AIEngine {
         inputDecisionHandler.movePiece(actionChoiceInt);
         inputDecisionHandler.updateDecisionContainer();
 
-        String stateKeyPrime = inputEnvironment.getEncodedGameState(pMgr);
+        String stateKeyPrime = Environment.getEncodedGameState(pMgr);
         inputAgent.updateRho(inputDecisionHandler.getDecisionReward());
 
         inputAgent.update(stateKeyPrime, actionChoiceInt);
@@ -102,9 +102,7 @@ public final class AIEngine {
         if (isStochastic) {
             zero.setEpsilon(1.0);
         }
-        AITools tools = new AITools(duskyAgent);
-        Environment env = new Environment(tools, pMgr);
-        agents.add(new AgentRecord(zero, env, new AIDecisionHandler(pMgr, tools, env)));
+        agents.add(new AgentRecord(zero, new AIDecisionHandler(pMgr, duskyAgent)));
     }
 
     private enum GameState {
