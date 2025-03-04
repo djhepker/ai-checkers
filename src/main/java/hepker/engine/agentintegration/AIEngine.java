@@ -1,7 +1,6 @@
 package hepker.engine.agentintegration;
 
 import hepker.ai.ai.Agent;
-import hepker.ai.utils.AITools;
 import hepker.ai.utils.AgentStats;
 import hepker.ai.utils.EpisodeStatistics;
 import hepker.game.gameworld.PieceManager;
@@ -49,10 +48,8 @@ public final class AIEngine {
 
     private void updateAgent(Agent inputAgent, AIDecisionHandler inputDecisionHandler) {
         String stateKey = Environment.getEncodedGameState(pMgr);
-
         inputAgent.setStateKey(stateKey);
         inputDecisionHandler.updateDecisionContainer();
-
         int numDecisions = inputDecisionHandler.getNumDecisions();
         if (numDecisions == 0) {
             pMgr.flagGameOver();
@@ -60,13 +57,16 @@ public final class AIEngine {
         }
 
         int actionChoiceInt = inputAgent.getActionInt(numDecisions);
-        inputAgent.updateCurrentQ(stateKey, actionChoiceInt);
+        inputAgent.loadCurrentQ(stateKey, actionChoiceInt);
         inputDecisionHandler.setPreDecisionRewardParameters(actionChoiceInt);
         inputDecisionHandler.movePiece(actionChoiceInt);
         inputDecisionHandler.updateDecisionContainer();
 
         String stateKeyPrime = Environment.getEncodedGameState(pMgr);
         inputAgent.updateRho(inputDecisionHandler.getDecisionReward());
+
+        pMgr.reverseBoard();
+        pMgr.updateAllPieces();
 
         inputAgent.update(stateKeyPrime, actionChoiceInt);
     }

@@ -31,6 +31,9 @@ public final class PieceManager {
         this.gameOver = false;
     }
 
+    /**
+     * Loads all legal moves for each piece in play
+     */
     public void updateAllPieces() {
         for (GameBoardPiece piece : piecesContainer) {
             if (piece != null) {
@@ -129,16 +132,15 @@ public final class PieceManager {
     /**
      * Reverses all pieces in the game board, as if the board were rotated pi
      */
-    private GameBoardPiece[] getInverseBoard(GameBoardPiece[] inputPieces) {
-        GameBoardPiece[] inverseBuilder = new GameBoardPiece[inputPieces.length];
-        int left = 0;
-        int right = inverseBuilder.length - 1;
-        while (left <= right) {
-            inverseBuilder[left] = inputPieces[right];
-            inverseBuilder[right--] = inputPieces[left++];
+    public void reverseBoard() {
+        for (int left = 0, right = piecesContainer.length - 1; left < right; left++, right--) {
+            GameBoardPiece tmp = piecesContainer[left];
+            piecesContainer[left] = piecesContainer[right];
+            piecesContainer[right] = tmp;
         }
-        return inverseBuilder;
     }
+
+
 
     private void processCapturedPieces(ActionNode actionNode) {
         CapturedNode capturedPiece = actionNode.getCapturedNodes();

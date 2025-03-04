@@ -54,7 +54,7 @@ public final class Agent implements AI {
         }
     }
 
-    public void updateCurrentQ(String inputStateKey, int actionChoiceInt) {
+    public void loadCurrentQ(String inputStateKey, int actionChoiceInt) {
         this.currentQ = getQValue(inputStateKey, actionChoiceInt);
     }
 

@@ -17,7 +17,7 @@ public final class GameEngine {
     private InputHandler inputHandler;
     private AIEngine agentMgr;
 
-    private final boolean lightChoice;
+    private final boolean chooseLight;
     private final boolean hasPlayer;
     private final boolean isTraining;
 
@@ -34,19 +34,22 @@ public final class GameEngine {
             renderUI();
         }
         if (this.isTraining) {
-            this.lightChoice = true;
+            this.chooseLight = true;
             this.hasPlayer = false;
-            this.agentMgr = new AIEngine(pMgr, lightChoice, "Agent Vs Stochastic");
+            this.agentMgr = new AIEngine(pMgr, chooseLight, "Agent Vs Stochastic");
         } else {
             String gameMode = graphicsHandler.showGameModeDialog();
             this.hasPlayer = gameMode.endsWith("Player");
             if (hasPlayer) {
-                this.lightChoice = this.graphicsHandler.showPopUpColorDialog();
+                this.chooseLight = this.graphicsHandler.showPopUpColorDialog();
             } else {
-                this.lightChoice = true;
+                this.chooseLight = true;
             }
-            this.playerTurn = lightChoice;
-            this.agentMgr = new AIEngine(pMgr, lightChoice, gameMode);
+            this.playerTurn = chooseLight;
+            this.agentMgr = new AIEngine(pMgr, chooseLight, gameMode);
+        }
+        if (!chooseLight) {
+            pMgr.reverseBoard();
         }
         this.gameOver = false;
         this.numTurnsWithoutCapture = 0;
@@ -59,7 +62,12 @@ public final class GameEngine {
             if (hasPlayer) {
                 inputHandler.update();
                 if (playerTurn) {
-                    handleInput();
+                    if (inputHandler.movementChosen()) {
+                        if (handleInput()) {
+                            pMgr.reverseBoard();
+                            pMgr.updateAllPieces();
+                        }
+                    }
                 } else {
                     agentMgr.update();
                     playerTurn = !playerTurn;
@@ -93,14 +101,14 @@ public final class GameEngine {
         if (!isTraining) {
             if (!graphicsHandler.windowOpen() || gameOver) {
                 this.gameOver = true;
-                if (lightChoice) {
+                if (chooseLight) {
                     agentMgr.finishGame(pMgr.getNumLight() == 0);
                 } else {
                     agentMgr.finishGame(pMgr.getNumDusky() == 0);
                 }
             }
         } else if (gameOver) {
-            if (lightChoice) {
+            if (chooseLight) {
                 agentMgr.finishGame(pMgr.getNumLight() == 0);
             } else {
                 agentMgr.finishGame(pMgr.getNumDusky() == 0);
@@ -120,20 +128,18 @@ public final class GameEngine {
         return gameOver;
     }
 
-    private void handleInput() {
-        if (inputHandler.movementChosen()) {
-            int firstXPos = inputHandler.getFirstXPos();
-            int firstYPos = inputHandler.getFirstYPos();
-            GameBoardPiece piece = pMgr.getPiece(firstXPos, firstYPos);
-            if (piece != null && lightChoice == piece.isLight() && pMgr.movePiece(piece)) {
-                if (piece.isReadyForPromotion()) {
-                    pMgr.promotePiece(piece);
-                }
-                pMgr.updateAllPieces();
-                playerTurn = !playerTurn;
+    private boolean handleInput() {
+        int firstXPos = inputHandler.getFirstXPos();
+        int firstYPos = inputHandler.getFirstYPos();
+        GameBoardPiece piece = pMgr.getPiece(firstXPos, firstYPos);
+        if (piece != null && chooseLight == piece.isLight() && pMgr.movePiece(piece)) {
+            if (piece.isReadyForPromotion()) {
+                pMgr.promotePiece(piece);
             }
-            inputHandler.resetClicks();
+            playerTurn = !playerTurn;
         }
+        inputHandler.resetClicks();
+        return !playerTurn;
     }
 
     private void loadGameWorld() {
