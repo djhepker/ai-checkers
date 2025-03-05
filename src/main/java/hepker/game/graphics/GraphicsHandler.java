@@ -21,8 +21,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class GraphicsHandler extends JPanel {
     private static final BasicStroke HIGHLIGHT_STROKE = new BasicStroke(3);
@@ -43,7 +43,7 @@ public final class GraphicsHandler extends JPanel {
         this.inputHandler = inputInputHandler;
         this.cachedTiles = inputTileImgs;
 
-        this.pieceCache = new ArrayList<>();
+        this.pieceCache = new CopyOnWriteArrayList<>();
 
         this.pieces = inputPMgr.getPiecesContainer();
         this.entityWidth = 0;

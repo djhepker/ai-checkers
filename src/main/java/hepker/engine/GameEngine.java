@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.SwingUtilities;
+import java.util.ConcurrentModificationException;
 
 public final class GameEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
@@ -67,32 +68,14 @@ public final class GameEngine {
                 inputHandler.update();
                 if (playerTurn) {
                     if (inputHandler.movementChosen()) {
-                        if (handleInput()) {
-                            graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
-                            pMgr.reverseBoard();
-                            pMgr.updateAllPieces();
-                        }
+                        handleInput();
                     }
                 } else {
-                    agentMgr.update();
-                    pMgr.reverseBoard();
-                    pMgr.updateAllPieces();
+                    agentTurn();
                     playerTurn = !playerTurn;
-                    graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
                 }
             } else {
-                int numPiecesNaught = pMgr.getNumPiecesInPlay();
-                graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
-                agentMgr.update();
-                pMgr.reverseBoard();
-                pMgr.updateAllPieces();
-                agentMgr.flipAgentSwitch();
-                graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
-                if (numPiecesNaught == pMgr.getNumPiecesInPlay()) {
-                    ++numTurnsWithoutCapture;
-                } else {
-                    numTurnsWithoutCapture = 0;
-                }
+                trainAgent();
             }
             if (pMgr.sideDefeated()) {
                 this.gameOver = true;
@@ -102,6 +85,8 @@ public final class GameEngine {
             }
         } catch (AssertionError e) {
             LOGGER.error("Invalid mouse selection in InputHandler", e);
+        } catch (ConcurrentModificationException e) {
+            LOGGER.error("ConcurrentModificationError occurred during updateGame()", e);
         } catch (Exception e) {
             LOGGER.error("Unexpected error in updateGame()", e);
         }
@@ -141,7 +126,7 @@ public final class GameEngine {
         return gameOver;
     }
 
-    private boolean handleInput() {
+    private void handleInput() {
         int firstXPos = inputHandler.getFirstXPos();
         int firstYPos = inputHandler.getFirstYPos();
         GameBoardPiece piece = pMgr.getPiece(firstXPos, firstYPos);
@@ -149,10 +134,38 @@ public final class GameEngine {
             if (piece.isReadyForPromotion()) {
                 pMgr.promotePiece(piece);
             }
+            graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
+            updateBoard();
             playerTurn = !playerTurn;
+        } else {
+            inputHandler.resetClicks();
         }
-        inputHandler.resetClicks();
-        return !playerTurn;
+    }
+
+    private void agentTurn() {
+        agentMgr.update();
+        updateBoard();
+        graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
+    }
+
+    private void trainAgent() {
+        int numPiecesNaught = pMgr.getNumPiecesInPlay();
+//        graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
+//        agentMgr.update();
+//        updateBoard();
+//        graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
+        agentTurn();
+        agentMgr.flipAgentSwitch();
+        if (numPiecesNaught == pMgr.getNumPiecesInPlay()) {
+            ++numTurnsWithoutCapture;
+        } else {
+            numTurnsWithoutCapture = 0;
+        }
+    }
+
+    private void updateBoard() {
+        pMgr.reverseBoard();
+        pMgr.updateAllPieces();
     }
 
     private void loadGameWorld() {
