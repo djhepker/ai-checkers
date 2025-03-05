@@ -153,7 +153,7 @@ public final class PieceManager {
         }
     }
 
-    public GameBoardPiece[] clonePieces() {
+    public GameBoardPiece[] clonePieces() { // TODO testing
         GameBoardPiece[] cloneBuilder = new GameBoardPiece[piecesContainer.length];
         for (int i = 0; i < piecesContainer.length; i++) {
             if (piecesContainer[i] != null) {

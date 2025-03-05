@@ -20,14 +20,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class GraphicsHandler extends JPanel {
     private final InputHandler inputHandler;
-    private final GameBoardPiece[] pieces;
-    private Image[] cachedPieces;
+    private final GameBoardPiece[] pieces;  // TODO testing
     private final Image[] cachedTiles;
-
-    private GameBoardPiece[] displayPieces;
+    private final List<PieceCacheService> pieceCache; // TODO testing
 
     private int entityWidth;
     private int entityHeight;
@@ -40,7 +41,9 @@ public final class GraphicsHandler extends JPanel {
     public GraphicsHandler(Image[] inputTileImgs, PieceManager inputPMgr, InputHandler inputInputHandler) {
         this.inputHandler = inputInputHandler;
         this.cachedTiles = inputTileImgs;
-        this.displayPieces = inputPMgr.getDisplayPieces();
+
+        this.pieceCache = new ArrayList();
+
         this.pieces = inputPMgr.getPiecesContainer();
         this.entityWidth = 0;
         this.entityHeight = 0;
@@ -105,15 +108,6 @@ public final class GraphicsHandler extends JPanel {
         return false;
     }
 
-    public void cacheCheckerBoard(PieceManager inputPMgr) {
-        for (int i = 0; i < pieces.length; ++i) {
-            if (pieces[i] != null) {
-                cachedPieces[i] = pieces[i].getSprite();
-            }
-        }
-        //this.displayPieces = inputPMgr.clonePieces();
-    }
-
     public String showGameModeDialog() {
         String[] playerOptions = {"Agent Vs Stochastic", "Agent Vs Player", "Stochastic Vs Player"};
         String selectedGameMode = (String) JOptionPane.showInputDialog(
@@ -127,6 +121,18 @@ public final class GraphicsHandler extends JPanel {
             System.exit(0);
         }
         return selectedGameMode;
+    }
+
+    public void cacheBoard(GameBoardPiece[] inputPieces) {
+        pieceCache.clear();
+        for (GameBoardPiece piece : inputPieces) {
+            if (piece != null) {
+                pieceCache.add(new PieceCacheService(
+                        piece.getSprite(),
+                        entityWidth * piece.getX(),
+                        entityHeight * piece.getY()));
+            }
+        }
     }
 
     private void drawHighlightRectangles(Graphics2D g2d) {
@@ -168,15 +174,12 @@ public final class GraphicsHandler extends JPanel {
     }
 
     private void drawPieces(Graphics2D g2d) {
-        for (int j = 0; j < 8; j++) {
-            for (int i = 0; i < 8; i++) {
-                GameBoardPiece piece = displayPieces[8 * j + i];
-                if (piece != null) {
-                    int xPos = piece.getX() * entityWidth;
-                    int yPos = piece.getY() * entityHeight;
-                    g2d.drawImage(piece.getSprite(), xPos, yPos, entityWidth, entityHeight, null);
-                }
-            }
+        for (PieceCacheService cache : pieceCache) {
+            g2d.drawImage(cache.img(), cache.xPos, cache.yPos, entityWidth, entityHeight, null);
         }
+    }
+
+    private record PieceCacheService(BufferedImage img, int xPos, int yPos) {
+
     }
 }

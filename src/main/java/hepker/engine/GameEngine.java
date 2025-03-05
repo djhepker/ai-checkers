@@ -32,6 +32,7 @@ public final class GameEngine {
         loadGameWorld();
         if (!this.isTraining) {
             renderUI();
+            graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
         }
         if (this.isTraining) {
             this.chooseLight = true;
@@ -64,14 +65,14 @@ public final class GameEngine {
                 if (playerTurn) {
                     if (inputHandler.movementChosen()) {
                         if (handleInput()) {
-                            graphicsHandler.cacheCheckerBoard(pMgr);
+                            graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
                             pMgr.reverseBoard();
                             pMgr.updateAllPieces();
                         }
                     }
                 } else {
                     agentMgr.update();
-                    graphicsHandler.cacheCheckerBoard(pMgr);
+                    graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
                     playerTurn = !playerTurn;
                 }
             } else {
