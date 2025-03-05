@@ -3,7 +3,11 @@ package hepker.ai.table;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -73,12 +77,10 @@ class QValueRepository {
             for (Map.Entry<String, double[]> entry : qTable.entrySet()) {
                 String key = entry.getKey();
                 double[] qValues = entry.getValue();
-
                 for (int i = 0; i < qValues.length; i++) {
                     if (Double.isNaN(qValues[i])) {
                         continue;
                     }
-
                     ppdStmt.setString(1, key);
                     ppdStmt.setInt(2, i);
                     ppdStmt.setDouble(3, qValues[i]);
@@ -90,7 +92,6 @@ class QValueRepository {
                     }
                 }
             }
-
             if (batchCount > 0) {
                 ppdStmt.executeBatch();
             }

@@ -2,7 +2,7 @@ package hepker.engine;
 
 import hepker.game.entity.piece.Checker;
 import hepker.game.entity.piece.KingChecker;
-import hepker.game.utils.AssetManager;
+import hepker.utils.AssetManager;
 import hepker.game.entity.GameBoardPiece;
 
 import java.awt.Image;

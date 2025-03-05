@@ -5,6 +5,7 @@ import hepker.ai.utils.AITools;
 import hepker.game.entity.GameBoardPiece;
 import hepker.game.entity.movement.ActionNode;
 import hepker.game.gameworld.PieceManager;
+import lombok.Getter;
 
 import static hepker.game.entity.GameBoardPiece.PieceColor.DUSKY;
 
@@ -20,6 +21,7 @@ public final class AIDecisionHandler implements DecisionHandler {
     private int numEnemiesNaught;
     private int reasonableTurnCount;
 
+    @Getter
     private final GameBoardPiece.PieceColor pieceColor;
 
     private double decayingScalar;
@@ -41,12 +43,12 @@ public final class AIDecisionHandler implements DecisionHandler {
         return decisionArray.length;
     }
 
-    public void movePiece(int moveChoice) {
+    public void movePiece(int moveChoice) throws ArrayIndexOutOfBoundsException {
         pMgr.machineMovePiece(decisionArray[moveChoice]);
         pMgr.updateAllPieces();
     }
 
-    public void setPreDecisionRewardParameters(int moveChoice) {
+    public void setPreDecisionRewardParameters(int moveChoice) throws ArrayIndexOutOfBoundsException {
         setPreDecisionRewardParameters(decisionArray[moveChoice]);
     }
 
@@ -73,4 +75,12 @@ public final class AIDecisionHandler implements DecisionHandler {
         this.numEnemyOptionsNaught = AITools.getNumOpponentOptions(pMgr, pieceColor);
         pointsFromDecision = actionChosen.getReward();
     }
+
+//    public String getDecisionArrayDataString() {
+//        StringBuilder decisionBuilder = new StringBuilder();
+//        for (ActionNode node : decisionArray) {
+//            decisionBuilder.append(node.toString());
+//        }
+//        return decisionBuilder.toString();
+//    }
 }

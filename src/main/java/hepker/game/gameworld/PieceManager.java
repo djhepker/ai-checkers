@@ -133,23 +133,18 @@ public final class PieceManager {
      * Reverses all pieces in the game board, as if the board were rotated pi
      */
     public void reverseBoard() {
-        for (int left = 0, right = piecesContainer.length - 1; left < right; left++, right--) {
-            GameBoardPiece tmpL = piecesContainer[left];
-            if (tmpL != null) {
-                int xCoordinate = 7 - tmpL.getX();
-                int yCoordinate = 7 - tmpL.getY();
-                tmpL.setX(xCoordinate);
-                tmpL.setY(yCoordinate);
+        int n = piecesContainer.length;
+        for (int i = 0; i < n; i++) {
+            GameBoardPiece piece = piecesContainer[i];
+            if (piece != null) {
+                piece.setX(7 - piece.getX());
+                piece.setY(7 - piece.getY());
             }
-            GameBoardPiece tmpR = piecesContainer[right];
-            if (tmpR != null) {
-                int xCoordinate2 = 7 - tmpR.getX();
-                int yCoordinate2 = 7 - tmpR.getY();
-                tmpR.setX(xCoordinate2);
-                tmpR.setY(yCoordinate2);
-            }
-            piecesContainer[left] = tmpR;
-            piecesContainer[right] = tmpL;
+        }
+        for (int left = 0, right = n - 1; left < right; left++, right--) {
+            GameBoardPiece temp = piecesContainer[left];
+            piecesContainer[left] = piecesContainer[right];
+            piecesContainer[right] = temp;
         }
     }
 

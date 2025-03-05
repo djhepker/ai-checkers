@@ -24,8 +24,11 @@ public final class AIEngine {
     private int agentTurnSwitch;
     private int numTurns;
 
+    private String stateKey;
+
     public AIEngine(PieceManager inputPMgr, boolean playerChooseLight, String gameTypeString) {
         this.agentTurnSwitch = 0;
+        this.stateKey = "";
         this.isDusky = playerChooseLight;
         this.pMgr = inputPMgr;
         this.agents = new ArrayList<>();
@@ -43,7 +46,7 @@ public final class AIEngine {
     }
 
     private void updateAgent(Agent inputAgent, AIDecisionHandler inputDecisionHandler) {
-        String stateKey = Environment.getEncodedGameState(pMgr);
+        stateKey = Environment.getEncodedGameState(pMgr);
         inputAgent.setStateKey(stateKey);
         inputDecisionHandler.updateDecisionContainer();
         int numDecisions = inputDecisionHandler.getNumDecisions();
@@ -52,7 +55,7 @@ public final class AIEngine {
             return;
         }
 
-        int actionChoiceInt = inputAgent.getActionInt(numDecisions);
+        int actionChoiceInt = inputAgent.getActionInt(numDecisions); // exploit is not correct
         inputAgent.loadCurrentQ(stateKey, actionChoiceInt);
         inputDecisionHandler.setPreDecisionRewardParameters(actionChoiceInt);
         inputDecisionHandler.movePiece(actionChoiceInt);
@@ -83,9 +86,7 @@ public final class AIEngine {
     public void finishGame(boolean gameWon) {
         new AgentStats("src/main/resources/data/agentstats").processEpisode(gameWon);
         new EpisodeStatistics("src/main/resources/data/episode").processEpisode(numTurns);
-        for (AgentRecord agentRecord : agents) {
-            agentRecord.agent().finalizeQTableUpdate();
-        }
+        Agent.finalizeQTableUpdate();
     }
 
     public void flipAgentSwitch() {

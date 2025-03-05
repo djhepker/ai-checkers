@@ -1,17 +1,17 @@
 package hepker.ai.utils;
 
-import hepker.game.utils.FileLoader;
+import hepker.utils.FileLoader;
 
 import java.io.IOException;
 
 public final class EpisodeStatistics {
-
     private static final String EPISODE_COUNT_KEY = "episode_count=";
     private static final String AVERAGE_TURN_COUNT_KEY = "average_num_turns=";
+
     private final FileLoader fileMgr;
+    private final double averageTurnCount;
 
     private int episodeCount;
-    private final double averageTurnCount;
 
     public EpisodeStatistics(String filePath) {
         this.fileMgr = new FileLoader(filePath);

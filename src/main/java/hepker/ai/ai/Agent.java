@@ -81,7 +81,7 @@ public final class Agent implements AI {
         this.maxQPrime = Q_TABLE_MGR.getMaxQValue(stateKeyPrimeString);
     }
 
-    public void finalizeQTableUpdate() {
+    public static void finalizeQTableUpdate() {
         Q_TABLE_MGR.updateData();
     }
 

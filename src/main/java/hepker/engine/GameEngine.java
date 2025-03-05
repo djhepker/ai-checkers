@@ -121,7 +121,7 @@ public final class GameEngine {
     private void trainAgent() {
         int numPiecesNaught = pMgr.getNumPiecesInPlay();
         agentMgr.update();
-        if (agentMgr.agentOneTurn()) {
+        if (agentMgr.agentOneTurn() && !isTraining) {
             graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
         }
         prepBoardForOtherPlayer();

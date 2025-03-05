@@ -60,4 +60,13 @@ public final class ActionNode {
         this.reward += capturedNode.getPointValue();
         this.capturedEnemies = capturedNode;
     }
+
+    public String toString() {
+        return new StringBuilder().append("ActionNode: [ ")
+                .append("Start: (").append(getoDataX()).append(", ").append(getoDataY()).append("), ")
+                .append("End: (").append(getfDataX()).append(", ").append(getfDataY()).append("), ")
+                .append("Reward: ").append(reward)
+                .append(" ]\n")
+                .toString();
+    }
 }

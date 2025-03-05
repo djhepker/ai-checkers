@@ -1,4 +1,4 @@
-package hepker.game.utils;
+package hepker.utils;
 
 import java.io.IOException;
 import java.util.HashMap;
