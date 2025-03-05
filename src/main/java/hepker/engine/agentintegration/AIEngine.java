@@ -94,6 +94,10 @@ public final class AIEngine {
         agentTurnSwitch ^= 1;
     }
 
+    public boolean agentOneTurn() {
+        return agentTurnSwitch == 0;
+    }
+
     private void generateAgent(boolean isStochastic, boolean duskyAgent) {
         Agent zero = new Agent();
         if (isStochastic) {

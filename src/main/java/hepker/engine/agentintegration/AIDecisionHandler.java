@@ -59,8 +59,8 @@ public final class AIDecisionHandler implements DecisionHandler {
         int pointsEarned = pointsFromDecision - AITools.getMaximumOpponentReward(pMgr, pieceColor);
         double summation = ratioOptions + ratioPieces + pointsEarned;
         if (reasonableTurnCount < 0) {
-            decayingScalar -= 0.09;
-            return decayingScalar * Math.abs(summation);
+            decayingScalar -= 0.1;
+            return summation > 0 ? decayingScalar * summation : -Math.abs(summation * decayingScalar);
         } else {
             --reasonableTurnCount;
             return summation;
