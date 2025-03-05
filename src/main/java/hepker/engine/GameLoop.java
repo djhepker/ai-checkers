@@ -1,12 +1,11 @@
 package hepker.engine;
 
 public final class GameLoop implements Runnable {
-
-    // 10^9 / FRAME_TIME = Frames Per Second
-    private static final long FRAME_TIME = 8_333_333;
+    private static final long FRAME_TIME = 8_333_333; // 10^9 / FRAME_TIME = Frames Per Second
     private static final long FRAME_DELAY_CONSTANT = 1_000_000;
 
     private final GameEngine game;
+
     private Thread thread;
 
     public GameLoop(GameEngine inputEngine) {

@@ -10,12 +10,12 @@ import lombok.Getter;
 import java.util.Arrays;
 
 public final class PieceManager {
+    private final EntityCreator creator;
+    private final InputHandler input;
     @Getter
     private GameBoardPiece[] piecesContainer;
     @Getter
     private GameBoardPiece[] displayPieces;
-    private final EntityCreator creator;
-    private final InputHandler input;
     @Getter
     private int numDusky;
     @Getter

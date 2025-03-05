@@ -76,9 +76,7 @@ public final class AIEngine {
                 generateAgent(false, false);
                 generateAgent(false, true);
             }
-            default -> {
-                throw new IllegalArgumentException("Invalid gameTypeString: " + gameTypeString);
-            }
+            default -> throw new IllegalArgumentException("Invalid gameTypeString: " + gameTypeString);
         }
     }
 
@@ -98,6 +96,11 @@ public final class AIEngine {
         return agentTurnSwitch == 0;
     }
 
+    /**
+     * Generates a new agent. If stochastic, Epsilon will be set to 1.0 (full random decisions)
+     * @param isStochastic true if fully agent is stochastic, no use of learned information
+     * @param duskyAgent True if this agent uses dark pieces
+     */
     private void generateAgent(boolean isStochastic, boolean duskyAgent) {
         Agent zero = new Agent();
         if (isStochastic) {
