@@ -12,7 +12,7 @@ import static hepker.game.entity.GameBoardPiece.PieceColor.DUSKY;
  * AI Utility for calculations
  * */
 public final class AIDecisionHandler implements DecisionHandler {
-    private PieceManager pMgr;
+    private final PieceManager pMgr;
 
     private int numOptionsNaught;
     private int numEnemyOptionsNaught;

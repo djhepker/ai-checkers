@@ -64,12 +64,14 @@ public final class GameEngine {
                 if (playerTurn) {
                     if (inputHandler.movementChosen()) {
                         if (handleInput()) {
+                            graphicsHandler.cacheCheckerBoard(pMgr);
                             pMgr.reverseBoard();
                             pMgr.updateAllPieces();
                         }
                     }
                 } else {
                     agentMgr.update();
+                    graphicsHandler.cacheCheckerBoard(pMgr);
                     playerTurn = !playerTurn;
                 }
             } else {
@@ -120,7 +122,7 @@ public final class GameEngine {
                     .append(totalTurnCount)
                     .append(" Turns without capture: ")
                     .append(numTurnsWithoutCapture);
-            if (numTurnsWithoutCapture != 75) {
+            if (numTurnsWithoutCapture != 50) {
                 debugBuilder.append(" * Successful Game");
             }
             System.out.println(debugBuilder);

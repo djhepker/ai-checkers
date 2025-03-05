@@ -14,7 +14,6 @@ import java.util.List;
  * Class for connecting game to AI
  * */
 public final class AIEngine {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(AIEngine.class);
 
     private final boolean isDusky;

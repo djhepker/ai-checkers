@@ -134,12 +134,37 @@ public final class PieceManager {
      */
     public void reverseBoard() {
         for (int left = 0, right = piecesContainer.length - 1; left < right; left++, right--) {
-            GameBoardPiece tmp = piecesContainer[left];
-            piecesContainer[left] = piecesContainer[right];
-            piecesContainer[right] = tmp;
+            GameBoardPiece tmpL = piecesContainer[left];
+            if (tmpL != null) {
+                int xCoordinate = 7 - tmpL.getX();
+                int yCoordinate = 7 - tmpL.getY();
+                tmpL.setX(xCoordinate);
+                tmpL.setY(yCoordinate);
+            }
+            GameBoardPiece tmpR = piecesContainer[right];
+            if (tmpR != null) {
+                int xCoordinate2 = 7 - tmpR.getX();
+                int yCoordinate2 = 7 - tmpR.getY();
+                tmpR.setX(xCoordinate2);
+                tmpR.setY(yCoordinate2);
+            }
+            piecesContainer[left] = tmpR;
+            piecesContainer[right] = tmpL;
         }
     }
 
+    public GameBoardPiece[] clonePieces() {
+        GameBoardPiece[] cloneBuilder = new GameBoardPiece[piecesContainer.length];
+        for (int i = 0; i < piecesContainer.length; i++) {
+            if (piecesContainer[i] != null) {
+                cloneBuilder[i] = creator.createPiece(
+                        piecesContainer[i].getName(),
+                        piecesContainer[i].getX(),
+                        piecesContainer[i].getY());
+            }
+        }
+        return cloneBuilder;
+    }
 
 
     private void processCapturedPieces(ActionNode actionNode) {

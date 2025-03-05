@@ -23,9 +23,11 @@ import java.awt.event.WindowEvent;
 
 public final class GraphicsHandler extends JPanel {
     private final InputHandler inputHandler;
-
+    private final GameBoardPiece[] pieces;
+    private Image[] cachedPieces;
     private final Image[] cachedTiles;
-    private final GameBoardPiece[] displayPieces;
+
+    private GameBoardPiece[] displayPieces;
 
     private int entityWidth;
     private int entityHeight;
@@ -39,6 +41,7 @@ public final class GraphicsHandler extends JPanel {
         this.inputHandler = inputInputHandler;
         this.cachedTiles = inputTileImgs;
         this.displayPieces = inputPMgr.getDisplayPieces();
+        this.pieces = inputPMgr.getPiecesContainer();
         this.entityWidth = 0;
         this.entityHeight = 0;
         this.highlightRectangleX = 0;
@@ -102,6 +105,15 @@ public final class GraphicsHandler extends JPanel {
         return false;
     }
 
+    public void cacheCheckerBoard(PieceManager inputPMgr) {
+        for (int i = 0; i < pieces.length; ++i) {
+            if (pieces[i] != null) {
+                cachedPieces[i] = pieces[i].getSprite();
+            }
+        }
+        //this.displayPieces = inputPMgr.clonePieces();
+    }
+
     public String showGameModeDialog() {
         String[] playerOptions = {"Agent Vs Stochastic", "Agent Vs Player", "Stochastic Vs Player"};
         String selectedGameMode = (String) JOptionPane.showInputDialog(
@@ -124,7 +136,7 @@ public final class GraphicsHandler extends JPanel {
         int yCoordinate = inputHandler.getSelectedRow();
         highlightRectangleX = getWidth() / 8 * xCoordinate;
         highlightRectangleY = getHeight() / 8 * yCoordinate;
-        GameBoardPiece piece = displayPieces[yCoordinate * 8 + xCoordinate];
+        GameBoardPiece piece = pieces[yCoordinate * 8 + xCoordinate];
         if (piece != null) {
             g2d.drawRect(highlightRectangleX, highlightRectangleY, getWidth() / 8, getHeight() / 8);
             ActionNode cursor = piece.getMoveListPointer();
