@@ -8,20 +8,21 @@ import hepker.game.entity.GameBoardPiece;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 public final class GameEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
+
+    private final AIEngine agentMgr;
+
+    private final boolean chooseLight;
+    private final boolean hasPlayer;
+    private final boolean isTraining;
 
     private EntityCreator creator;
     private PieceManager pMgr;
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
-    private AIEngine agentMgr;
-
-    private final boolean chooseLight;
-    private final boolean hasPlayer;
-    private final boolean isTraining;
 
     private boolean playerTurn;
     private boolean gameOver;
@@ -81,10 +82,10 @@ public final class GameEngine {
                 }
             } else {
                 int numPiecesNaught = pMgr.getNumPiecesInPlay();
-                agentMgr.update();
                 graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
-                pMgr.reverseBoard();
-                pMgr.updateAllPieces();
+                agentMgr.update();
+                agentMgr.flipAgentSwitch();
+                graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
                 if (numPiecesNaught == pMgr.getNumPiecesInPlay()) {
                     ++numTurnsWithoutCapture;
                 } else {
@@ -124,7 +125,7 @@ public final class GameEngine {
                 agentMgr.finishGame(pMgr.getNumDusky() == 0);
             }
         }
-        if (false) {
+        if (gameOver) {
             StringBuilder debugBuilder = new StringBuilder()
                     .append("Total number of turns: ")
                     .append(totalTurnCount)
@@ -133,7 +134,7 @@ public final class GameEngine {
             if (numTurnsWithoutCapture != 50) {
                 debugBuilder.append(" * Successful Game");
             }
-            System.out.println(debugBuilder);
+            LOGGER.info(debugBuilder.toString());
         }
         return gameOver;
     }

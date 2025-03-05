@@ -21,9 +21,11 @@ public final class AIEngine {
     private final List<AgentRecord> agents;
     private final PieceManager pMgr;
 
+    private int agentTurnSwitch;
     private int numTurns;
 
     public AIEngine(PieceManager inputPMgr, boolean playerLight, String gameTypeString) {
+        this.agentTurnSwitch = 0;
         this.isDusky = playerLight;
         this.pMgr = inputPMgr;
         this.agents = new ArrayList<>();
@@ -34,9 +36,7 @@ public final class AIEngine {
     public void update() {
         ++numTurns;
         try {
-            for (AgentRecord agentRecord : agents) {
-                updateAgent(agentRecord.agent(), agentRecord.decisionHandler());
-            }
+            updateAgent(agents.get(agentTurnSwitch).agent(), agents.get(agentTurnSwitch).decisionHandler());
         } catch (Exception e) {
             LOGGER.error("Agent Manager Exception", e);
         }
@@ -56,8 +56,8 @@ public final class AIEngine {
         inputAgent.loadCurrentQ(stateKey, actionChoiceInt);
         inputDecisionHandler.setPreDecisionRewardParameters(actionChoiceInt);
         inputDecisionHandler.movePiece(actionChoiceInt);
-        inputDecisionHandler.updateDecisionContainer();
 
+        inputDecisionHandler.updateDecisionContainer();
         String stateKeyPrime = Environment.getEncodedGameState(pMgr);
         inputAgent.updateRho(inputDecisionHandler.getDecisionReward());
 
@@ -88,6 +88,10 @@ public final class AIEngine {
         for (AgentRecord agentRecord : agents) {
             agentRecord.agent().finalizeQTableUpdate();
         }
+    }
+
+    public void flipAgentSwitch() {
+        agentTurnSwitch ^= 1;
     }
 
     private void generateAgent(boolean isStochastic, boolean duskyAgent) {
