@@ -25,31 +25,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class GraphicsHandler extends JPanel {
+    private static final BasicStroke HIGHLIGHT_STROKE = new BasicStroke(3);
+    
     private final InputHandler inputHandler;
-    private final GameBoardPiece[] pieces;  // TODO testing
+    private final GameBoardPiece[] pieces;
     private final Image[] cachedTiles;
-    private final List<PieceCacheService> pieceCache; // TODO testing
+    private final List<PieceCacheService> pieceCache;
 
     private int entityWidth;
     private int entityHeight;
     private int highlightRectangleX;
     private int highlightRectangleY;
 
-    private boolean lightChosen;
     private final JFrame frame;
 
     public GraphicsHandler(Image[] inputTileImgs, PieceManager inputPMgr, InputHandler inputInputHandler) {
         this.inputHandler = inputInputHandler;
         this.cachedTiles = inputTileImgs;
 
-        this.pieceCache = new ArrayList();
+        this.pieceCache = new ArrayList<>();
 
         this.pieces = inputPMgr.getPiecesContainer();
         this.entityWidth = 0;
         this.entityHeight = 0;
         this.highlightRectangleX = 0;
         this.highlightRectangleY = 0;
-        this.lightChosen = false;
         Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 8);
         setBorder(blackLine);
         addComponentListener(new ComponentAdapter() {
@@ -100,8 +100,7 @@ public final class GraphicsHandler extends JPanel {
             String selectedColor = (String) JOptionPane.showInputDialog(
                     this, "Choose your battle color", "Checkers", JOptionPane.QUESTION_MESSAGE,
                     null, colors, colors[0]);
-            lightChosen = selectedColor.equals("White");
-            return lightChosen;
+            return selectedColor.equals("White");
         } catch (Exception e) {
             frame.dispose();
         }
@@ -137,7 +136,7 @@ public final class GraphicsHandler extends JPanel {
 
     private void drawHighlightRectangles(Graphics2D g2d) {
         g2d.setColor(Color.BLUE);
-        g2d.setStroke(new BasicStroke(3));
+        g2d.setStroke(HIGHLIGHT_STROKE);
         int xCoordinate = inputHandler.getSelectedCol();
         int yCoordinate = inputHandler.getSelectedRow();
         highlightRectangleX = getWidth() / 8 * xCoordinate;

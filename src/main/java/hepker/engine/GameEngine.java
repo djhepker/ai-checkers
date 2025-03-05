@@ -8,6 +8,8 @@ import hepker.game.entity.GameBoardPiece;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
+
 public final class GameEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
 
@@ -72,12 +74,17 @@ public final class GameEngine {
                     }
                 } else {
                     agentMgr.update();
-                    graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
+                    pMgr.reverseBoard();
+                    pMgr.updateAllPieces();
                     playerTurn = !playerTurn;
+                    graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
                 }
             } else {
                 int numPiecesNaught = pMgr.getNumPiecesInPlay();
                 agentMgr.update();
+                graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
+                pMgr.reverseBoard();
+                pMgr.updateAllPieces();
                 if (numPiecesNaught == pMgr.getNumPiecesInPlay()) {
                     ++numTurnsWithoutCapture;
                 } else {
@@ -88,7 +95,7 @@ public final class GameEngine {
                 this.gameOver = true;
             }
             if (!isTraining) {
-                graphicsHandler.repaint();
+                SwingUtilities.invokeLater(() -> graphicsHandler.repaint());
             }
         } catch (AssertionError e) {
             LOGGER.error("Invalid mouse selection in InputHandler", e);

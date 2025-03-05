@@ -18,12 +18,10 @@ public final class AIEngine {
 
     private final boolean isDusky;
 
-    private List<AgentRecord> agents;
-    private PieceManager pMgr;
+    private final List<AgentRecord> agents;
+    private final PieceManager pMgr;
 
     private int numTurns;
-
-    private boolean pieceCaptured;
 
     public AIEngine(PieceManager inputPMgr, boolean playerLight, String gameTypeString) {
         this.isDusky = playerLight;
@@ -31,7 +29,6 @@ public final class AIEngine {
         this.agents = new ArrayList<>();
         this.numTurns = 0;
         loadGameState(gameTypeString);
-        this.pieceCaptured = false;
     }
 
     public void update() {
@@ -63,9 +60,6 @@ public final class AIEngine {
 
         String stateKeyPrime = Environment.getEncodedGameState(pMgr);
         inputAgent.updateRho(inputDecisionHandler.getDecisionReward());
-
-        pMgr.reverseBoard();
-        pMgr.updateAllPieces();
 
         inputAgent.update(stateKeyPrime, actionChoiceInt);
     }
@@ -102,11 +96,5 @@ public final class AIEngine {
             zero.setEpsilon(1.0);
         }
         agents.add(new AgentRecord(zero, new AIDecisionHandler(pMgr, duskyAgent)));
-    }
-
-    private enum GameState {
-        AGENT_VS_PLAYER,
-        STOCHASTIC_VS_PLAYER,
-        AGENT_VS_STOCHASTIC,
     }
 }
