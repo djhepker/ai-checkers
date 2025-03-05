@@ -20,34 +20,36 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class GraphicsHandler extends JPanel {
-
+public final class GraphicsHandler extends JPanel {
+    private static final BasicStroke HIGHLIGHT_STROKE = new BasicStroke(3);
+    
     private final InputHandler inputHandler;
-    private final PieceManager pMgr;
-
+    private final GameBoardPiece[] pieces;
     private final Image[] cachedTiles;
+    private final List<PieceCacheService> pieceCache;
 
     private int entityWidth;
     private int entityHeight;
     private int highlightRectangleX;
     private int highlightRectangleY;
 
-    private boolean lightChosen;
     private final JFrame frame;
 
-    public GraphicsHandler(Image[] cachedTiles,
-                           PieceManager pMgr,
-                           InputHandler inputHandler) {
-        this.inputHandler = inputHandler;
-        this.cachedTiles = cachedTiles;
-        this.pMgr = pMgr;
+    public GraphicsHandler(Image[] inputTileImgs, PieceManager inputPMgr, InputHandler inputInputHandler) {
+        this.inputHandler = inputInputHandler;
+        this.cachedTiles = inputTileImgs;
+
+        this.pieceCache = new CopyOnWriteArrayList<>();
+
+        this.pieces = inputPMgr.getPiecesContainer();
         this.entityWidth = 0;
         this.entityHeight = 0;
         this.highlightRectangleX = 0;
         this.highlightRectangleY = 0;
-        this.lightChosen = false;
-
         Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 8);
         setBorder(blackLine);
         addComponentListener(new ComponentAdapter() {
@@ -60,17 +62,15 @@ public class GraphicsHandler extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                inputHandler.handleMouseClick(e, getWidth(), getHeight());
+                inputInputHandler.handleMouseClick(e, getWidth(), getHeight());
             }
         });
-
         this.frame = new JFrame("Checkers dev");
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.add(this);
-        this.frame.setSize(800,800);
-        this.frame.setLocationRelativeTo(null); // centered
+        this.frame.setSize(800, 800);
+        this.frame.setLocationRelativeTo(null);
         this.frame.setVisible(true);
-
         this.frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -100,8 +100,7 @@ public class GraphicsHandler extends JPanel {
             String selectedColor = (String) JOptionPane.showInputDialog(
                     this, "Choose your battle color", "Checkers", JOptionPane.QUESTION_MESSAGE,
                     null, colors, colors[0]);
-            lightChosen = selectedColor.equals("White");
-            return lightChosen;
+            return selectedColor.equals("White");
         } catch (Exception e) {
             frame.dispose();
         }
@@ -123,14 +122,26 @@ public class GraphicsHandler extends JPanel {
         return selectedGameMode;
     }
 
+    public void cacheBoard(GameBoardPiece[] inputPieces) {
+        pieceCache.clear();
+        for (GameBoardPiece piece : inputPieces) {
+            if (piece != null) {
+                pieceCache.add(new PieceCacheService(
+                        piece.getSprite(),
+                        entityWidth * piece.getX(),
+                        entityHeight * piece.getY()));
+            }
+        }
+    }
+
     private void drawHighlightRectangles(Graphics2D g2d) {
         g2d.setColor(Color.BLUE);
-        g2d.setStroke(new BasicStroke(3));
+        g2d.setStroke(HIGHLIGHT_STROKE);
         int xCoordinate = inputHandler.getSelectedCol();
         int yCoordinate = inputHandler.getSelectedRow();
         highlightRectangleX = getWidth() / 8 * xCoordinate;
         highlightRectangleY = getHeight() / 8 * yCoordinate;
-        GameBoardPiece piece = pMgr.getPiece(xCoordinate, yCoordinate);
+        GameBoardPiece piece = pieces[yCoordinate * 8 + xCoordinate];
         if (piece != null) {
             g2d.drawRect(highlightRectangleX, highlightRectangleY, getWidth() / 8, getHeight() / 8);
             ActionNode cursor = piece.getMoveListPointer();
@@ -162,15 +173,12 @@ public class GraphicsHandler extends JPanel {
     }
 
     private void drawPieces(Graphics2D g2d) {
-        for (int j = 0; j < 8; j++) {
-            for (int i = 0; i < 8; i++) {
-                if (!pMgr.spaceIsNull(i, j)) {
-                    GameBoardPiece piece = pMgr.getPiece(i, j);
-                    int xPos = piece.getX() * entityWidth;
-                    int yPos = piece.getY() * entityHeight;
-                    g2d.drawImage(piece.getSprite(), xPos, yPos, entityWidth, entityHeight, null);
-                }
-            }
+        for (PieceCacheService cache : pieceCache) {
+            g2d.drawImage(cache.img(), cache.xPos, cache.yPos, entityWidth, entityHeight, null);
         }
+    }
+
+    private record PieceCacheService(BufferedImage img, int xPos, int yPos) {
+
     }
 }

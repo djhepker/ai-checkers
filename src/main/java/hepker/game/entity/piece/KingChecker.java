@@ -9,10 +9,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class KingChecker extends Checker {
-    private MovementManager moveMgr;
+public final class KingChecker extends Checker {
 
-    private int DEBUG_TIMER = 0;
+    private final MovementManager moveMgr;
 
     public KingChecker(String name, int x, int y, BufferedImage image) {
         super(name, x, y, image);
@@ -39,9 +38,6 @@ public class KingChecker extends Checker {
             int[] directionArr = getDirectionArr(stateCode);
             try {
                 for (int i = 0; i < directionArr.length; ++i) {
-                    if (++DEBUG_TIMER > 1000) {
-                        throw new IllegalStateException();
-                    }
                     int xNext = currState.getX() + directionArr[i++];
                     if (0 <= xNext && xNext < 8) {
                         int yNext = currState.getY() + directionArr[i];
@@ -80,7 +76,6 @@ public class KingChecker extends Checker {
                 taskQueue.clear();
             }
         }
-        DEBUG_TIMER = 0;
     }
 
     /*
@@ -114,10 +109,9 @@ public class KingChecker extends Checker {
             case -1 -> new int[]{1, 1};  // Southeast
             case 1 -> new int[]{-1, -1}; // Northwest
             case 2 -> new int[]{-1, 1};  // Southwest
-            default -> new int[]{ 1,-1, 1,1, -1,-1, -1,1 }; // For stationary and other cases
+            default -> new int[] {1, -1, 1, 1, -1, -1, -1, 1}; // For stationary and other cases
         };
     }
-
 
     @Override
     public boolean isReadyForPromotion() {

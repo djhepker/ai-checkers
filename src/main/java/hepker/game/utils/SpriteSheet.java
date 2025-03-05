@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class SpriteSheet {
+public final class SpriteSheet {
     private BufferedImage spritesheet;
 
     public SpriteSheet(String filePath) {

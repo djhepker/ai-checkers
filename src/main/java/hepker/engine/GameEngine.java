@@ -1,6 +1,6 @@
 package hepker.engine;
 
-import hepker.ai.AgentManager;
+import hepker.engine.agentintegration.AIEngine;
 import hepker.game.graphics.GraphicsHandler;
 import hepker.game.gameworld.PieceManager;
 import hepker.game.graphics.InputHandler;
@@ -8,108 +8,134 @@ import hepker.game.entity.GameBoardPiece;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GameEngine {
+import javax.swing.SwingUtilities;
+import java.util.ConcurrentModificationException;
 
-    private static final Logger logger = LoggerFactory.getLogger(GameEngine.class);
+public final class GameEngine {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
+
+    private final AIEngine agentMgr;
+
+    private final boolean lightChosen;
+    private final boolean hasPlayer;
+    private final boolean isTraining;
 
     private EntityCreator creator;
     private PieceManager pMgr;
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
-    private AgentManager agentMgr;
-
-    private final boolean LIGHT_CHOICE;
-    private final boolean HAS_PLAYER;
-    private final boolean IS_TRAINING;
 
     private boolean playerTurn;
     private boolean gameOver;
 
-    public GameEngine(boolean isTraining) {
-        this.IS_TRAINING = isTraining;
+    private int numTurnsWithoutCapture;
+    private int totalTurnCount;
+
+    public GameEngine(boolean aiIsTraining) {
+        this.isTraining = aiIsTraining;
         loadGameWorld();
-        if (!IS_TRAINING) {
+        if (!this.isTraining) {
             renderUI();
+            graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
         }
-        if (IS_TRAINING) {
-            this.LIGHT_CHOICE = true;
-            this.HAS_PLAYER = false;
-            this.agentMgr = new AgentManager(pMgr, LIGHT_CHOICE, "Agent Vs Stochastic");
+        if (this.isTraining) {
+            this.lightChosen = true;
+            this.hasPlayer = false;
+            this.agentMgr = new AIEngine(pMgr, lightChosen, "Agent Vs Stochastic");
         } else {
             String gameMode = graphicsHandler.showGameModeDialog();
-            this.HAS_PLAYER = gameMode.endsWith("Player");
-            if (HAS_PLAYER) {
-                this.LIGHT_CHOICE = this.graphicsHandler.showPopUpColorDialog();
+            this.hasPlayer = gameMode.endsWith("Player");
+            if (hasPlayer) {
+                this.lightChosen = this.graphicsHandler.showPopUpColorDialog();
             } else {
-                this.LIGHT_CHOICE = false;
+                this.lightChosen = true;
             }
-            this.playerTurn = LIGHT_CHOICE;
-            this.agentMgr = new AgentManager(pMgr, LIGHT_CHOICE, gameMode);
+            this.playerTurn = lightChosen;
+            this.agentMgr = new AIEngine(pMgr, lightChosen, gameMode);
+        }
+        if (!lightChosen) {
+            pMgr.reverseBoard();
         }
         this.gameOver = false;
+        this.numTurnsWithoutCapture = 0;
+        this.totalTurnCount = 0;
     }
 
     public void updateGame() {
+        ++totalTurnCount;
         try {
-            if (HAS_PLAYER) {
-                inputHandler.update();
-                if (playerTurn) {
-                    handleInput();
-                } else {
-                    agentMgr.update();
-                    playerTurn = !playerTurn;
-                }
+            if (hasPlayer) {
+                handleHumanGameLogic();
             } else {
-                agentMgr.update();
+                trainAgent();
             }
-            if (pMgr.sideDefeated()) {
-                this.gameOver = true;
+            if (!isTraining) {
+                SwingUtilities.invokeLater(() -> graphicsHandler.repaint());
             }
-            if (!IS_TRAINING) {
-                graphicsHandler.repaint();
+            if (numTurnsWithoutCapture >= 50 || pMgr.sideDefeated()) {
+                gameOver = true;
             }
-        } catch (Exception e) {
-            logger.error("Unexpected error in updateGame()" , e);
         } catch (AssertionError e) {
-            logger.error("Invalid mouse selection in InputHandler" , e);
+            LOGGER.error("Invalid mouse selection in InputHandler", e);
+        } catch (ConcurrentModificationException e) {
+            LOGGER.error("ConcurrentModificationError occurred during updateGame()", e);
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error in updateGame()", e);
         }
     }
 
-    public boolean gameOver() {
-        if (!IS_TRAINING) {
-            if (!graphicsHandler.windowOpen() || gameOver) {
-                this.gameOver = true;
-                if (LIGHT_CHOICE) {
-                    agentMgr.finishGame(pMgr.getNumLight() == 0);
-                } else {
-                    agentMgr.finishGame(pMgr.getNumDusky() == 0);
-                }
+    private void handleHumanGameLogic() {
+        inputHandler.update();
+        if (playerTurn) {
+            if (inputHandler.movementChosen()) {
+                handleInput();
             }
-        } else if (gameOver) {
-            if (LIGHT_CHOICE) {
-                agentMgr.finishGame(pMgr.getNumLight() == 0);
-            } else {
-                agentMgr.finishGame(pMgr.getNumDusky() == 0);
-            }
+        } else {
+            agentTurn();
+            playerTurn = !playerTurn;
         }
-        return gameOver;
     }
 
     private void handleInput() {
-        if (inputHandler.movementChosen()) {
-            int firstXPos = inputHandler.getFirstXPos();
-            int firstYPos = inputHandler.getFirstYPos();
-            GameBoardPiece piece = pMgr.getPiece(firstXPos, firstYPos);
-            if (piece != null && LIGHT_CHOICE == piece.isLight() && pMgr.movePiece(piece)) {
-                if (piece.isReadyForPromotion()) {
-                    pMgr.promotePiece(piece);
-                }
-                pMgr.updateAllPieces();
-                playerTurn = !playerTurn;
+        int firstXPos = inputHandler.getFirstXPos();
+        int firstYPos = inputHandler.getFirstYPos();
+        GameBoardPiece piece = pMgr.getPiece(firstXPos, firstYPos);
+        if (piece != null && lightChosen == piece.isLight() && pMgr.movePiece(piece)) {
+            if (piece.isReadyForPromotion()) {
+                pMgr.promotePiece(piece);
             }
+            graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
+            prepBoardForOtherPlayer();
+            playerTurn = !playerTurn;
+        } else {
             inputHandler.resetClicks();
-            printSelectedPiece();
         }
+    }
+
+    private void agentTurn() {
+        agentMgr.update();
+        prepBoardForOtherPlayer();
+        graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
+    }
+
+    private void trainAgent() {
+        int numPiecesNaught = pMgr.getNumPiecesInPlay();
+        agentMgr.update();
+        if (agentMgr.agentOneTurn()) {
+            graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
+        }
+        prepBoardForOtherPlayer();
+        agentMgr.flipAgentSwitch();
+        if (numPiecesNaught == pMgr.getNumPiecesInPlay()) {
+            ++numTurnsWithoutCapture;
+        } else {
+            numTurnsWithoutCapture = 0;
+        }
+    }
+
+    private void prepBoardForOtherPlayer() {
+        pMgr.reverseBoard();
+        pMgr.updateAllPieces();
     }
 
     private void loadGameWorld() {
@@ -122,10 +148,34 @@ public class GameEngine {
         this.graphicsHandler = new GraphicsHandler(creator.getCachedCells(), pMgr, inputHandler);
     }
 
-    private void printSelectedPiece() {
-        GameBoardPiece piece = pMgr.getPiece(inputHandler.getFirstXPos(), inputHandler.getFirstYPos());
-        if (piece != null) {
-            piece.printData();
+    public boolean gameOver() {
+        if (!isTraining) {
+            if (!graphicsHandler.windowOpen() || gameOver) {
+                this.gameOver = true;
+                if (lightChosen) {
+                    agentMgr.finishGame(pMgr.getNumLight() == 0);
+                } else {
+                    agentMgr.finishGame(pMgr.getNumDusky() == 0);
+                }
+            }
+        } else if (gameOver) {
+            if (lightChosen) {
+                agentMgr.finishGame(pMgr.getNumLight() == 0);
+            } else {
+                agentMgr.finishGame(pMgr.getNumDusky() == 0);
+            }
         }
+        if (gameOver) {
+            StringBuilder debugBuilder = new StringBuilder()
+                    .append("Total number of turns: ")
+                    .append(totalTurnCount)
+                    .append(" Turns without capture: ")
+                    .append(numTurnsWithoutCapture);
+            if (numTurnsWithoutCapture != 50) {
+                debugBuilder.append(" * Successful Game");
+            }
+            LOGGER.info(debugBuilder.toString());
+        }
+        return gameOver;
     }
 }

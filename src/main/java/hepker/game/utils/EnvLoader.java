@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EnvLoader {
+public final class EnvLoader {
     private final Map<String, String> envVars = new HashMap<>();
 
     public EnvLoader(String filePath) throws IOException {

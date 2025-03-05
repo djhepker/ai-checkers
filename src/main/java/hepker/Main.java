@@ -1,21 +1,21 @@
 package hepker;
 
+import hepker.ai.ai.Agent;
 import hepker.engine.GameEngine;
 import hepker.engine.GameLoop;
 
 public class Main {
     public static void main(String[] args) {
-        boolean TRAINING_MODE = true;
+        boolean trainingMode = false;
         int epochs = 10;
         int episodeCount = 0;
         GameLoop gameLoop;
-
         do {
-            gameLoop = new GameLoop(new GameEngine(TRAINING_MODE));
+            gameLoop = new GameLoop(new GameEngine(trainingMode));
             gameLoop.start();
             gameLoop.awaitCompletion();
-        } while (TRAINING_MODE && episodeCount++ < epochs);
-
+        } while (trainingMode && episodeCount++ < epochs);
+        Agent.closeDatabase();
         System.out.println("Loop ended. Game finished");
     }
 }

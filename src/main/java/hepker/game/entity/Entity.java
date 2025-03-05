@@ -1,47 +1,40 @@
 package hepker.game.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.image.BufferedImage;
 
+@Getter
 public abstract class Entity {
+
     private final String name;
+
+    private final GameBoardPiece.PieceColor color;
+
     private final BufferedImage sprite;
+
+    @Setter
     private int x;
+
+    @Setter
     private int y;
-    private final boolean isLight;
 
-    protected Entity(String inputName, int x, int y, BufferedImage image, boolean isLight) {
+    protected Entity(String inputName, int xCoordinate, int yCoordinate, BufferedImage img, boolean lightPiece) {
         this.name = inputName;
-        this.x = x;
-        this.y = y;
-        this.sprite = image;
-        this.isLight = isLight;
+        this.x = xCoordinate;
+        this.y = yCoordinate;
+        this.sprite = img;
+        this.color = lightPiece ? GameBoardPiece.PieceColor.LIGHT : GameBoardPiece.PieceColor.DUSKY;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public boolean isLight() {
-        return isLight;
-    }
-
-    public BufferedImage getSprite() {
-        return sprite;
+    /**
+     * getter for detecting if this Entity is a light piece. Returns true if so and false if otherwise.
+     * When overriding, be sure to still accurately produce this result while adding your own logic, if
+     * not calling super.isLight() afterward
+     * @return true if this Entity is a light color and false if it is dark
+     */
+    protected boolean isLight() {
+        return color == GameBoardPiece.PieceColor.LIGHT;
     }
 }

@@ -5,6 +5,7 @@ import hepker.game.entity.movement.MovementManager;
 import hepker.game.entity.movement.ActionNode;
 import hepker.game.gameworld.PieceManager;
 import hepker.game.entity.GameBoardPiece;
+import lombok.Getter;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
@@ -12,19 +13,21 @@ import java.util.Deque;
 import java.util.stream.Stream;
 
 public class Checker extends Entity implements GameBoardPiece {
+
+    @Getter
     private final MovementManager moveMgr;
-    private final PieceColor color;
-    private final int movementSign;
     private final short pieceValue;
 
     public Checker(String name, int x, int y, BufferedImage image) {
         super(name, x, y, image, name.startsWith("LIGHT"));
         this.pieceValue = 1;
         this.moveMgr = new MovementManager();
-        this.color = super.isLight() ? PieceColor.LIGHT : PieceColor.DUSKY;
-        this.movementSign = super.isLight() ? 1 : -1;
     }
 
+    /**
+     * Generates a stream of legal moves the checker can make for the AI
+     * @return Stream of ActionNode
+     */
     @Override
     public Stream<ActionNode> getMoveListAsStream() {
         Stream.Builder<ActionNode> streamBuilder = Stream.builder();
@@ -36,18 +39,19 @@ public class Checker extends Entity implements GameBoardPiece {
         return streamBuilder.build();
     }
 
+    /**
+     * Getter for checking the color of this checker
+     * @return true if the checker is light, false otherwise
+     */
     @Override
     public boolean isLight() {
         return super.isLight();
     }
 
-    /*
-     *   STATECODE:
-     *   Stationary: 4
-     *   Post-jump stationary: 3
-     *   Left-jumping: -1
-     *   Right-jumping: 1
-     * */
+    /**
+     * Generates and contributes to this checker's movemanager, a list of legal actions it can take
+     * @param pMgr Required for computer vision
+     */
     @Override
     public void generateLegalMoves(PieceManager pMgr) {
         Deque<MoveState> taskQueue = new ArrayDeque<>();
@@ -61,25 +65,25 @@ public class Checker extends Entity implements GameBoardPiece {
             } else {
                 xDirectionArray = new int[] {currState.getStateCode()};
             }
-            int yNext = currState.getY() - movementSign;
+            int yNext = currState.getY() - 1;
             if (0 <= yNext && yNext < 8) {
                 for (int xDirection : xDirectionArray) {
                     int xNext = currState.getX() + xDirection;
                     if (0 <= xNext && xNext < 8) {
                         GameBoardPiece target = pMgr.getPiece(xNext, yNext);
-                        if (target == null) {   // target open case
+                        if (target == null) { // target open case
                             if (stateCode == 4) { // target open; stationary;
                                 moveMgr.addLocationNode(getX(), getY(), xNext, yNext);
-                            } else if (stateCode < 3) {    //  target open; mid-jump; direction acknowledged;
+                            } else if (stateCode < 3) { //  target open; mid-jump; direction acknowledged;
                                 ActionNode nextSpace = getCaptureAction(currState, xNext, yNext, pMgr);
                                 taskQueue.push(new MoveState(
                                         xNext, yNext, 3, nextSpace.getCapturedNodes()));
                                 moveMgr.addLocationNode(nextSpace);
                             }
-                        } else if (stateCode > 2 && target.getColor() != this.color) {  // target not open;
+                        } else if (stateCode > 2 && target.getColor() != super.getColor()) { // target not open;
                             if (stateCode == 3) { // post-jump; target !null; stationary;
                                 taskQueue.push(new MoveState(xNext, yNext, xDirection, currState.getCapture()));
-                            } else {    // beginning position
+                            } else { // beginning position
                                 taskQueue.push(new MoveState(xNext, yNext, xDirection));
                             }
                         }
@@ -89,6 +93,14 @@ public class Checker extends Entity implements GameBoardPiece {
         }
     }
 
+    /**
+     * Helper function for generating an ActionNode for the corresponding movement
+     * @param currState The current state we are evaluating from
+     * @param xNext Hypothetical next x coordinate
+     * @param yNext Hypothetical next y coordinate
+     * @param pMgr Required for accurate computer vision
+     * @return nextSpace ActionNode containing all of this movement's information
+     */
     ActionNode getCaptureAction(MoveState currState, int xNext, int yNext, PieceManager pMgr) {
         int jumpedX = currState.getX();
         int jumpedY = currState.getY();
@@ -101,88 +113,67 @@ public class Checker extends Entity implements GameBoardPiece {
         return nextSpace;
     }
 
-    public MovementManager getMoveMgr() {
-        return moveMgr;
-    }
-
+    /**
+     * Getter for sprite
+     * @return Sprite of this checker
+     */
     @Override
     public BufferedImage getSprite() {
         return super.getSprite();
     }
 
+    /**
+     * Getter for this piece's color
+     * @return The color light or dark
+     */
     @Override
     public PieceColor getColor() {
-        return color;
+        return super.getColor();
     }
 
+    /**
+     * Getter function for obtaining the linkedlist of legal moves
+     * @return A pointer to the head of the linkedlist of legal moves
+     */
     @Override
     public ActionNode getMoveListPointer() {
         return moveMgr.getPointerToListHead();
     }
 
-    @Override
-    public void printLegalMoves() {
-        ActionNode cursor = moveMgr.getPointerToListHead();
-        int row = 0;
-        while (cursor != null) {
-            System.out.print("Option " + row + ": (" + cursor.getfDataX() + ", " + cursor.getfDataY() + "); ");
-            cursor = cursor.getNext();
-            row++;
-        }
-        System.out.println();
-    }
-
+    /**
+     * Getter for checker's name
+     * @return Light or Dusky checker
+     */
     @Override
     public String getName() {
         return super.getName();
     }
 
+    /**'
+     * Getter for this piece's value
+     * @return The value of capturing this piece
+     */
     @Override
     public short getPieceValue() {
         return pieceValue;
     }
 
+    /**
+     * Commands this piece to check for legal moves
+     * @param pMgr Required for computer vision
+     */
     @Override
     public void update(PieceManager pMgr) {
         moveMgr.clearListOfMoves();
         generateLegalMoves(pMgr);
     }
 
+    /**
+     * Returns values to see if this piece can be promoted
+     * @return true if yes false if no
+     */
     @Override
     public boolean isReadyForPromotion() {
-        if (movementSign == 1 && getY() == 0) {
-            return true;
-        } else if (movementSign == -1 && getY() == 7) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void setX(int x) {
-        super.setX(x);
-    }
-
-    @Override
-    public void setY(int y) {
-        super.setY(y);
-    }
-
-    @Override
-    public int getX() {
-        return super.getX();
-    }
-
-    @Override
-    public int getY() {
-        return super.getY();
-    }
-
-    @Override
-    public void printData() {
-        System.out.print("Piece name: " + getName() + "; ");
-        System.out.print("Piece coordinates: (" + getX() + ", " + getY() + "); ");
-        System.out.print("Legal move choices: ");
-        printLegalMoves();
+        return getY() == 0;
     }
 }

@@ -1,7 +1,8 @@
 package hepker.game.entity.movement;
 
-public class MovementManager {
-    private ActionList actList;
+public final class MovementManager {
+
+    private final ActionList actList;
 
     public MovementManager() {
         this.actList = new ActionList();

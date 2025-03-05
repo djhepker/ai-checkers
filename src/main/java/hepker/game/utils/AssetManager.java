@@ -3,17 +3,17 @@ package hepker.game.utils;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
-public class AssetManager {
+public final class AssetManager {
     private final String spriteSheetFilePath = "src/main/resources/img/chckers_spritesheet.png";
 
-    private final int cellWidth = 16;
-    private final int cellHeight = 16;
+    private final int cellWidth = 64;
+    private final int cellHeight = 64;
     private final int duskyTileStart = 0;
-    private final int lightTileStart = 16;
-    private final int lightCheckerCoordinate = 32;
-    private final int duskyCheckerCoordinate = 48;
-    private final int lightCheckerKingSpriteX = 64;
-    private final int duskyCheckerKingSpriteX = 80;
+    private final int lightTileStart = 64;
+    private final int lightCheckerCoordinate = 128;
+    private final int duskyCheckerCoordinate = 192;
+    private final int lightCheckerKingSpriteX = 256;
+    private final int duskyCheckerKingSpriteX = 320;
 
     private SpriteSheet spriteSheet;
     private HashMap<String, BufferedImage> spriteMap;

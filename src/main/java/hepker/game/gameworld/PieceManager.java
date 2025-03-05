@@ -5,26 +5,37 @@ import hepker.game.entity.movement.ActionNode;
 import hepker.game.graphics.InputHandler;
 import hepker.engine.EntityCreator;
 import hepker.game.entity.GameBoardPiece;
+import lombok.Getter;
 
-public class PieceManager {
-    private GameBoardPiece[] pieces;
-    private EntityCreator creator;
-    private InputHandler input;
+import java.util.Arrays;
+
+public final class PieceManager {
+    private final EntityCreator creator;
+    private final InputHandler input;
+    @Getter
+    private GameBoardPiece[] piecesContainer;
+    @Getter
+    private GameBoardPiece[] displayPieces;
+    @Getter
     private int numDusky;
+    @Getter
     private int numLight;
     private boolean gameOver;
 
-    public PieceManager(EntityCreator creator, InputHandler inputHandler) {
-        this.creator = creator;
-        this.pieces = generateBeginningCheckers();
-        this.input = inputHandler;
-        generateBeginningCheckers();
+    public PieceManager(EntityCreator inputCreator, InputHandler inputInputHandler) {
+        this.creator = inputCreator;
+        this.piecesContainer = generateBeginningCheckers();
+        this.input = inputInputHandler;
         updateAllPieces();
+        this.displayPieces = piecesContainer;
         this.gameOver = false;
     }
 
+    /**
+     * Loads all legal moves for each piece in play
+     */
     public void updateAllPieces() {
-        for (GameBoardPiece piece : pieces) {
+        for (GameBoardPiece piece : piecesContainer) {
             if (piece != null) {
                 piece.update(this);
             }
@@ -45,18 +56,14 @@ public class PieceManager {
         this.gameOver = true;
     }
 
-    public GameBoardPiece[] getPieces() {
-        return pieces;
-    }
-
     public GameBoardPiece getPiece(int x, int y) {
-        return pieces[y * 8 + x];
+        return piecesContainer[y * 8 + x];
     }
 
     public boolean movePiece(GameBoardPiece piece) {
         int postX = input.getSelectedCol();
         int postY = input.getSelectedRow();
-        if (spaceIsNull(postX, postY)) {
+        if (getPiece(postX, postY) == null) {
             ActionNode cursor = piece.getMoveListPointer();
             while (cursor != null) {
                 if (cursor.getfDataX() == postX && cursor.getfDataY() == postY) {
@@ -88,27 +95,64 @@ public class PieceManager {
         return result;
     }
 
-    public boolean spaceIsNull(int inputX, int inputY) {
-        return pieces[inputY * 8 + inputX] == null;
-    }
-
-    public void printAllPiecesInPlay() {
-        for (GameBoardPiece piece : pieces) {
-            piece.printData();
-        }
-    }
-
     public boolean insertPieceToBoard(GameBoardPiece piece) {
         if (piece == null) {
             return false;
         }
-        pieces[piece.getY() * 8 + piece.getX()] = piece;
+        if (Arrays.equals(piecesContainer, displayPieces)) {
+            piecesContainer[piece.getY() * 8 + piece.getX()] = piece;
+            displayPieces[piece.getY() * 8 + piece.getX()] = piece;
+        } else {
+            piecesContainer[piece.getY() * 8 + piece.getX()] = piece;
+            displayPieces[(7 - piece.getY()) * 8 + (7 - piece.getX())] = piece;
+        }
         return true;
     }
 
     public void nullifyPiece(int x, int y) {
-        pieces[y * 8 + x] = null;
+        if (Arrays.equals(piecesContainer, displayPieces)) {
+            piecesContainer[y * 8 + x] = null;
+            displayPieces[y * 8 + x] = null;
+        } else {
+            piecesContainer[y * 8 + x] = null;
+            displayPieces[(7 - y) * 8 + (7 - x)] = null;
+        }
     }
+
+    public int getNumPiecesInPlay() {
+        int count = 0;
+        for (GameBoardPiece piece : piecesContainer) {
+            if (piece != null) {
+                ++count;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Reverses all pieces in the game board, as if the board were rotated pi
+     */
+    public void reverseBoard() {
+        for (int left = 0, right = piecesContainer.length - 1; left < right; left++, right--) {
+            GameBoardPiece tmpL = piecesContainer[left];
+            if (tmpL != null) {
+                int xCoordinate = 7 - tmpL.getX();
+                int yCoordinate = 7 - tmpL.getY();
+                tmpL.setX(xCoordinate);
+                tmpL.setY(yCoordinate);
+            }
+            GameBoardPiece tmpR = piecesContainer[right];
+            if (tmpR != null) {
+                int xCoordinate2 = 7 - tmpR.getX();
+                int yCoordinate2 = 7 - tmpR.getY();
+                tmpR.setX(xCoordinate2);
+                tmpR.setY(yCoordinate2);
+            }
+            piecesContainer[left] = tmpR;
+            piecesContainer[right] = tmpL;
+        }
+    }
+
 
     private void processCapturedPieces(ActionNode actionNode) {
         CapturedNode capturedPiece = actionNode.getCapturedNodes();
@@ -123,16 +167,8 @@ public class PieceManager {
         }
     }
 
-    public int getNumDusky() {
-        return numDusky;
-    }
-
-    public int getNumLight() {
-        return numLight;
-    }
-
     private GameBoardPiece[] generateBeginningCheckers() {
-        GameBoardPiece[] pieces = new GameBoardPiece[64];
+        GameBoardPiece[] boardBuilder = new GameBoardPiece[64];
         int x = 1;
         int y = 0;
         while (y < 3) {
@@ -143,7 +179,7 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces[y * 8 + x] = creator.createPiece("DUSKYChecker", x, y);
+                boardBuilder[y * 8 + x] = creator.createPiece("DUSKYChecker", x, y);
                 x += 2;
             }
         }
@@ -156,12 +192,12 @@ public class PieceManager {
                     x += 1;
                 }
             } else {
-                pieces[y * 8 + x] = creator.createPiece("LIGHTChecker", x, y);
+                boardBuilder[y * 8 + x] = creator.createPiece("LIGHTChecker", x, y);
                 x += 2;
             }
         }
         numDusky = 12;
         numLight = 12;
-        return pieces;
+        return boardBuilder;
     }
 }

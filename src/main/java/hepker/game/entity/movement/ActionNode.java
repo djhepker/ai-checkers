@@ -1,9 +1,18 @@
 package hepker.game.entity.movement;
 
-public class ActionNode {
+import lombok.Getter;
+import lombok.Setter;
+
+public final class ActionNode {
+
     private final short[] data;
-    private CapturedNode capturedEnemies;
+
+    @Setter
+    @Getter
     private ActionNode next;
+    private CapturedNode capturedEnemies;
+
+    @Getter
     private int reward;
 
     public ActionNode(short preX, short preY, short postX, short postY) {
@@ -50,31 +59,5 @@ public class ActionNode {
         }
         this.reward += capturedNode.getPointValue();
         this.capturedEnemies = capturedNode;
-    }
-
-    public ActionNode getNext() {
-        return next;
-    }
-
-    public void setNext(ActionNode next) {
-        this.next = next;
-    }
-
-    public int getReward() {
-        return reward;
-    }
-
-    public void printData() {
-        System.out.printf("Node (%d,%d)\n", data[0], data[1]);
-    }
-
-    public void printCapturedEnemies() {
-        CapturedNode capturedCursor = capturedEnemies;
-        printData();
-        while (capturedCursor != null) {
-            capturedCursor.printData();
-            capturedCursor = capturedCursor.getNext();
-        }
-        System.out.println();
     }
 }
