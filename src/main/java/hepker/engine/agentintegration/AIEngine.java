@@ -24,9 +24,9 @@ public final class AIEngine {
     private int agentTurnSwitch;
     private int numTurns;
 
-    public AIEngine(PieceManager inputPMgr, boolean playerLight, String gameTypeString) {
+    public AIEngine(PieceManager inputPMgr, boolean playerChooseLight, String gameTypeString) {
         this.agentTurnSwitch = 0;
-        this.isDusky = playerLight;
+        this.isDusky = playerChooseLight;
         this.pMgr = inputPMgr;
         this.agents = new ArrayList<>();
         this.numTurns = 0;
@@ -69,8 +69,8 @@ public final class AIEngine {
             case "Agent Vs Player" -> generateAgent(false, isDusky);
             case "Stochastic Vs Player" -> generateAgent(true, isDusky);
             case "Agent Vs Stochastic" -> {
-                generateAgent(false, true);
-                generateAgent(true, false);
+                generateAgent(false, false);
+                generateAgent(true, true);
             }
             case "Agent vs Agent" -> {
                 generateAgent(false, false);
