@@ -5,6 +5,10 @@ import hepker.game.gameworld.PieceManager;
 
 public final class Environment {
 
+    private Environment() {
+
+    }
+
     public static String getEncodedGameState(PieceManager inputPMgr) {
         return AITools.intArrTo64Encoding(getStateArray(inputPMgr));
     }

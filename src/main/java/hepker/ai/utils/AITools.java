@@ -21,11 +21,21 @@ import java.util.Comparator;
 public final class AITools {
     private static final Logger LOGGER = LoggerFactory.getLogger(AITools.class);
 
-    public static ActionNode[] getDecisionArray(PieceManager pMgr, GameBoardPiece.PieceColor inputColor) { // verified as optimal
+    private AITools() {
+
+    }
+
+    /**
+     * Streams an ActionNode[]. Array is sorted first by x then by y for consistent decision making
+     * @param pMgr Required for getPieces
+     * @param inputColor Verifying the piece is movable by this AI
+     * @return ActionNode[] for use by AI
+     */
+    public static ActionNode[] getDecisionArray(PieceManager pMgr, GameBoardPiece.PieceColor inputColor) {
         return Arrays.stream(pMgr.getPiecesContainer())
                 .filter(piece -> piece != null && piece.getColor() == inputColor)
                 .flatMap(GameBoardPiece::getMoveListAsStream)
-                .sorted(Comparator.comparingInt(ActionNode::getoDataX).thenComparing(ActionNode::getoDataY)) // sorted for consistent action selection
+                .sorted(Comparator.comparingInt(ActionNode::getoDataX).thenComparing(ActionNode::getoDataY))
                 .toArray(ActionNode[]::new);
     }
 
