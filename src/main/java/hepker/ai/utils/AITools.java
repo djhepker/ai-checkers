@@ -89,25 +89,33 @@ public final class AITools {
             LOGGER.error(String.format("Invalid array length: %d", gameState.length));
             throw new IllegalArgumentException();
         }
-        // Pack into 96 bits using a byte array (12 bytes)
-        byte[] bytes = new byte[12]; // 96 bits = 12 bytes
-        for (int i = 0; i < 32; i++) {
+        // Pack into 192 bits = 24 bytes
+        byte[] bytes = new byte[24];
+        int byteIndex = 0;
+        long accumulator = 0;
+        int bitCount = 0;
+
+        for (int i = 0; i < 64; i++) {
             int value = gameState[i];
             if (value < 0 || value > 4) {
                 throw new IllegalArgumentException("Invalid value at index " + i + ": " + value);
             }
-            // Pack 3 bits per value into bytes
-            int byteIndex = i * 3 / 8; // Which byte to write to
-            int bitOffset = (i * 3) % 8; // Bit position within the byte
-            if (bitOffset <= 5) {
-                // Fits within one byte
-                bytes[byteIndex] |= (byte) (value << (5 - bitOffset));
-            } else {
-                // Spans two bytes
-                bytes[byteIndex] |= (byte) (value >> (bitOffset - 5));
-                bytes[byteIndex + 1] |= (byte) (value << (13 - bitOffset));
+
+            // Append 3 bits to accumulator
+            accumulator = (accumulator << 3) | (value & 0x07); // Mask to 3 bits
+            bitCount += 3;
+
+            // Extract byte when 8 or more bits are accumulated
+            if (bitCount >= 8) {
+                int shift = bitCount - 8;
+                bytes[byteIndex] = (byte) ((accumulator >> shift) & 0xFF);
+                byteIndex++;
+                bitCount -= 8;
+                accumulator = accumulator & ((1L << bitCount) - 1); // Keep remaining bits
             }
         }
+
+            // Since 64 * 3 = 192 bits fits exactly into 24 bytes, no leftover bits remain
         return Base64.getEncoder().encodeToString(bytes);
     }
 }
