@@ -38,7 +38,7 @@ public final class GameEngine {
             renderUI();
             graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
         }
-        if (this.isTraining) {
+        if (isTraining) {
             this.lightChosen = true;
             this.hasPlayer = false;
             this.agentMgr = new AIEngine(pMgr, lightChosen, "Agent Vs Stochastic");

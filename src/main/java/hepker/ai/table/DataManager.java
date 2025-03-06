@@ -71,7 +71,7 @@ public final class DataManager {
             } else if (index >= existingArray.length) {
                 resultArray = Arrays.copyOf(existingArray, index + 1);
             } else {
-                resultArray = existingArray.clone(); // Clone to ensure thread-safe updates
+                resultArray = existingArray.clone();
             }
             resultArray[index] = inputQ;
             LOGGER.debug("Updated Q value for serialKey: {}, index: {}, value: {}", serialKey, index, inputQ);

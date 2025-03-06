@@ -16,8 +16,6 @@ import java.util.List;
 public final class AIEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(AIEngine.class);
 
-    private final boolean isDusky;
-
     private final List<AgentRecord> agents;
     private final PieceManager pMgr;
 
@@ -26,14 +24,13 @@ public final class AIEngine {
 
     private String stateKey;
 
-    public AIEngine(PieceManager inputPMgr, boolean playerChooseLight, String gameTypeString) {
+    public AIEngine(PieceManager inputPMgr, boolean lightChosen, String gameTypeString) {
         this.agentTurnSwitch = 0;
         this.stateKey = "";
-        this.isDusky = playerChooseLight;
         this.pMgr = inputPMgr;
         this.agents = new ArrayList<>();
         this.numTurns = 0;
-        loadGameState(gameTypeString);
+        loadGameState(gameTypeString, lightChosen);
     }
 
     public void update() {
@@ -52,11 +49,15 @@ public final class AIEngine {
         int numDecisions = inputDecisionHandler.getNumDecisions();
         if (numDecisions == 0) {
             pMgr.flagGameOver();
+            LOGGER.info("{} Agent has no decisions.", inputDecisionHandler.getPieceColor());
             return;
         }
 
         int actionChoiceInt = inputAgent.getActionInt(numDecisions); // exploit is not correct
         inputAgent.loadCurrentQ(stateKey, actionChoiceInt);
+        if (actionChoiceInt >= numDecisions) {
+            System.out.printf("Piece color is: %s\n", inputDecisionHandler.getPieceColor());
+        }
         inputDecisionHandler.setPreDecisionRewardParameters(actionChoiceInt);
         inputDecisionHandler.movePiece(actionChoiceInt);
 
@@ -67,17 +68,17 @@ public final class AIEngine {
         inputAgent.update(stateKeyPrime, actionChoiceInt);
     }
 
-    private void loadGameState(String gameTypeString) {
+    private void loadGameState(String gameTypeString, boolean lightChosen) {
         switch (gameTypeString) {
-            case "Agent Vs Player" -> generateAgent(false, isDusky);
-            case "Stochastic Vs Player" -> generateAgent(true, isDusky);
+            case "Agent Vs Player" -> generateAgent(false, lightChosen);
+            case "Stochastic Vs Player" -> generateAgent(true, lightChosen);
             case "Agent Vs Stochastic" -> {
-                generateAgent(false, false);
-                generateAgent(true, true);
+                generateAgent(true, !lightChosen);
+                generateAgent(false, lightChosen);
             }
             case "Agent vs Agent" -> {
-                generateAgent(false, false);
-                generateAgent(false, true);
+                generateAgent(false, !lightChosen);
+                generateAgent(false, lightChosen);
             }
             default -> throw new IllegalArgumentException("Invalid gameTypeString: " + gameTypeString);
         }
@@ -108,5 +109,6 @@ public final class AIEngine {
             zero.setEpsilon(1.0);
         }
         agents.add(new AgentRecord(zero, new AIDecisionHandler(pMgr, duskyAgent)));
+        LOGGER.info("Generated agent: stochastic={}, color={}", isStochastic, duskyAgent ? "DUSKY" : "LIGHT");
     }
 }

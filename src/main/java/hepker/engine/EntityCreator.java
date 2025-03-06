@@ -24,7 +24,7 @@ public final class EntityCreator {
     }
 
     private Checker createChecker(String name, int x, int y) {
-        return new Checker(name, x, y, assetManager.getSpriteByName(name));
+        return new Checker(name, x, y, assetManager.getSpriteByName(name), (short) 5);
     }
 
     private KingChecker createKingChecker(String name, int x, int y) {

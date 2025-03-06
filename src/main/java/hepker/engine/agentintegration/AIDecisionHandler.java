@@ -29,7 +29,7 @@ public final class AIDecisionHandler implements DecisionHandler {
     private ActionNode[] decisionArray;
 
     public AIDecisionHandler(PieceManager inputPMgr, boolean isDusky) {
-        this.pieceColor = isDusky ? DUSKY : GameBoardPiece.PieceColor.LIGHT;
+        this.pieceColor = isDusky ? GameBoardPiece.PieceColor.DUSKY : GameBoardPiece.PieceColor.LIGHT;
         this.pMgr = inputPMgr;
         this.reasonableTurnCount = 30;
         this.decayingScalar = 1.0;
@@ -75,12 +75,4 @@ public final class AIDecisionHandler implements DecisionHandler {
         this.numEnemyOptionsNaught = AITools.getNumOpponentOptions(pMgr, pieceColor);
         pointsFromDecision = actionChosen.getReward();
     }
-
-//    public String getDecisionArrayDataString() {
-//        StringBuilder decisionBuilder = new StringBuilder();
-//        for (ActionNode node : decisionArray) {
-//            decisionBuilder.append(node.toString());
-//        }
-//        return decisionBuilder.toString();
-//    }
 }

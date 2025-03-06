@@ -18,9 +18,9 @@ public class Checker extends Entity implements GameBoardPiece {
     private final MovementManager moveMgr;
     private final short pieceValue;
 
-    public Checker(String name, int x, int y, BufferedImage image) {
+    public Checker(String name, int x, int y, BufferedImage image, short rewardValue) {
         super(name, x, y, image, name.startsWith("LIGHT"));
-        this.pieceValue = 1;
+        this.pieceValue = rewardValue;
         this.moveMgr = new MovementManager();
     }
 
