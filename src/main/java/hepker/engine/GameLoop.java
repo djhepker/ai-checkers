@@ -12,6 +12,10 @@ public final class GameLoop implements Runnable {
         this.game = inputEngine;
     }
 
+    /**
+     * TODO Make graphing calls outside of the loop thread; SwingUtilities cannot be assigned inside
+     * of the delegated game thread because they run asynchronously
+     */
     @Override
     public void run() {
         while (!game.gameOver() && !Thread.currentThread().isInterrupted()) {
