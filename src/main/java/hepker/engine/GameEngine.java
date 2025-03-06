@@ -5,10 +5,12 @@ import hepker.game.graphics.GraphicsHandler;
 import hepker.game.gameworld.PieceManager;
 import hepker.game.graphics.InputHandler;
 import hepker.game.entity.GameBoardPiece;
+import hepker.utils.Graphing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.SwingUtilities;
+import java.io.IOException;
 import java.util.ConcurrentModificationException;
 
 public final class GameEngine {
@@ -149,33 +151,38 @@ public final class GameEngine {
     }
 
     public boolean gameOver() {
-        if (!isTraining) {
-            if (!graphicsHandler.windowOpen() || gameOver) {
-                this.gameOver = true;
+        try {
+            if (!isTraining) {
+                if (!graphicsHandler.windowOpen() || gameOver) {
+                    this.gameOver = true;
+                    if (lightChosen) {
+                        agentMgr.finishGame(pMgr.getNumLight() == 0);
+                    } else {
+                        agentMgr.finishGame(pMgr.getNumDusky() == 0);
+                    }
+                }
+            } else if (gameOver) {
                 if (lightChosen) {
                     agentMgr.finishGame(pMgr.getNumLight() == 0);
                 } else {
                     agentMgr.finishGame(pMgr.getNumDusky() == 0);
                 }
             }
-        } else if (gameOver) {
-            if (lightChosen) {
-                agentMgr.finishGame(pMgr.getNumLight() == 0);
-            } else {
-                agentMgr.finishGame(pMgr.getNumDusky() == 0);
+            if (gameOver) {
+                StringBuilder debugBuilder = new StringBuilder()
+                        .append("Total number of turns: ")
+                        .append(totalTurnCount)
+                        .append(" Turns without capture: ")
+                        .append(numTurnsWithoutCapture);
+                if (numTurnsWithoutCapture != 50) {
+                    debugBuilder.append(" * Successful Game");
+                }
+                LOGGER.info(debugBuilder.toString());
             }
+            return gameOver;
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error in gameOver()", e);
+            return true;
         }
-        if (gameOver) {
-            StringBuilder debugBuilder = new StringBuilder()
-                    .append("Total number of turns: ")
-                    .append(totalTurnCount)
-                    .append(" Turns without capture: ")
-                    .append(numTurnsWithoutCapture);
-            if (numTurnsWithoutCapture != 50) {
-                debugBuilder.append(" * Successful Game");
-            }
-            LOGGER.info(debugBuilder.toString());
-        }
-        return gameOver;
     }
 }

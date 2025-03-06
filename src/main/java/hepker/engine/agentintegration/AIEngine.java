@@ -2,11 +2,13 @@ package hepker.engine.agentintegration;
 
 import hepker.ai.ai.Agent;
 import hepker.ai.utils.AgentStats;
-import hepker.ai.utils.EpisodeStatistics;
 import hepker.game.gameworld.PieceManager;
+import hepker.utils.EpisodeStatistics;
+import hepker.utils.Graphing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +88,7 @@ public final class AIEngine {
 
     public void finishGame(boolean gameWon) {
         new AgentStats("src/main/resources/data/agentstats").processEpisode(gameWon);
-        new EpisodeStatistics("src/main/resources/data/episode").processEpisode(numTurns);
+        EpisodeStatistics.processEpisode(numTurns);
         Agent.finalizeQTableUpdate();
     }
 
