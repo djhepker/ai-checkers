@@ -1,5 +1,7 @@
 package hepker.engine;
 
+import hepker.engine.agentintegration.AIEngine;
+import hepker.utils.EpisodeStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,14 +16,9 @@ public final class GameLoop implements Runnable {
 
     public GameLoop(GameEngine inputEngine) {
         this.game = inputEngine;
+        EpisodeStatistics.retrieveEpisodeData();
     }
 
-    /*
-    * TODO Make graphing calls outside of the loop thread; SwingUtilities cannot
-    *   be assigned inside of the delegated game thread because they run asynchronously
-    *   MAY need to use executor service
-    *   MAY put graphics on its own thread
-    * */
     @Override
     public void run() {
         while (!game.gameOver() && !Thread.currentThread().isInterrupted()) {
@@ -45,6 +42,10 @@ public final class GameLoop implements Runnable {
                 }
             }
         }
+        EpisodeStatistics.processEpisode(AIEngine.getNumTurns());
+        EpisodeStatistics.updateEpisodeCSV();
+        updateGraph();
+
         Thread.currentThread().interrupt();
     }
 
@@ -52,6 +53,10 @@ public final class GameLoop implements Runnable {
         thread = new Thread(this);
         thread.start();
         LOGGER.info("Game loop started");
+    }
+
+    public void updateGraph() {
+        EpisodeStatistics.displayEpisodeStatistics();
     }
 
     public void awaitCompletion() {

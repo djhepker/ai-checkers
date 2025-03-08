@@ -3,12 +3,10 @@ package hepker.engine.agentintegration;
 import hepker.ai.ai.Agent;
 import hepker.ai.utils.AgentStats;
 import hepker.game.gameworld.PieceManager;
-import hepker.utils.EpisodeStatistics;
-import hepker.utils.Graphing;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +18,10 @@ public final class AIEngine {
 
     private final List<AgentRecord> agents;
     private final PieceManager pMgr;
+    @Getter
+    private static int numTurns = 0;
 
     private int agentTurnSwitch;
-    private int numTurns;
 
     private String stateKey;
 
@@ -31,7 +30,6 @@ public final class AIEngine {
         this.stateKey = "";
         this.pMgr = inputPMgr;
         this.agents = new ArrayList<>();
-        this.numTurns = 0;
         loadGameState(gameTypeString, lightChosen);
     }
 
@@ -88,7 +86,6 @@ public final class AIEngine {
 
     public void finishGame(boolean gameWon) {
         new AgentStats("src/main/resources/data/agentstats").processEpisode(gameWon);
-        EpisodeStatistics.processEpisode(numTurns);
         Agent.finalizeQTableUpdate();
     }
 

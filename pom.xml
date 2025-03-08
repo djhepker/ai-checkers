@@ -48,13 +48,14 @@
             <version>1.15.1</version>
         </dependency>
         <dependency>
-            <groupId>org.knowm.xchart</groupId>
-            <artifactId>xchart</artifactId>
-            <version>3.8.7</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>17</version>
+            <classifier>win</classifier>
         </dependency>
     </dependencies>
-    <build>
 
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

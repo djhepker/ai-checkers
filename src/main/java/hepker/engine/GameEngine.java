@@ -5,12 +5,10 @@ import hepker.game.graphics.GraphicsHandler;
 import hepker.game.gameworld.PieceManager;
 import hepker.game.graphics.InputHandler;
 import hepker.game.entity.GameBoardPiece;
-import hepker.utils.Graphing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.SwingUtilities;
-import java.io.IOException;
 import java.util.ConcurrentModificationException;
 
 public final class GameEngine {
