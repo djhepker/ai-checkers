@@ -10,12 +10,17 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class Graphing {
     private static final Logger LOGGER = LoggerFactory.getLogger(Graphing.class);
+    private static final List<Data<Number, Number>> PENDING_DATA_POINTS = new ArrayList<>();
 
     private static LineChart<Number, Number> lineChart;
     private static Series<Number, Number> lineSeries;
     private static Stage stage;
+    private static volatile boolean initializing = false; // Tracks initialization
 
     private Graphing() {
 
@@ -30,12 +35,20 @@ public final class Graphing {
      * @param yLabel the label for the y-axis
      */
     public static void initializeLineChart(String title, String xLabel, String yLabel) {
+        if (initializing) {
+            LOGGER.warn("Initialization already in progress, skipping...");
+            return;
+        }
+        initializing = true;
+        LOGGER.debug("initializeLineChart called");
+
         Platform.runLater(() -> {
+            LOGGER.debug("initializeLineChart -> runLater() called");
             if (title == null || xLabel == null || yLabel == null) {
-                LOGGER.error(String.format(
-                        "Null input: title %s, xLabel %s, yLabel %s", title, xLabel, yLabel));
+                LOGGER.error(String.format("Null input: title %s, xLabel %s, yLabel %s", title, xLabel, yLabel));
                 throw new IllegalArgumentException("Null initializeLineChart() argument");
             }
+
             NumberAxis xAxis = new NumberAxis();
             xAxis.setLabel(xLabel);
             NumberAxis yAxis = new NumberAxis();
@@ -51,6 +64,21 @@ public final class Graphing {
             stage.setTitle(title);
             stage.setScene(scene);
             stage.show();
+
+            stage.setOnShown(event -> {
+                LOGGER.info("Stage is now shown");
+                initializing = false;
+                if (lineSeries != null) {
+                    Platform.runLater(() -> {
+                        synchronized (PENDING_DATA_POINTS) {
+                            for (Data<Number, Number> data : PENDING_DATA_POINTS) {
+                                lineSeries.getData().add(data);
+                            }
+                            PENDING_DATA_POINTS.clear();
+                        }
+                    });
+                }
+            });
         });
     }
 
@@ -62,18 +90,23 @@ public final class Graphing {
      * @param yValue the y-value of the new data point (e.g., performance metric)
      */
     public static void addDataPoint(Number xValue, Number yValue) {
-        if (lineSeries == null) {
-            LOGGER.error("Line chart not initialized. Call initializeLineChart() first.");
-            throw new IllegalStateException("Line chart not initialized.");
-        }
+        LOGGER.debug("addDataPoint called");
         if (xValue == null || yValue == null) {
             LOGGER.error(String.format("Null input: xValue %s, yValue %s", xValue, yValue));
             throw new IllegalArgumentException("Null addDataPoint() argument");
         }
-        // Ensure updates occur on the JavaFX application thread
-        Platform.runLater(() -> {
-            lineSeries.getData().add(new Data<>(xValue, yValue));
-        });
+        Data<Number, Number> data = new Data<>(xValue, yValue);
+        if (lineSeries == null) {
+            synchronized (PENDING_DATA_POINTS) {
+                PENDING_DATA_POINTS.add(data);
+                LOGGER.debug("Added dataPoint: " + data);
+            }
+        } else {
+            Platform.runLater(() -> {
+                LOGGER.debug("Inside of addDataPoint -> runLater");
+                lineSeries.getData().add(data);
+            });
+        }
     }
 
     /**
@@ -81,7 +114,6 @@ public final class Graphing {
      * @return True if stage.isShowing()
      */
     public static boolean graphIsDisplayed() {
-        // Check if lineChart and stage are initialized and if the stage is visible
         return lineChart != null && stage != null && stage.isShowing();
     }
 }

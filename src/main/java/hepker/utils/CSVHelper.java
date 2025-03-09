@@ -28,7 +28,6 @@ public final class CSVHelper {
     public static String[] loadData(String csvName) {
         List<String> lines = new ArrayList<>();
         File file = new File(csvName);
-
         if (!file.exists()) {
             try {
                 if (file.createNewFile()) {

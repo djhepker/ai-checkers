@@ -8,6 +8,8 @@ public final class EpisodeStatistics {
     private static int episodeCount = 0;
     @Getter
     private static double averageTurnCount = 0.0;
+    @Getter
+    private static double totalTurnCount = 0.0;  // Keeps track of the sum of turns for all episodes.
 
     private EpisodeStatistics() {
 
@@ -15,7 +17,7 @@ public final class EpisodeStatistics {
 
     /**
      * Helper method for setting member variables. First line is most recent data obtained.
-     * Count is set first and average second
+     * Count is set first and average second.
      */
     public static void retrieveEpisodeData() {
         String[] csvData = CSVHelper.loadData(EPISODE_STATISTICS_FILEPATH);
@@ -23,13 +25,19 @@ public final class EpisodeStatistics {
             String[] data = csvData[csvData.length - 1].split(",");
             episodeCount = Integer.parseInt(data[0]);
             averageTurnCount = Double.parseDouble(data[1]);
+            totalTurnCount = episodeCount * averageTurnCount;  // Calculate total turn count from the average
         }
     }
 
     public static void processEpisode(int turnCount) {
-        double currentSumOfTurns = episodeCount * averageTurnCount + turnCount;
-        ++episodeCount;
-        averageTurnCount = currentSumOfTurns / episodeCount;
+        // Increment episode count
+        episodeCount++;
+
+        // Update the total turn count
+        totalTurnCount += turnCount;
+
+        // Calculate the new average
+        averageTurnCount = totalTurnCount / episodeCount;
     }
 
     public static void updateEpisodeCSV() {
@@ -42,7 +50,7 @@ public final class EpisodeStatistics {
             String[] data = CSVHelper.loadData(EPISODE_STATISTICS_FILEPATH);
             for (String datum : data) {
                 String[] dataLine = datum.split(",");
-                Graphing.addDataPoint(Integer.parseInt(data[0]), Double.parseDouble(data[1]));
+                Graphing.addDataPoint(Integer.parseInt(dataLine[0]), Double.parseDouble(dataLine[1]));
             }
         } else {
             Graphing.addDataPoint(episodeCount, averageTurnCount);

@@ -55,9 +55,6 @@ public final class AIEngine {
 
         int actionChoiceInt = inputAgent.getActionInt(numDecisions); // exploit is not correct
         inputAgent.loadCurrentQ(stateKey, actionChoiceInt);
-        if (actionChoiceInt >= numDecisions) {
-            System.out.printf("Piece color is: %s\n", inputDecisionHandler.getPieceColor());
-        }
         inputDecisionHandler.setPreDecisionRewardParameters(actionChoiceInt);
         inputDecisionHandler.movePiece(actionChoiceInt);
 
