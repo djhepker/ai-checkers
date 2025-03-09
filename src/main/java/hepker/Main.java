@@ -1,17 +1,15 @@
 package hepker;
 
 import hepker.ai.ai.Agent;
-import hepker.engine.GameEngine;
 import hepker.engine.GameLoop;
 
 public class Main {
     public static void main(String[] args) {
         boolean trainingMode = true;
-        int epochs = 15;
+        int epochs = 10;
         int episodeCount = 0;
-        GameLoop gameLoop;
+        GameLoop gameLoop = new GameLoop(trainingMode);
         do {
-            gameLoop = new GameLoop(new GameEngine(trainingMode));
             gameLoop.start();
             gameLoop.awaitCompletion();
         } while (trainingMode && episodeCount++ < epochs);

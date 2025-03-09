@@ -10,17 +10,19 @@ public final class GameLoop implements Runnable {
     private static final long FRAME_DELAY_CONSTANT = 1_000_000;
     private static final Logger LOGGER = LoggerFactory.getLogger(GameLoop.class);
 
-    private final GameEngine game;
+    private GameEngine game;
+    private final boolean isTrainingAgent;
 
     private Thread thread;
 
-    public GameLoop(GameEngine inputEngine) {
-        this.game = inputEngine;
+    public GameLoop(boolean isTrainingAgent) {
         EpisodeStatistics.retrieveEpisodeData();
+        this.isTrainingAgent = isTrainingAgent;
     }
 
     @Override
     public void run() {
+        game = new GameEngine(isTrainingAgent);
         while (!game.gameOver() && !Thread.currentThread().isInterrupted()) {
             long startTime = System.nanoTime();
             game.updateGame();

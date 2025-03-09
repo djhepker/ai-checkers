@@ -41,45 +41,49 @@ public final class Graphing {
         }
         initializing = true;
         LOGGER.debug("initializeLineChart called");
+        try {
 
-        Platform.runLater(() -> {
-            LOGGER.debug("initializeLineChart -> runLater() called");
-            if (title == null || xLabel == null || yLabel == null) {
-                LOGGER.error(String.format("Null input: title %s, xLabel %s, yLabel %s", title, xLabel, yLabel));
-                throw new IllegalArgumentException("Null initializeLineChart() argument");
-            }
-
-            NumberAxis xAxis = new NumberAxis();
-            xAxis.setLabel(xLabel);
-            NumberAxis yAxis = new NumberAxis();
-            yAxis.setLabel(yLabel);
-
-            lineSeries = new Series<>();
-            lineChart = new LineChart<>(xAxis, yAxis);
-            lineChart.getData().add(lineSeries);
-            lineChart.setTitle(title);
-
-            Scene scene = new Scene(lineChart, 800, 600);
-            stage = new Stage();
-            stage.setTitle(title);
-            stage.setScene(scene);
-            stage.show();
-
-            stage.setOnShown(event -> {
-                LOGGER.info("Stage is now shown");
-                initializing = false;
-                if (lineSeries != null) {
-                    Platform.runLater(() -> {
-                        synchronized (PENDING_DATA_POINTS) {
-                            for (Data<Number, Number> data : PENDING_DATA_POINTS) {
-                                lineSeries.getData().add(data);
-                            }
-                            PENDING_DATA_POINTS.clear();
-                        }
-                    });
+            Platform.runLater(() -> {
+                LOGGER.debug("initializeLineChart -> runLater() called");
+                if (title == null || xLabel == null || yLabel == null) {
+                    LOGGER.error(String.format("Null input: title %s, xLabel %s, yLabel %s", title, xLabel, yLabel));
+                    throw new IllegalArgumentException("Null initializeLineChart() argument");
                 }
+
+                NumberAxis xAxis = new NumberAxis();
+                xAxis.setLabel(xLabel);
+                NumberAxis yAxis = new NumberAxis();
+                yAxis.setLabel(yLabel);
+
+                lineSeries = new Series<>();
+                lineChart = new LineChart<>(xAxis, yAxis);
+                lineChart.getData().add(lineSeries);
+                lineChart.setTitle(title);
+
+                Scene scene = new Scene(lineChart, 800, 600);
+                stage = new Stage();
+                stage.setTitle(title);
+                stage.setScene(scene);
+                stage.show();
+
+                stage.setOnShown(event -> {
+                    LOGGER.info("Stage is now shown");
+                    initializing = false;
+                    if (lineSeries != null) {
+                        Platform.runLater(() -> {
+                            synchronized (PENDING_DATA_POINTS) {
+                                for (Data<Number, Number> data : PENDING_DATA_POINTS) {
+                                    lineSeries.getData().add(data);
+                                }
+                                PENDING_DATA_POINTS.clear();
+                            }
+                        });
+                    }
+                });
             });
-        });
+        } catch (Exception e) {
+            LOGGER.error("Error inside of initializeLineChart", e);
+        }
     }
 
     /**

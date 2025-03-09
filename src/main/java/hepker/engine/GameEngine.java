@@ -36,7 +36,6 @@ public final class GameEngine {
         loadGameWorld();
         if (!this.isTraining) {
             renderUI();
-            graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
         }
         if (isTraining) {
             this.lightChosen = true;
@@ -146,6 +145,7 @@ public final class GameEngine {
 
     private void renderUI() {
         this.graphicsHandler = new GraphicsHandler(creator.getCachedCells(), pMgr, inputHandler);
+        graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
     }
 
     public boolean gameOver() {
