@@ -11,18 +11,18 @@ public final class GameLoop implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameLoop.class);
 
     private GameEngine game;
-    private final boolean isTrainingAgent;
+    private final boolean trainingMode;
 
     private Thread thread;
 
     public GameLoop(boolean isTrainingAgent) {
         EpisodeStatistics.retrieveEpisodeData();
-        this.isTrainingAgent = isTrainingAgent;
+        this.trainingMode = isTrainingAgent;
     }
 
     @Override
     public void run() {
-        game = new GameEngine(isTrainingAgent);
+        game = new GameEngine(trainingMode);
         while (!game.gameOver() && !Thread.currentThread().isInterrupted()) {
             long startTime = System.nanoTime();
             game.updateGame();
@@ -44,10 +44,7 @@ public final class GameLoop implements Runnable {
                 }
             }
         }
-        EpisodeStatistics.processEpisode(AIEngine.getNumTurns());
-        EpisodeStatistics.updateEpisodeCSV();
-        updateGraph();
-
+        handleTurnCountVisualsAndData();
         Thread.currentThread().interrupt();
     }
 
@@ -57,18 +54,24 @@ public final class GameLoop implements Runnable {
         LOGGER.info("Game loop started");
     }
 
-    public void updateGraph() {
-        EpisodeStatistics.displayEpisodeStatistics();
-    }
-
     public void awaitCompletion() {
         try {
             if (thread != null) {
                 thread.join();
-                LOGGER.info("Game loop awaiting completion");
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+        LOGGER.info("Game loop finished");
+    }
+
+    private void handleTurnCountVisualsAndData() {
+        EpisodeStatistics.processEpisode(AIEngine.getNumTurns());
+        EpisodeStatistics.updateEpisodeCSV();
+        updateGraph();
+    }
+
+    private void updateGraph() {
+        EpisodeStatistics.displayEpisodeStatistics();
     }
 }

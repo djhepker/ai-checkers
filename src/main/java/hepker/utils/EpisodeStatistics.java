@@ -7,41 +7,41 @@ public final class EpisodeStatistics {
     @Getter
     private static int episodeCount = 0;
     @Getter
-    private static double averageTurnCount = 0.0;
-    @Getter
-    private static double totalTurnCount = 0.0;  // Keeps track of the sum of turns for all episodes.
+    private static double updatedTurnsPerEpisodeAverage = 0.0;
+    private static double oldTurnsPerEpisodeAverage = 0.0;
 
     private EpisodeStatistics() {
 
     }
 
     /**
-     * Helper method for setting member variables. First line is most recent data obtained.
+     * Helper method for setting member variables. First line is last data obtained.
      * Count is set first and average second.
      */
     public static void retrieveEpisodeData() {
         String[] csvData = CSVHelper.loadData(EPISODE_STATISTICS_FILEPATH);
         if (csvData.length != 0) {
-            String[] data = csvData[csvData.length - 1].split(",");
-            episodeCount = Integer.parseInt(data[0]);
-            averageTurnCount = Double.parseDouble(data[1]);
-            totalTurnCount = episodeCount * averageTurnCount;  // Calculate total turn count from the average
+            String[] dataFromPreviousEpisode = csvData[csvData.length - 1].split(",");
+            episodeCount = Integer.parseInt(dataFromPreviousEpisode[0]);
+            oldTurnsPerEpisodeAverage = Double.parseDouble(dataFromPreviousEpisode[1]);
         }
     }
 
-    public static void processEpisode(int turnCount) {
-        // Increment episode count
-        episodeCount++;
-
-        // Update the total turn count
-        totalTurnCount += turnCount;
-
-        // Calculate the new average
-        averageTurnCount = totalTurnCount / episodeCount;
+    /**
+     * Helper function performs the math for finding our average turn count
+     * Average turncount is [sum of turns from each epoch] / [episode count]
+     *
+     * @param currentEpochTurnCount The number of turns that occurred in this current epoch
+     */
+    public static void processEpisode(int currentEpochTurnCount) {
+        double sumTurnsOfEpochs = oldTurnsPerEpisodeAverage * episodeCount;
+        sumTurnsOfEpochs += currentEpochTurnCount;
+        ++episodeCount;
+        updatedTurnsPerEpisodeAverage = sumTurnsOfEpochs / episodeCount;
     }
 
     public static void updateEpisodeCSV() {
-        CSVHelper.writeData(EPISODE_STATISTICS_FILEPATH, episodeCount, averageTurnCount);
+        CSVHelper.writeData(EPISODE_STATISTICS_FILEPATH, episodeCount, updatedTurnsPerEpisodeAverage);
     }
 
     public static void displayEpisodeStatistics() {
@@ -53,7 +53,7 @@ public final class EpisodeStatistics {
                 Graphing.addDataPoint(Integer.parseInt(dataLine[0]), Double.parseDouble(dataLine[1]));
             }
         } else {
-            Graphing.addDataPoint(episodeCount, averageTurnCount);
+            Graphing.addDataPoint(episodeCount, updatedTurnsPerEpisodeAverage);
         }
     }
 }

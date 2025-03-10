@@ -1,5 +1,6 @@
 package hepker.utils;
 
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
@@ -13,86 +14,80 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Graphing {
+public final class Graphing extends Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Graphing.class);
     private static final List<Data<Number, Number>> PENDING_DATA_POINTS = new ArrayList<>();
 
     private static LineChart<Number, Number> lineChart;
     private static Series<Number, Number> lineSeries;
     private static Stage stage;
-    private static volatile boolean initializing = false; // Tracks initialization
+    private static volatile boolean initializing = false;
 
-    private Graphing() {
+    private static String chartTitle;
+    private static String xAxisLabel;
+    private static String yAxisLabel;
+
+    public Graphing() {
 
     }
 
-    /**
-     * Initializes the line chart with the given title and axis labels.
-     * Call this method once at the start to set up the chart.
-     *
-     * @param title  the title of the chart
-     * @param xLabel the label for the x-axis
-     * @param yLabel the label for the y-axis
-     */
+    @Override
+    public void start(Stage primaryStage) {
+        if (chartTitle == null || xAxisLabel == null || yAxisLabel == null) {
+            LOGGER.error("Chart parameters not set");
+            throw new IllegalStateException("Chart parameters not set");
+        }
+
+        // Set up the chart using the primary stage
+        NumberAxis xAxis = new NumberAxis();
+        xAxis.setLabel(xAxisLabel);
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel(yAxisLabel);
+
+        lineSeries = new Series<>();
+        lineChart = new LineChart<>(xAxis, yAxis);
+        lineChart.getData().add(lineSeries);
+        lineChart.setTitle(chartTitle);
+
+        Scene scene = new Scene(lineChart, 800, 600);
+        stage = primaryStage; // Use the primary stage
+        stage.setTitle(chartTitle);
+        stage.setScene(scene);
+        stage.show();
+
+        // Handle pending data points after the stage is shown
+        stage.setOnShown(event -> {
+            LOGGER.info("Stage is now shown");
+            initializing = false;
+            if (lineSeries != null) {
+                Platform.runLater(() -> {
+                    synchronized (PENDING_DATA_POINTS) {
+                        for (Data<Number, Number> data : PENDING_DATA_POINTS) {
+                            lineSeries.getData().add(data);
+                        }
+                        PENDING_DATA_POINTS.clear();
+                    }
+                });
+            }
+        });
+    }
+
     public static void initializeLineChart(String title, String xLabel, String yLabel) {
         if (initializing) {
             LOGGER.warn("Initialization already in progress, skipping...");
             return;
         }
         initializing = true;
-        LOGGER.debug("initializeLineChart called");
+        chartTitle = title;
+        xAxisLabel = xLabel;
+        yAxisLabel = yLabel;
         try {
-
-            Platform.runLater(() -> {
-                LOGGER.debug("initializeLineChart -> runLater() called");
-                if (title == null || xLabel == null || yLabel == null) {
-                    LOGGER.error(String.format("Null input: title %s, xLabel %s, yLabel %s", title, xLabel, yLabel));
-                    throw new IllegalArgumentException("Null initializeLineChart() argument");
-                }
-
-                NumberAxis xAxis = new NumberAxis();
-                xAxis.setLabel(xLabel);
-                NumberAxis yAxis = new NumberAxis();
-                yAxis.setLabel(yLabel);
-
-                lineSeries = new Series<>();
-                lineChart = new LineChart<>(xAxis, yAxis);
-                lineChart.getData().add(lineSeries);
-                lineChart.setTitle(title);
-
-                Scene scene = new Scene(lineChart, 800, 600);
-                stage = new Stage();
-                stage.setTitle(title);
-                stage.setScene(scene);
-                stage.show();
-
-                stage.setOnShown(event -> {
-                    LOGGER.info("Stage is now shown");
-                    initializing = false;
-                    if (lineSeries != null) {
-                        Platform.runLater(() -> {
-                            synchronized (PENDING_DATA_POINTS) {
-                                for (Data<Number, Number> data : PENDING_DATA_POINTS) {
-                                    lineSeries.getData().add(data);
-                                }
-                                PENDING_DATA_POINTS.clear();
-                            }
-                        });
-                    }
-                });
-            });
-        } catch (Exception e) {
-            LOGGER.error("Error inside of initializeLineChart", e);
+            Application.launch(Graphing.class);
+        } catch (IllegalStateException e) {
+            LOGGER.error("Cannot call launch() more than once or within an existing JavaFX app", e);
         }
     }
 
-    /**
-     * Adds a new data point to the existing line chart.
-     * Call this method at the end of each episode or at your chosen frequency.
-     *
-     * @param xValue the x-value of the new data point (e.g., episode number)
-     * @param yValue the y-value of the new data point (e.g., performance metric)
-     */
     public static void addDataPoint(Number xValue, Number yValue) {
         LOGGER.debug("addDataPoint called");
         if (xValue == null || yValue == null) {
@@ -106,17 +101,13 @@ public final class Graphing {
                 LOGGER.debug("Added dataPoint: " + data);
             }
         } else {
+            LOGGER.debug("Inside of addDataPoint -> runLater and lineSeries is not null");
             Platform.runLater(() -> {
-                LOGGER.debug("Inside of addDataPoint -> runLater");
                 lineSeries.getData().add(data);
             });
         }
     }
 
-    /**
-     * Getter for checking if the Graph is currently being displayed
-     * @return True if stage.isShowing()
-     */
     public static boolean graphIsDisplayed() {
         return lineChart != null && stage != null && stage.isShowing();
     }
