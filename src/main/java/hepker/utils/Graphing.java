@@ -27,6 +27,8 @@ public final class Graphing extends Application {
     private static String xAxisLabel;
     private static String yAxisLabel;
 
+    private static NumberAxis xAxis;
+
     public Graphing() {
 
     }
@@ -39,15 +41,21 @@ public final class Graphing extends Application {
         }
 
         // Set up the chart using the primary stage
-        NumberAxis xAxis = new NumberAxis();
+        this.xAxis = new NumberAxis();
         xAxis.setLabel(xAxisLabel);
+        xAxis.setAutoRanging(true);
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel(yAxisLabel);
+        yAxis.setAutoRanging(true);
 
         lineSeries = new Series<>();
         lineChart = new LineChart<>(xAxis, yAxis);
         lineChart.getData().add(lineSeries);
         lineChart.setTitle(chartTitle);
+        lineChart.setLegendVisible(false);
+        lineSeries.getNode().setStyle("-fx-stroke: blue; -fx-stroke-width: 2;");
+        lineChart.setStyle("-fx-background-color: lightgray;");
+
 
         Scene scene = new Scene(lineChart, 800, 600);
         stage = primaryStage; // Use the primary stage
