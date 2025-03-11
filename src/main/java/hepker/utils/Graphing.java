@@ -82,7 +82,7 @@ public final class Graphing extends Application {
         xAxisLabel = xLabel;
         yAxisLabel = yLabel;
         try {
-            Application.launch(Graphing.class);
+            new Thread(() -> Application.launch(Graphing.class)).start(); // TODO: FIX WORKED, WE NEED TO MULTITHREAD, GROK AND GPT ARE DUMB    
         } catch (IllegalStateException e) {
             LOGGER.error("Cannot call launch() more than once or within an existing JavaFX app", e);
         }

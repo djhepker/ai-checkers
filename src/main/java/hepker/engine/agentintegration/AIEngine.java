@@ -4,6 +4,7 @@ import hepker.ai.ai.Agent;
 import hepker.ai.utils.AgentStats;
 import hepker.game.gameworld.PieceManager;
 import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ public final class AIEngine {
     private final List<AgentRecord> agents;
     private final PieceManager pMgr;
     @Getter
+    @Setter
     private static int numTurns = 0;
 
     private int agentTurnSwitch;
@@ -34,7 +36,9 @@ public final class AIEngine {
     }
 
     public void update() {
-        ++numTurns;
+        if (agentTurnSwitch == 0) {
+            ++numTurns;
+        }
         try {
             updateAgent(agents.get(agentTurnSwitch).agent(), agents.get(agentTurnSwitch).decisionHandler());
         } catch (Exception e) {

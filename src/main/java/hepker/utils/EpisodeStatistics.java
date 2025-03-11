@@ -38,6 +38,8 @@ public final class EpisodeStatistics {
         sumTurnsOfEpochs += currentEpochTurnCount;
         ++episodeCount;
         updatedTurnsPerEpisodeAverage = sumTurnsOfEpochs / episodeCount;
+        System.out.printf("Turncount of this episode was: %d\n", currentEpochTurnCount);
+
     }
 
     public static void updateEpisodeCSV() {
