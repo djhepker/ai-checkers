@@ -14,6 +14,7 @@ import java.util.List;
 
 public final class CSVHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVHelper.class);
+    private static final String DATA_FILEPATH = "src/main/resources/data/";
 
     private CSVHelper() {
 
@@ -22,19 +23,20 @@ public final class CSVHelper {
     /**
      * Loads all lines from the specified CSV file into a String array.
      *
-     * @param csvName the name of the CSV file to load
+     * @param fileName the name of the CSV file to load
      * @return a String array containing each line of the CSV file, or an empty array if the file does not exist
      */
-    public static String[] loadData(String csvName) {
+    public static String[] loadData(String fileName) {
         List<String> lines = new ArrayList<>();
-        File file = new File(csvName);
+        String dataPathAndFileName = DATA_FILEPATH + fileName;
+        File file = new File(dataPathAndFileName);
         if (!file.exists()) {
             try {
                 if (file.createNewFile()) {
-                    LOGGER.info("File '{}' did not exist and has been created.", csvName);
+                    LOGGER.info("File '{}' did not exist and has been created.", dataPathAndFileName);
                 }
             } catch (IOException e) {
-                LOGGER.error("Failed to create file '{}': {}", csvName, e.getMessage());
+                LOGGER.error("Failed to create file '{}': {}", dataPathAndFileName, e.getMessage());
                 return new String[0];
             }
         }
@@ -44,7 +46,7 @@ public final class CSVHelper {
                 lines.add(line);
             }
         } catch (IOException e) {
-            LOGGER.error("Error reading file '{}': {}", csvName, e.getMessage());
+            LOGGER.error("Error reading file '{}': {}", dataPathAndFileName, e.getMessage());
             return new String[0];
         }
         return lines.toArray(new String[0]);
@@ -53,13 +55,14 @@ public final class CSVHelper {
     /**
      * Writes a new line to the specified CSV file with the given average and count.
      *
-     * @param csvName the name of the CSV file to write to
+     * @param fileName the name of the CSV file to write to
      * @param average the average value to write
      * @param count   the count value to write
      */
-    public static void writeData(String csvName, int count, double average) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvName, true))) {
-            bw.write(String.format("%d,%.2f\n", count, average));
+    public static void writeData(String fileName, double count, double average, int sumTurnsPlayed) {
+        String dataPathAndFileName = DATA_FILEPATH + fileName;
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataPathAndFileName, true))) {
+            bw.write(String.format("%.2f,%.2f,%d\n", count, average, sumTurnsPlayed));
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }

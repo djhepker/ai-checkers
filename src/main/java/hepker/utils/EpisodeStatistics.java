@@ -3,12 +3,12 @@ package hepker.utils;
 import lombok.Getter;
 
 public final class EpisodeStatistics {
-    private static final String EPISODE_STATISTICS_FILEPATH = "EpisodeStatistics.csv";
+    private static final String EPISODE_STATISTICS_NAME = "EpisodeStatistics.csv";
     @Getter
-    private static int episodeCount = 0;
+    private static double episodeCount = 0;
     @Getter
-    private static double updatedTurnsPerEpisodeAverage = 0.0;
-    private static double oldTurnsPerEpisodeAverage = 0.0;
+    private static int sumOfTurnsPlayed = 0;
+    private static double turnAverage = 0.0;
 
     private EpisodeStatistics() {
 
@@ -19,11 +19,12 @@ public final class EpisodeStatistics {
      * Count is set first and average second.
      */
     public static void retrieveEpisodeData() {
-        String[] csvData = CSVHelper.loadData(EPISODE_STATISTICS_FILEPATH);
+        String[] csvData = CSVHelper.loadData(EPISODE_STATISTICS_NAME);
         if (csvData.length != 0) {
             String[] dataFromPreviousEpisode = csvData[csvData.length - 1].split(",");
-            episodeCount = Integer.parseInt(dataFromPreviousEpisode[0]);
-            oldTurnsPerEpisodeAverage = Double.parseDouble(dataFromPreviousEpisode[1]);
+            episodeCount = Double.parseDouble(dataFromPreviousEpisode[0]);
+            turnAverage = Double.parseDouble(dataFromPreviousEpisode[1]);
+            sumOfTurnsPlayed = Integer.parseInt(dataFromPreviousEpisode[2]);
         }
     }
 
@@ -34,28 +35,24 @@ public final class EpisodeStatistics {
      * @param currentEpochTurnCount The number of turns that occurred in this current epoch
      */
     public static void processEpisode(int currentEpochTurnCount) {
-        double sumTurnsOfEpochs = oldTurnsPerEpisodeAverage * episodeCount;
-        sumTurnsOfEpochs += currentEpochTurnCount;
-        ++episodeCount;
-        updatedTurnsPerEpisodeAverage = sumTurnsOfEpochs / episodeCount;
-        System.out.printf("Turncount of this episode was: %d\n", currentEpochTurnCount);
-
+        sumOfTurnsPlayed += currentEpochTurnCount;
+        turnAverage = sumOfTurnsPlayed / ++episodeCount;
     }
 
     public static void updateEpisodeCSV() {
-        CSVHelper.writeData(EPISODE_STATISTICS_FILEPATH, episodeCount, updatedTurnsPerEpisodeAverage);
+        CSVHelper.writeData(EPISODE_STATISTICS_NAME, episodeCount, turnAverage, sumOfTurnsPlayed);
     }
 
     public static void displayEpisodeStatistics() {
         if (!Graphing.graphIsDisplayed()) {
             Graphing.initializeLineChart("Episode Turn Averages", "Episode", "Average Turn Count");
-            String[] data = CSVHelper.loadData(EPISODE_STATISTICS_FILEPATH);
+            String[] data = CSVHelper.loadData(EPISODE_STATISTICS_NAME);
             for (String datum : data) {
                 String[] dataLine = datum.split(",");
-                Graphing.addDataPoint(Integer.parseInt(dataLine[0]), Double.parseDouble(dataLine[1]));
+                Graphing.addDataPoint(Double.parseDouble(dataLine[0]), Double.parseDouble(dataLine[1]));
             }
         } else {
-            Graphing.addDataPoint(episodeCount, updatedTurnsPerEpisodeAverage);
+            Graphing.addDataPoint(episodeCount, turnAverage);
         }
     }
 }
