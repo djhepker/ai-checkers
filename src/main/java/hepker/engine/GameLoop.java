@@ -44,7 +44,7 @@ public final class GameLoop implements Runnable {
                 }
             }
         }
-        handleTurnCountVisualsAndData();
+        //handleTurnCountVisualsAndData();
         Thread.currentThread().interrupt();
     }
 

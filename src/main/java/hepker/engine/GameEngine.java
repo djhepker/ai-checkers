@@ -20,7 +20,6 @@ public final class GameEngine {
     private final boolean hasPlayer;
     private final boolean isTraining;
 
-    private EntityCreator creator;
     private PieceManager pMgr;
     private GraphicsHandler graphicsHandler;
     private InputHandler inputHandler;
@@ -33,9 +32,10 @@ public final class GameEngine {
 
     public GameEngine(boolean aiIsTraining) {
         this.isTraining = aiIsTraining;
-        loadGameWorld();
+        EntityCreator creator = new EntityCreator();
+        loadGameWorld(creator);
         if (!this.isTraining) {
-            renderUI();
+            renderUI(creator);
         }
         if (isTraining) {
             this.lightChosen = true;
@@ -137,13 +137,12 @@ public final class GameEngine {
         pMgr.updateAllPieces();
     }
 
-    private void loadGameWorld() {
+    private void loadGameWorld(EntityCreator creator) {
         this.inputHandler = new InputHandler();
-        this.creator = new EntityCreator();
         this.pMgr = new PieceManager(creator, inputHandler);
     }
 
-    private void renderUI() {
+    private void renderUI(EntityCreator creator) {
         this.graphicsHandler = new GraphicsHandler(creator.getCachedCells(), pMgr, inputHandler);
         graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
     }

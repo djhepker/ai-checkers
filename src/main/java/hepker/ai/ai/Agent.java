@@ -27,7 +27,7 @@ public final class Agent implements AI {
 
     private final double gamma = 0.9;
     private final double alpha = 0.82;
-    private double epsilon = 0.7;
+    private double epsilon = 0.85;
     private double rho;
     private double currentQ;
     private double maxQPrime;

@@ -28,6 +28,7 @@ public final class Graphing extends Application {
     private static String yAxisLabel;
 
     private static NumberAxis xAxis;
+    private static NumberAxis yAxis;
 
     public Graphing() {
 
@@ -41,19 +42,21 @@ public final class Graphing extends Application {
         }
 
         // Set up the chart using the primary stage
-        this.xAxis = new NumberAxis();
+        xAxis = new NumberAxis();
         xAxis.setLabel(xAxisLabel);
-        xAxis.setAutoRanging(true);
-        NumberAxis yAxis = new NumberAxis();
+        yAxis = new NumberAxis();
         yAxis.setLabel(yAxisLabel);
-        yAxis.setAutoRanging(true);
+        xAxis.setTickUnit(1);
+        yAxis.setTickUnit(1);
+
+        xAxis.setAutoRanging(false);
+        yAxis.setAutoRanging(false);
 
         lineSeries = new Series<>();
         lineChart = new LineChart<>(xAxis, yAxis);
         lineChart.getData().add(lineSeries);
         lineChart.setTitle(chartTitle);
         lineChart.setLegendVisible(false);
-        lineSeries.getNode().setStyle("-fx-stroke: blue; -fx-stroke-width: 2;");
         lineChart.setStyle("-fx-background-color: lightgray;");
 
 
@@ -112,6 +115,18 @@ public final class Graphing extends Application {
             LOGGER.debug("Inside of addDataPoint -> runLater and lineSeries is not null");
             Platform.runLater(() -> {
                 lineSeries.getData().add(data);
+
+
+                int minX = (int) lineSeries.getData().stream().mapToDouble(d -> d.getXValue().doubleValue()).min().getAsDouble();
+                int maxX = (int) lineSeries.getData().stream().mapToDouble(d -> d.getXValue().doubleValue()).max().getAsDouble();
+                int minY = (int) lineSeries.getData().stream().mapToDouble(d -> d.getYValue().doubleValue()).min().getAsDouble();
+                int maxY = (int) lineSeries.getData().stream().mapToDouble(d -> d.getYValue().doubleValue()).max().getAsDouble();
+
+                xAxis.setLowerBound(minX - 5);
+                xAxis.setUpperBound(maxX + 5);
+                yAxis.setLowerBound(minY - 5);
+                yAxis.setUpperBound(maxY + 5);
+
             });
         }
     }
