@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.util.Random;
 
 /**
- * STATE: pieces[][] converted to a hexadecimal String
+ * STATE: pieces[] converted to a byte String
  * ACTION: Moving pieces when it is Agent's turn
  * REWARD: Positive, Negative, & Neutral
  * EPISODE: GameEngine calls updateGame() in-between episodes
