@@ -132,18 +132,15 @@ public final class PieceManager {
      */
     public void reverseBoard() {
         int n = piecesContainer.length;
-        for (int i = 0; i < n; i++) {
-            GameBoardPiece piece = piecesContainer[i];
+        GameBoardPiece[] reverseBuilder = new GameBoardPiece[n];
+        for (GameBoardPiece piece : piecesContainer) {
             if (piece != null) {
                 piece.setX(7 - piece.getX());
                 piece.setY(7 - piece.getY());
             }
+            reverseBuilder[--n] = piece;
         }
-        for (int left = 0, right = n - 1; left < right; left++, right--) {
-            GameBoardPiece temp = piecesContainer[left];
-            piecesContainer[left] = piecesContainer[right];
-            piecesContainer[right] = temp;
-        }
+        piecesContainer = reverseBuilder;
     }
 
 

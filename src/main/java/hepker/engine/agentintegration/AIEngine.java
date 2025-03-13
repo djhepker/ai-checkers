@@ -1,6 +1,7 @@
 package hepker.engine.agentintegration;
 
 import hepker.ai.ai.Agent;
+import hepker.ai.utils.AITools;
 import hepker.ai.utils.AgentStats;
 import hepker.game.gameworld.PieceManager;
 import lombok.Getter;
@@ -42,12 +43,17 @@ public final class AIEngine {
         try {
             updateAgent(agents.get(agentTurnSwitch).agent(), agents.get(agentTurnSwitch).decisionHandler());
         } catch (Exception e) {
-            LOGGER.error("Agent Manager Exception", e);
+            StringBuilder errorBuilder = new StringBuilder()
+                    .append("Agent Manager Exception ")
+                    .append("During Agent ")
+                    .append(agentTurnSwitch)
+                    .append(" Turn ");
+            LOGGER.error(errorBuilder.toString(), e);
         }
     }
 
     private void updateAgent(Agent inputAgent, AIDecisionHandler inputDecisionHandler) {
-        stateKey = Environment.getEncodedGameState(pMgr);
+        stateKey = AITools.getByteEncryptedStateString(pMgr);
         inputAgent.setStateKey(stateKey);
         inputDecisionHandler.updateDecisionContainer();
         int numDecisions = inputDecisionHandler.getNumDecisions();
@@ -63,7 +69,7 @@ public final class AIEngine {
         inputDecisionHandler.movePiece(actionChoiceInt);
 
         inputDecisionHandler.updateDecisionContainer();
-        String stateKeyPrime = Environment.getEncodedGameState(pMgr);
+        String stateKeyPrime = AITools.getByteEncryptedStateString(pMgr);
         inputAgent.updateRho(inputDecisionHandler.getDecisionReward());
 
         inputAgent.update(stateKeyPrime, actionChoiceInt);
@@ -94,7 +100,7 @@ public final class AIEngine {
         agentTurnSwitch ^= 1;
     }
 
-    public boolean agentOneTurn() {
+    public boolean agentZeroTurn() {
         return agentTurnSwitch == 0;
     }
 
@@ -109,6 +115,7 @@ public final class AIEngine {
             zero.setEpsilon(1.0);
         }
         agents.add(new AgentRecord(zero, new AIDecisionHandler(pMgr, duskyAgent)));
-        LOGGER.info("Generated agent: stochastic={}, color={}", isStochastic, duskyAgent ? "DUSKY" : "LIGHT");
+        LOGGER.info("Generated agent: stochastic={}, color={}, number: ",
+                isStochastic, duskyAgent ? "DUSKY" : "LIGHT", agents.size() - 1);
     }
 }

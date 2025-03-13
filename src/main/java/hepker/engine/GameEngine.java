@@ -36,8 +36,8 @@ public final class GameEngine {
         EntityCreator creator = new EntityCreator();
         loadGameWorld(creator);
         if (!this.isTraining) {
-            renderUI(creator);
             this.inputHandler = new InputHandler();
+            renderUI(creator);
         }
         if (isTraining) {
             this.lightChosen = true;
@@ -161,7 +161,7 @@ public final class GameEngine {
     private void trainAgent() {
         int numPiecesNaught = pMgr.getNumPiecesInPlay();
         agentMgr.update();
-        if (agentMgr.agentOneTurn() && !isTraining) {
+        if (agentMgr.agentZeroTurn() && !isTraining) {
             graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
         }
         prepBoardForOtherPlayer();
@@ -171,7 +171,7 @@ public final class GameEngine {
         } else {
             numTurnsWithoutCapture = 0;
         }
-        if (agentMgr.agentOneTurn()) {
+        if (agentMgr.agentZeroTurn()) {
             trainAgent();
         }
     }

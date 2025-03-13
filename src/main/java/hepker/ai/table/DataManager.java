@@ -74,7 +74,7 @@ public final class DataManager {
                 resultArray = existingArray.clone();
             }
             resultArray[index] = inputQ;
-            LOGGER.debug("Updated Q value for serialKey: {}, index: {}, value: {}", serialKey, index, inputQ);
+            // LOGGER.debug("Updated Q value for serialKey: {}, index: {}, value: {}", serialKey, index, inputQ);
             return resultArray;
         });
     }
