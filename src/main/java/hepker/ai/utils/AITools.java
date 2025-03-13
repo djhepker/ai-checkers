@@ -6,6 +6,7 @@ import hepker.game.entity.GameBoardPiece;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Comparator;
@@ -66,9 +67,8 @@ public final class AITools {
     }
 
     /**
-     * Encodes the game state into a Base64 string for storage.
-     * For LIGHT, assumes the array is reversed and pieces swapped elsewhere; for DUSKY, uses as-is.
-     * Each square (0-6) is 3 bits, packed into 192 bits, stored in 24 bytes.
+     * Base 64 encodes an int[] to a String representation
+     *
      * @param gameState 65-element int[] representing the gamestate
      * @return Base64-encoded string
      */
@@ -80,30 +80,16 @@ public final class AITools {
             LOGGER.error(String.format("Invalid array length: %d", gameState.length));
             throw new IllegalArgumentException();
         }
-        byte[] bytes = new byte[24];
-        int byteIndex = 0;
-        long accumulator = 0;
-        int bitCount = 0;
-        for (int i = 0; i < 64; i++) {
-            int value = gameState[i];
-            if (value < 0 || value > 6) {
-                throw new IllegalArgumentException("Invalid value at index " + i + ": " + value);
-            }
-            accumulator = (accumulator << 3) | (value & 0x07); // Mask to 3 bits
-            bitCount += 3;
-            if (bitCount >= 8) {
-                int shift = bitCount - 8;
-                bytes[byteIndex] = (byte) ((accumulator >> shift) & 0xFF);
-                byteIndex++;
-                bitCount -= 8;
-                accumulator = accumulator & ((1L << bitCount) - 1); // Keep remaining bits
-            }
+        ByteBuffer buffer = ByteBuffer.allocate(gameState.length * 4);
+        for (int element : gameState) {
+            buffer.putInt(element);
         }
-        return Base64.getEncoder().encodeToString(bytes);
+        return Base64.getEncoder().encodeToString(buffer.array());
     }
 
     /**
      * Helper function for encoding the board's pieces into an int[]
+     *
      * @param inputPMgr pMgr required for evaluating pieces on the board
      * @return gameState An int[] representing every piece in play
      */
@@ -120,6 +106,7 @@ public final class AITools {
 
     /**
      * Helper that changes Pieces into int
+     *
      * @param piece The given piece we are sconverting
      * @return an int representing the piece
      */
@@ -136,7 +123,7 @@ public final class AITools {
                 default -> throw new IllegalArgumentException("Invalid piece name: " + piece.getName());
             };
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            LOGGER.error("Illegal argument", e);
             return 0;
         }
     }

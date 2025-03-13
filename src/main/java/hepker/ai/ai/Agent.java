@@ -69,11 +69,26 @@ public final class Agent {
         this.epsilon = inputEpsilon;
     }
 
+    /**
+     * Queues State Action pair to be placed into SQLite table
+     *
+     * @param stateKeyPrime The post-action encrypted gamestate. Be sure to update your stateKey, post
+     *                      action, before sending it as an argument
+     * @param actionChoiceInt The index of the decision which resulted in stateKeyPrime. Should be
+     *                        the return value of getActionInt()
+     */
     public void update(String stateKeyPrime, int actionChoiceInt) {
         calculateMaxQPrime(stateKeyPrime);
         updateQValue(actionChoiceInt);
     }
 
+    /**
+     * getter for retrieving the action chosen by the Agent as an int
+     *
+     * @param numDecisions The upper limit of the number of decisions the Agent has to choose
+     *                     from. Exclusive
+     * @return An int value of [0,numDecisions)
+     */
     public int getActionInt(int numDecisions) {
         if (Math.random() < epsilon) {
             return explore(numDecisions);
