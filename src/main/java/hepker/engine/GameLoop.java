@@ -47,7 +47,7 @@ public final class GameLoop implements Runnable {
                 }
             }
         }
-        Thread.currentThread().interrupt();
+        EpisodeStatistics.updateEpisodeCSV();
     }
 
     public void start() {

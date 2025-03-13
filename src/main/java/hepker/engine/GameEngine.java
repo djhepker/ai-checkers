@@ -97,7 +97,6 @@ public final class GameEngine {
             } else if (gameOver) {
                 EpisodeStatistics.processEpisode(AIEngine.getNumTurns());
                 AIEngine.setNumTurns(0);
-                EpisodeStatistics.updateEpisodeCSV();
                 if (lightChosen) {
                     agentMgr.finishGame(pMgr.getNumLight() == 0);
                 } else {
