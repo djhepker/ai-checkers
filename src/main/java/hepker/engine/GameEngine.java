@@ -5,6 +5,7 @@ import hepker.game.graphics.GraphicsHandler;
 import hepker.game.gameworld.PieceManager;
 import hepker.game.graphics.InputHandler;
 import hepker.game.entity.GameBoardPiece;
+import hepker.utils.EpisodeStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,6 +97,9 @@ public final class GameEngine {
                     }
                 }
             } else if (gameOver) {
+                EpisodeStatistics.processEpisode(AIEngine.getNumTurns());
+                AIEngine.setNumTurns(0);
+                EpisodeStatistics.updateEpisodeCSV();
                 if (lightChosen) {
                     agentMgr.finishGame(pMgr.getNumLight() == 0);
                 } else {
@@ -108,7 +112,7 @@ public final class GameEngine {
                         .append(totalTurnCount)
                         .append(" Turns without capture: ")
                         .append(numTurnsWithoutCapture);
-                if (numTurnsWithoutCapture != 50) {
+                if (numTurnsWithoutCapture <= 50) {
                     debugBuilder.append(" * Successful Game");
                 }
                 LOGGER.info(debugBuilder.toString());

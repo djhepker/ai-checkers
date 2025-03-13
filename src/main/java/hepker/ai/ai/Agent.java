@@ -25,9 +25,9 @@ public final class Agent {
         Q_TABLE_MGR = new DataManager();
     }
 
-    private final double gamma = 0.9;
-    private final double alpha = 0.82;
-    private double epsilon = 0.85;
+    private double gamma;
+    private double alpha;
+    private double epsilon;
     private double rho;
     private double currentQ;
     private double maxQPrime;
@@ -35,7 +35,18 @@ public final class Agent {
     @Setter
     private String stateKey;
 
+    /**
+     * Constructs a new Agent. All parameters are initialized.
+     * gamma = 0.90 (How much the agent values learned information; delayed gratification vs instantaneous)
+     * alpha = 0.82 (Rate at which Agent learns)
+     * epsilon = 0.85 (Probability that Agent will select a random action)
+     * else: 0.0
+     *
+     */
     public Agent() {
+        this.gamma = 0.90;
+        this.alpha = 0.82;
+        this.epsilon = 0.85;
         this.currentQ = 0.0;
         this.maxQPrime = 0.0;
         this.rho = 0.0;
