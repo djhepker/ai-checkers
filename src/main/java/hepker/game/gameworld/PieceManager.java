@@ -11,7 +11,6 @@ import java.util.Arrays;
 
 public final class PieceManager {
     private final EntityCreator creator;
-    private final InputHandler input;
     @Getter
     private GameBoardPiece[] piecesContainer;
     @Getter
@@ -22,10 +21,9 @@ public final class PieceManager {
     private int numLight;
     private boolean gameOver;
 
-    public PieceManager(EntityCreator inputCreator, InputHandler inputInputHandler) {
+    public PieceManager(EntityCreator inputCreator) {
         this.creator = inputCreator;
         this.piecesContainer = generateBeginningCheckers();
-        this.input = inputInputHandler;
         updateAllPieces();
         this.displayPieces = piecesContainer;
         this.gameOver = false;
@@ -60,7 +58,7 @@ public final class PieceManager {
         return piecesContainer[y * 8 + x];
     }
 
-    public boolean movePiece(GameBoardPiece piece) {
+    public boolean movePiece(GameBoardPiece piece, InputHandler input) {
         int postX = input.getSelectedCol();
         int postY = input.getSelectedRow();
         if (getPiece(postX, postY) == null) {

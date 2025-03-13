@@ -65,14 +65,9 @@ public final class GameLoop implements Runnable {
         LOGGER.info("Game loop finished");
     }
 
-    private void handleTurnCountVisualsAndData() {
+    private void updateEpisodeData() {
         EpisodeStatistics.processEpisode(AIEngine.getNumTurns());
         AIEngine.setNumTurns(0);
         EpisodeStatistics.updateEpisodeCSV();
-        updateGraph();
-    }
-
-    private void updateGraph() {
-        EpisodeStatistics.displayEpisodeStatistics();
     }
 }

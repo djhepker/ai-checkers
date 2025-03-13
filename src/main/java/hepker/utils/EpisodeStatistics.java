@@ -42,17 +42,4 @@ public final class EpisodeStatistics {
     public static void updateEpisodeCSV() {
         CSVHelper.writeData(EPISODE_STATISTICS_NAME, episodeCount, turnAverage, sumOfTurnsPlayed);
     }
-
-    public static void displayEpisodeStatistics() {
-        if (!Graphing.graphIsDisplayed()) {
-            Graphing.initializeLineChart("Episode Turn Averages", "Episode", "Average Turn Count");
-            String[] data = CSVHelper.loadData(EPISODE_STATISTICS_NAME);
-            for (String datum : data) {
-                String[] dataLine = datum.split(",");
-                Graphing.addDataPoint(Double.parseDouble(dataLine[0]), Double.parseDouble(dataLine[1]));
-            }
-        } else {
-            Graphing.addDataPoint(episodeCount, turnAverage);
-        }
-    }
 }

@@ -18,7 +18,7 @@ import java.util.Random;
  * POLICY: A mapping from "S" to "a"; a solution to the Markov decision process. Indicates
  * action "a" is to be taken while in state "S"
  */
-public final class Agent implements AI {
+public final class Agent {
     private static final DataManager Q_TABLE_MGR;
 
     static {
