@@ -7,14 +7,10 @@ import hepker.engine.EntityCreator;
 import hepker.game.entity.GameBoardPiece;
 import lombok.Getter;
 
-import java.util.Arrays;
-
 public final class PieceManager {
     private final EntityCreator creator;
     @Getter
     private GameBoardPiece[] piecesContainer;
-    @Getter
-    private GameBoardPiece[] displayPieces;
     @Getter
     private int numDusky;
     @Getter
@@ -25,7 +21,6 @@ public final class PieceManager {
         this.creator = inputCreator;
         this.piecesContainer = generateBeginningCheckers();
         updateAllPieces();
-        this.displayPieces = piecesContainer;
         this.gameOver = false;
     }
 
@@ -97,24 +92,12 @@ public final class PieceManager {
         if (piece == null) {
             return false;
         }
-        if (Arrays.equals(piecesContainer, displayPieces)) {
-            piecesContainer[piece.getY() * 8 + piece.getX()] = piece;
-            displayPieces[piece.getY() * 8 + piece.getX()] = piece;
-        } else {
-            piecesContainer[piece.getY() * 8 + piece.getX()] = piece;
-            displayPieces[(7 - piece.getY()) * 8 + (7 - piece.getX())] = piece;
-        }
+        piecesContainer[piece.getY() * 8 + piece.getX()] = piece;
         return true;
     }
 
     public void nullifyPiece(int x, int y) {
-        if (Arrays.equals(piecesContainer, displayPieces)) {
-            piecesContainer[y * 8 + x] = null;
-            displayPieces[y * 8 + x] = null;
-        } else {
-            piecesContainer[y * 8 + x] = null;
-            displayPieces[(7 - y) * 8 + (7 - x)] = null;
-        }
+        piecesContainer[y * 8 + x] = null;
     }
 
     public int getNumPiecesInPlay() {
@@ -126,23 +109,6 @@ public final class PieceManager {
         }
         return count;
     }
-
-    /**
-     * Reverses all pieces in the game board, as if the board were rotated pi
-     */
-    public void reverseBoard() {
-        int n = piecesContainer.length;
-        GameBoardPiece[] reverseBuilder = new GameBoardPiece[n];
-        for (GameBoardPiece piece : piecesContainer) {
-            if (piece != null) {
-                piece.setX(7 - piece.getX());
-                piece.setY(7 - piece.getY());
-            }
-            reverseBuilder[--n] = piece;
-        }
-        piecesContainer = reverseBuilder;
-    }
-
 
     private void processCapturedPieces(ActionNode actionNode) {
         CapturedNode capturedPiece = actionNode.getCapturedNodes();

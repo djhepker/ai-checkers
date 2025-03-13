@@ -54,9 +54,6 @@ public final class GameEngine {
             this.playerTurn = lightChosen;
             this.agentMgr = new AIEngine(pMgr, lightChosen, gameMode);
         }
-        if (!lightChosen) {
-            pMgr.reverseBoard();
-        }
         this.gameOver = false;
         this.numTurnsWithoutCapture = 0;
         this.totalTurnCount = 0;
@@ -76,6 +73,7 @@ public final class GameEngine {
             if (numTurnsWithoutCapture >= 50 || pMgr.sideDefeated()) {
                 gameOver = true;
             }
+            pMgr.updateAllPieces();
         } catch (AssertionError e) {
             LOGGER.error("Invalid mouse selection in InputHandler", e);
         } catch (ConcurrentModificationException e) {
@@ -131,7 +129,7 @@ public final class GameEngine {
                 handleInput();
             }
         } else {
-            agentTurn();
+            agentMgr.update();
             playerTurn = !playerTurn;
         }
     }
@@ -144,27 +142,15 @@ public final class GameEngine {
             if (piece.isReadyForPromotion()) {
                 pMgr.promotePiece(piece);
             }
-            graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
-            prepBoardForOtherPlayer();
             playerTurn = !playerTurn;
         } else {
             inputHandler.resetClicks();
         }
     }
 
-    private void agentTurn() {
-        agentMgr.update();
-        prepBoardForOtherPlayer();
-        graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
-    }
-
     private void trainAgent() {
         int numPiecesNaught = pMgr.getNumPiecesInPlay();
         agentMgr.update();
-        if (agentMgr.agentZeroTurn() && !isTraining) {
-            graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
-        }
-        prepBoardForOtherPlayer();
         agentMgr.flipAgentSwitch();
         if (numPiecesNaught == pMgr.getNumPiecesInPlay()) {
             ++numTurnsWithoutCapture;
@@ -172,13 +158,9 @@ public final class GameEngine {
             numTurnsWithoutCapture = 0;
         }
         if (agentMgr.agentZeroTurn()) {
+            pMgr.updateAllPieces();
             trainAgent();
         }
-    }
-
-    private void prepBoardForOtherPlayer() {
-        pMgr.reverseBoard();
-        pMgr.updateAllPieces();
     }
 
     /**
@@ -196,6 +178,5 @@ public final class GameEngine {
      */
     private void renderUI(EntityCreator creator) {
         this.graphicsHandler = new GraphicsHandler(creator.getCachedCells(), pMgr, inputHandler);
-        graphicsHandler.cacheBoard(pMgr.getPiecesContainer());
     }
 }

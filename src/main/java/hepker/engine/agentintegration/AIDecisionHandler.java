@@ -31,7 +31,7 @@ public final class AIDecisionHandler implements DecisionHandler {
     public AIDecisionHandler(PieceManager inputPMgr, boolean isDusky) {
         this.pieceColor = isDusky ? GameBoardPiece.PieceColor.DUSKY : GameBoardPiece.PieceColor.LIGHT;
         this.pMgr = inputPMgr;
-        this.reasonableTurnCount = 30;
+        this.reasonableTurnCount = 40;
         this.decayingScalar = 1.0;
     }
 

@@ -17,11 +17,13 @@ public class Checker extends Entity implements GameBoardPiece {
     @Getter
     private final MovementManager moveMgr;
     private final short pieceValue;
+    private final int movementSign;
 
     public Checker(String name, int x, int y, BufferedImage image, short rewardValue) {
         super(name, x, y, image, name.startsWith("LIGHT"));
         this.pieceValue = rewardValue;
         this.moveMgr = new MovementManager();
+        this.movementSign = super.isLight() ? 1 : -1;
     }
 
     /**
@@ -65,7 +67,7 @@ public class Checker extends Entity implements GameBoardPiece {
             } else {
                 xDirectionArray = new int[] {currState.getStateCode()};
             }
-            int yNext = currState.getY() - 1;
+            int yNext = currState.getY() - movementSign;
             if (0 <= yNext && yNext < 8) {
                 for (int xDirection : xDirectionArray) {
                     int xNext = currState.getX() + xDirection;
@@ -174,6 +176,6 @@ public class Checker extends Entity implements GameBoardPiece {
      */
     @Override
     public boolean isReadyForPromotion() {
-        return getY() == 0;
+        return super.isLight() ? getY() == 0 : getY() == 7;
     }
 }

@@ -59,10 +59,10 @@ public final class CSVHelper {
      * @param average the average value to write
      * @param count   the count value to write
      */
-    public static void writeData(String fileName, double count, double average, int sumTurnsPlayed) {
+    public static void writeData(String fileName, double average, double count, int sumTurnsPlayed) {
         String dataPathAndFileName = DATA_FILEPATH + fileName;
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataPathAndFileName, true))) {
-            bw.write(String.format("%.2f,%.2f,%d\n", count, average, sumTurnsPlayed));
+            bw.write(String.format("%.3f,%.3f,%d\n", average, count, sumTurnsPlayed));
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }

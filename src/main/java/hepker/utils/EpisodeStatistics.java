@@ -40,6 +40,6 @@ public final class EpisodeStatistics {
     }
 
     public static void updateEpisodeCSV() {
-        CSVHelper.writeData(EPISODE_STATISTICS_NAME, episodeCount, turnAverage, sumOfTurnsPlayed);
+        CSVHelper.writeData(EPISODE_STATISTICS_NAME, turnAverage, episodeCount, sumOfTurnsPlayed);
     }
 }

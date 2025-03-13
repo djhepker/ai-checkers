@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static hepker.game.entity.GameBoardPiece.PieceColor.DUSKY;
+
 /**
  * Class for connecting game to AI
  * */
@@ -53,7 +55,8 @@ public final class AIEngine {
     }
 
     private void updateAgent(Agent inputAgent, AIDecisionHandler inputDecisionHandler) {
-        stateKey = AITools.getByteEncryptedStateString(pMgr);
+        boolean isDusky = inputDecisionHandler.getPieceColor() == DUSKY;
+        stateKey = AITools.getByteEncryptedStateString(pMgr, isDusky);
         inputAgent.setStateKey(stateKey);
         inputDecisionHandler.updateDecisionContainer();
         int numDecisions = inputDecisionHandler.getNumDecisions();
@@ -69,7 +72,7 @@ public final class AIEngine {
         inputDecisionHandler.movePiece(actionChoiceInt);
 
         inputDecisionHandler.updateDecisionContainer();
-        String stateKeyPrime = AITools.getByteEncryptedStateString(pMgr);
+        String stateKeyPrime = AITools.getByteEncryptedStateString(pMgr, isDusky);
         inputAgent.updateRho(inputDecisionHandler.getDecisionReward());
 
         inputAgent.update(stateKeyPrime, actionChoiceInt);
