@@ -8,28 +8,7 @@ import lombok.Setter;
 import java.util.Random;
 
 /**
- * To use Agent, you must perform the following:<br>
- * i    agentObject.setStateKey(yourStateString);<br>
- * ii   DecisionHandler.updateDecisionContainer()<br>
- * iii  yourDecisionContainer.getNumDecisions()<br>
- * iv   agentObject.getActionInt(numDecisions)<br>
- * v    DecisionHandler.performAction(actionInt);<br>
- * vi
- *
- *
- * STATE: A programmer-coded String value that is given to Agent to identify its learned values
- * ACTION: Moving pieces when it is Agent's turn
- * REWARD: Positive, Negative, & Neutral
- * EPISODE: An episode is a single training session for Agent. Ends when updateQTable() is called
- * Q-VALUE: Metrics used to evaluate actions at specific states
- * MODEL: Q(S,a,S') ─► Model "Q" is action "a" given state "S" results in "S'"
- * └► P(S'|S,a) = Probability of reaching a state "S'" if action "a" is taken in state "S"
- * "A" is the set of all possible actions
- * "A(s)" defines the set of actions that can be taken while in state "S"
- * POLICY: A mapping from "S" to "a"; a solution to the Markov decision process. Indicates
- * action "a" is to be taken while in state "S"
  * Class utilizes lombok @Getter, @Setter Member variables all have getters and setters
- *
  */
 @Getter
 @Setter
@@ -86,7 +65,7 @@ public final class Agent {
      * @param actionChoiceInt The index of the decision which resulted in stateKeyPrime. Should be
      *                        the return value of getActionInt()
      */
-    public void update(String stateKeyPrime, int actionChoiceInt) {
+    public void learn(String stateKeyPrime, int actionChoiceInt) {
         calculateMaxQPrime(stateKeyPrime);
         updateQValue(actionChoiceInt);
     }

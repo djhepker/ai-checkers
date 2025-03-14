@@ -70,10 +70,10 @@ public final class AIEngine {
         aiActions.performAction(actionChoiceInt);
 
         aiActions.updateDecisionContainer();
-        String stateKeyPrime = AITools.getEncryptedGameStateString(pMgr, isDusky);
+        String stateKeyPrime = aiActions.generateStateKey();
         inputAgent.setRho(aiActions.getDecisionReward());
 
-        inputAgent.update(stateKeyPrime, actionChoiceInt);
+        inputAgent.learn(stateKeyPrime, actionChoiceInt);
     }
 
     private void loadGameState(String gameTypeString, boolean lightChosen) {
