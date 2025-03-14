@@ -70,7 +70,7 @@ public final class GameEngine {
             if (!isTraining) {
                 SwingUtilities.invokeLater(() -> graphicsHandler.repaint());
             }
-            if (numTurnsWithoutCapture >= 50 || pMgr.sideDefeated()) {
+            if (numTurnsWithoutCapture >= 25 || pMgr.sideDefeated()) {
                 gameOver = true;
             }
             pMgr.updateAllPieces();
@@ -109,7 +109,7 @@ public final class GameEngine {
                         .append(totalTurnCount)
                         .append(" Turns without capture: ")
                         .append(numTurnsWithoutCapture);
-                if (numTurnsWithoutCapture <= 50) {
+                if (numTurnsWithoutCapture < 25) {
                     debugBuilder.append(" * Successful Game");
                 }
                 LOGGER.info(debugBuilder.toString());
