@@ -1,13 +1,12 @@
-package hepker.ai.utils;
+package hepker.engine.agentintegration;
 
-import hepker.game.utils.FileLoader;
+import hepker.utils.FileLoader;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public final class AgentStats {
-
     private static final String AGENT_WIN_KEY = "win_count=";
     private static final String AGENT_LOSS_KEY = "loss_count=";
     private static final String AGENT_WINRATE_KEY = "win_percentage=";
@@ -35,14 +34,14 @@ public final class AgentStats {
 
     public void processEpisode(boolean gameWon) {
         if (gameWon) {
-            agentWinCount++;
+            ++agentWinCount;
             fileMgr.updateLineByKey(AGENT_WIN_KEY, Integer.toString(agentWinCount));
         } else {
-            agentLossCount++;
+            ++agentLossCount;
             fileMgr.updateLineByKey(AGENT_LOSS_KEY, Integer.toString(agentLossCount));
         }
         BigDecimal winRatio = new BigDecimal(((float) agentWinCount / (agentWinCount + agentLossCount)) * 100)
-                .setScale(2, RoundingMode.HALF_UP);
+                .setScale(3, RoundingMode.HALF_UP);
         fileMgr.updateLineByKey(AGENT_WINRATE_KEY, winRatio.toString());
     }
 }

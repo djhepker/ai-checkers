@@ -1,10 +1,10 @@
 package hepker.engine.agentintegration;
 
 import hepker.ai.utils.DecisionHandler;
-import hepker.ai.utils.AITools;
 import hepker.game.entity.GameBoardPiece;
 import hepker.game.entity.movement.ActionNode;
 import hepker.game.gameworld.PieceManager;
+import lombok.Getter;
 
 import static hepker.game.entity.GameBoardPiece.PieceColor.DUSKY;
 
@@ -20,6 +20,7 @@ public final class AIDecisionHandler implements DecisionHandler {
     private int numEnemiesNaught;
     private int reasonableTurnCount;
 
+    @Getter
     private final GameBoardPiece.PieceColor pieceColor;
 
     private double decayingScalar;
@@ -27,9 +28,9 @@ public final class AIDecisionHandler implements DecisionHandler {
     private ActionNode[] decisionArray;
 
     public AIDecisionHandler(PieceManager inputPMgr, boolean isDusky) {
-        this.pieceColor = isDusky ? DUSKY : GameBoardPiece.PieceColor.LIGHT;
+        this.pieceColor = isDusky ? GameBoardPiece.PieceColor.DUSKY : GameBoardPiece.PieceColor.LIGHT;
         this.pMgr = inputPMgr;
-        this.reasonableTurnCount = 30;
+        this.reasonableTurnCount = 40;
         this.decayingScalar = 1.0;
     }
 
@@ -41,12 +42,12 @@ public final class AIDecisionHandler implements DecisionHandler {
         return decisionArray.length;
     }
 
-    public void movePiece(int moveChoice) {
+    public void movePiece(int moveChoice) throws ArrayIndexOutOfBoundsException {
         pMgr.machineMovePiece(decisionArray[moveChoice]);
         pMgr.updateAllPieces();
     }
 
-    public void setPreDecisionRewardParameters(int moveChoice) {
+    public void setPreDecisionRewardParameters(int moveChoice) throws ArrayIndexOutOfBoundsException {
         setPreDecisionRewardParameters(decisionArray[moveChoice]);
     }
 

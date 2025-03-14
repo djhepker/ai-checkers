@@ -1,14 +1,16 @@
 package hepker.engine.agentintegration;
 
 import hepker.ai.ai.Agent;
-import hepker.ai.utils.AgentStats;
-import hepker.ai.utils.EpisodeStatistics;
 import hepker.game.gameworld.PieceManager;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static hepker.game.entity.GameBoardPiece.PieceColor.DUSKY;
 
 /**
  * Class for connecting game to AI
@@ -16,39 +18,49 @@ import java.util.List;
 public final class AIEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(AIEngine.class);
 
-    private final boolean isDusky;
-
     private final List<AgentRecord> agents;
     private final PieceManager pMgr;
+    @Getter
+    @Setter
+    private static int numTurns = 0;
 
     private int agentTurnSwitch;
-    private int numTurns;
 
-    public AIEngine(PieceManager inputPMgr, boolean playerChooseLight, String gameTypeString) {
+    private String stateKey;
+
+    public AIEngine(PieceManager inputPMgr, boolean lightChosen, String gameTypeString) {
         this.agentTurnSwitch = 0;
-        this.isDusky = playerChooseLight;
+        this.stateKey = "";
         this.pMgr = inputPMgr;
         this.agents = new ArrayList<>();
-        this.numTurns = 0;
-        loadGameState(gameTypeString);
+        loadGameState(gameTypeString, lightChosen);
     }
 
     public void update() {
-        ++numTurns;
+        if (agentTurnSwitch == 0) {
+            ++numTurns;
+        }
         try {
             updateAgent(agents.get(agentTurnSwitch).agent(), agents.get(agentTurnSwitch).decisionHandler());
         } catch (Exception e) {
-            LOGGER.error("Agent Manager Exception", e);
+            StringBuilder errorBuilder = new StringBuilder()
+                    .append("Agent Manager Exception ")
+                    .append("During Agent ")
+                    .append(agentTurnSwitch)
+                    .append(" Turn ");
+            LOGGER.error(errorBuilder.toString(), e);
         }
     }
 
     private void updateAgent(Agent inputAgent, AIDecisionHandler inputDecisionHandler) {
-        String stateKey = Environment.getEncodedGameState(pMgr);
+        boolean isDusky = inputDecisionHandler.getPieceColor() == DUSKY;
+        stateKey = AITools.getEncryptedGameStateString(pMgr, isDusky);
         inputAgent.setStateKey(stateKey);
         inputDecisionHandler.updateDecisionContainer();
         int numDecisions = inputDecisionHandler.getNumDecisions();
         if (numDecisions == 0) {
             pMgr.flagGameOver();
+            LOGGER.info("{} Agent has no decisions.", inputDecisionHandler.getPieceColor());
             return;
         }
 
@@ -58,23 +70,23 @@ public final class AIEngine {
         inputDecisionHandler.movePiece(actionChoiceInt);
 
         inputDecisionHandler.updateDecisionContainer();
-        String stateKeyPrime = Environment.getEncodedGameState(pMgr);
-        inputAgent.updateRho(inputDecisionHandler.getDecisionReward());
+        String stateKeyPrime = AITools.getEncryptedGameStateString(pMgr, isDusky);
+        inputAgent.setRho(inputDecisionHandler.getDecisionReward());
 
         inputAgent.update(stateKeyPrime, actionChoiceInt);
     }
 
-    private void loadGameState(String gameTypeString) {
+    private void loadGameState(String gameTypeString, boolean lightChosen) {
         switch (gameTypeString) {
-            case "Agent Vs Player" -> generateAgent(false, isDusky);
-            case "Stochastic Vs Player" -> generateAgent(true, isDusky);
+            case "Agent Vs Player" -> generateAgent(false, lightChosen);
+            case "Stochastic Vs Player" -> generateAgent(true, lightChosen);
             case "Agent Vs Stochastic" -> {
-                generateAgent(false, false);
-                generateAgent(true, true);
+                generateAgent(true, !lightChosen);
+                generateAgent(false, lightChosen);
             }
             case "Agent vs Agent" -> {
-                generateAgent(false, false);
-                generateAgent(false, true);
+                generateAgent(false, !lightChosen);
+                generateAgent(false, lightChosen);
             }
             default -> throw new IllegalArgumentException("Invalid gameTypeString: " + gameTypeString);
         }
@@ -82,17 +94,14 @@ public final class AIEngine {
 
     public void finishGame(boolean gameWon) {
         new AgentStats("src/main/resources/data/agentstats").processEpisode(gameWon);
-        new EpisodeStatistics("src/main/resources/data/episode").processEpisode(numTurns);
-        for (AgentRecord agentRecord : agents) {
-            agentRecord.agent().finalizeQTableUpdate();
-        }
+        Agent.finalizeQTableUpdate();
     }
 
     public void flipAgentSwitch() {
         agentTurnSwitch ^= 1;
     }
 
-    public boolean agentOneTurn() {
+    public boolean agentZeroTurn() {
         return agentTurnSwitch == 0;
     }
 
@@ -105,7 +114,11 @@ public final class AIEngine {
         Agent zero = new Agent();
         if (isStochastic) {
             zero.setEpsilon(1.0);
+        } else {
+            zero.setEpsilon(6.0);
         }
         agents.add(new AgentRecord(zero, new AIDecisionHandler(pMgr, duskyAgent)));
+        LOGGER.info("Generated agent: stochastic={}, color={}, number: ",
+                isStochastic, duskyAgent ? "DUSKY" : "LIGHT", agents.size() - 1);
     }
 }

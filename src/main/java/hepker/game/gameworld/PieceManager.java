@@ -7,27 +7,20 @@ import hepker.engine.EntityCreator;
 import hepker.game.entity.GameBoardPiece;
 import lombok.Getter;
 
-import java.util.Arrays;
-
 public final class PieceManager {
     private final EntityCreator creator;
-    private final InputHandler input;
     @Getter
     private GameBoardPiece[] piecesContainer;
-    @Getter
-    private GameBoardPiece[] displayPieces;
     @Getter
     private int numDusky;
     @Getter
     private int numLight;
     private boolean gameOver;
 
-    public PieceManager(EntityCreator inputCreator, InputHandler inputInputHandler) {
+    public PieceManager(EntityCreator inputCreator) {
         this.creator = inputCreator;
         this.piecesContainer = generateBeginningCheckers();
-        this.input = inputInputHandler;
         updateAllPieces();
-        this.displayPieces = piecesContainer;
         this.gameOver = false;
     }
 
@@ -60,7 +53,7 @@ public final class PieceManager {
         return piecesContainer[y * 8 + x];
     }
 
-    public boolean movePiece(GameBoardPiece piece) {
+    public boolean movePiece(GameBoardPiece piece, InputHandler input) {
         int postX = input.getSelectedCol();
         int postY = input.getSelectedRow();
         if (getPiece(postX, postY) == null) {
@@ -99,24 +92,12 @@ public final class PieceManager {
         if (piece == null) {
             return false;
         }
-        if (Arrays.equals(piecesContainer, displayPieces)) {
-            piecesContainer[piece.getY() * 8 + piece.getX()] = piece;
-            displayPieces[piece.getY() * 8 + piece.getX()] = piece;
-        } else {
-            piecesContainer[piece.getY() * 8 + piece.getX()] = piece;
-            displayPieces[(7 - piece.getY()) * 8 + (7 - piece.getX())] = piece;
-        }
+        piecesContainer[piece.getY() * 8 + piece.getX()] = piece;
         return true;
     }
 
     public void nullifyPiece(int x, int y) {
-        if (Arrays.equals(piecesContainer, displayPieces)) {
-            piecesContainer[y * 8 + x] = null;
-            displayPieces[y * 8 + x] = null;
-        } else {
-            piecesContainer[y * 8 + x] = null;
-            displayPieces[(7 - y) * 8 + (7 - x)] = null;
-        }
+        piecesContainer[y * 8 + x] = null;
     }
 
     public int getNumPiecesInPlay() {
@@ -128,31 +109,6 @@ public final class PieceManager {
         }
         return count;
     }
-
-    /**
-     * Reverses all pieces in the game board, as if the board were rotated pi
-     */
-    public void reverseBoard() {
-        for (int left = 0, right = piecesContainer.length - 1; left < right; left++, right--) {
-            GameBoardPiece tmpL = piecesContainer[left];
-            if (tmpL != null) {
-                int xCoordinate = 7 - tmpL.getX();
-                int yCoordinate = 7 - tmpL.getY();
-                tmpL.setX(xCoordinate);
-                tmpL.setY(yCoordinate);
-            }
-            GameBoardPiece tmpR = piecesContainer[right];
-            if (tmpR != null) {
-                int xCoordinate2 = 7 - tmpR.getX();
-                int yCoordinate2 = 7 - tmpR.getY();
-                tmpR.setX(xCoordinate2);
-                tmpR.setY(yCoordinate2);
-            }
-            piecesContainer[left] = tmpR;
-            piecesContainer[right] = tmpL;
-        }
-    }
-
 
     private void processCapturedPieces(ActionNode actionNode) {
         CapturedNode capturedPiece = actionNode.getCapturedNodes();

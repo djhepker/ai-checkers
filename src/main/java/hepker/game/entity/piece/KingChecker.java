@@ -14,7 +14,7 @@ public final class KingChecker extends Checker {
     private final MovementManager moveMgr;
 
     public KingChecker(String name, int x, int y, BufferedImage image) {
-        super(name, x, y, image);
+        super(name, x, y, image, (short) 10);
         this.moveMgr = super.getMoveMgr();
     }
 

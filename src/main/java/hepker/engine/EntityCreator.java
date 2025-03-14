@@ -2,7 +2,7 @@ package hepker.engine;
 
 import hepker.game.entity.piece.Checker;
 import hepker.game.entity.piece.KingChecker;
-import hepker.game.utils.AssetManager;
+import hepker.utils.AssetManager;
 import hepker.game.entity.GameBoardPiece;
 
 import java.awt.Image;
@@ -24,7 +24,7 @@ public final class EntityCreator {
     }
 
     private Checker createChecker(String name, int x, int y) {
-        return new Checker(name, x, y, assetManager.getSpriteByName(name));
+        return new Checker(name, x, y, assetManager.getSpriteByName(name), (short) 5);
     }
 
     private KingChecker createKingChecker(String name, int x, int y) {

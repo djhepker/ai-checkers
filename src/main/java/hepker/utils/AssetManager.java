@@ -1,4 +1,4 @@
-package hepker.game.utils;
+package hepker.utils;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;

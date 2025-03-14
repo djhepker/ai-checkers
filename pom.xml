@@ -48,8 +48,8 @@
             <version>1.15.1</version>
         </dependency>
     </dependencies>
-    <build>
 
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
