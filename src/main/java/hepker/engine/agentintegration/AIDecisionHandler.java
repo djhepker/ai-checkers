@@ -34,21 +34,12 @@ public final class AIDecisionHandler implements DecisionHandler {
         this.decayingScalar = 1.0;
     }
 
+    public String generateStateKey() {
+        return AITools.getEncryptedGameStateString(pMgr, pieceColor == DUSKY);
+    }
+
     public void updateDecisionContainer() {
         decisionArray = AITools.getDecisionArray(pMgr, pieceColor);
-    }
-
-    public int getNumDecisions() {
-        return decisionArray.length;
-    }
-
-    public void movePiece(int moveChoice) throws ArrayIndexOutOfBoundsException {
-        pMgr.machineMovePiece(decisionArray[moveChoice]);
-        pMgr.updateAllPieces();
-    }
-
-    public void setPreDecisionRewardParameters(int moveChoice) throws ArrayIndexOutOfBoundsException {
-        setPreDecisionRewardParameters(decisionArray[moveChoice]);
     }
 
     public double getDecisionReward() {
@@ -66,6 +57,19 @@ public final class AIDecisionHandler implements DecisionHandler {
             --reasonableTurnCount;
             return summation;
         }
+    }
+
+    public int getNumDecisions() {
+        return decisionArray.length;
+    }
+
+    public void performAction(int moveChoice) throws ArrayIndexOutOfBoundsException {
+        pMgr.machineMovePiece(decisionArray[moveChoice]);
+        pMgr.updateAllPieces();
+    }
+
+    public void setPreDecisionRewardParameters(int moveChoice) throws ArrayIndexOutOfBoundsException {
+        setPreDecisionRewardParameters(decisionArray[moveChoice]);
     }
 
     public void setPreDecisionRewardParameters(ActionNode actionChosen) {

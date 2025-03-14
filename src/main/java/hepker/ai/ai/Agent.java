@@ -8,6 +8,15 @@ import lombok.Setter;
 import java.util.Random;
 
 /**
+ * To use Agent, you must perform the following:<br>
+ * i    agentObject.setStateKey(yourStateString);<br>
+ * ii   DecisionHandler.updateDecisionContainer()<br>
+ * iii  yourDecisionContainer.getNumDecisions()<br>
+ * iv   agentObject.getActionInt(numDecisions)<br>
+ * v    DecisionHandler.performAction(actionInt);<br>
+ * vi
+ *
+ *
  * STATE: A programmer-coded String value that is given to Agent to identify its learned values
  * ACTION: Moving pieces when it is Agent's turn
  * REWARD: Positive, Negative, & Neutral
@@ -50,7 +59,7 @@ public final class Agent {
      * rho = 0.0 (updated throughout training, set to 0.0 unless testing)
      * currentQ = 0.0 (updated by loadCurrentQ())
      * maxQPrime = 0.0 (This is updated by calculateMaxQPrime())
-     * All values can be mutated and obtained with their respective getters,setters
+     * All values can be mutated and obtained with their respective getters, setters
      *
      */
     public Agent() {
@@ -84,11 +93,11 @@ public final class Agent {
 
     /**
      * Retrieves the decision of the Agent as an int. Decision will be [0, numDecisions) with
-     * the only exception being if you are improperly creating stateKey
+     * the only exception being if you are improperly creating, setting stateKey
      *
      * @param numDecisions The upper limit of the number of decisions the Agent has to choose
      *                     from. Exclusive
-     * @return An int value of [0,numDecisions)
+     * @return An int value of [0, numDecisions)
      */
     public int getActionInt(int numDecisions) {
         if (Math.random() < epsilon) {
