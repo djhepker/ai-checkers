@@ -1,8 +1,6 @@
 package hepker.engine.agentintegration;
 
 import hepker.ai.ai.Agent;
-import hepker.ai.utils.AITools;
-import hepker.ai.utils.AgentStats;
 import hepker.game.gameworld.PieceManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -56,7 +54,7 @@ public final class AIEngine {
 
     private void updateAgent(Agent inputAgent, AIDecisionHandler inputDecisionHandler) {
         boolean isDusky = inputDecisionHandler.getPieceColor() == DUSKY;
-        stateKey = AITools.getByteEncryptedStateString(pMgr, isDusky);
+        stateKey = AITools.getEncryptedGameStateString(pMgr, isDusky);
         inputAgent.setStateKey(stateKey);
         inputDecisionHandler.updateDecisionContainer();
         int numDecisions = inputDecisionHandler.getNumDecisions();
@@ -66,14 +64,14 @@ public final class AIEngine {
             return;
         }
 
-        int actionChoiceInt = inputAgent.getActionInt(numDecisions); // exploit is not correct
+        int actionChoiceInt = inputAgent.getActionInt(numDecisions);
         inputAgent.loadCurrentQ(stateKey, actionChoiceInt);
         inputDecisionHandler.setPreDecisionRewardParameters(actionChoiceInt);
         inputDecisionHandler.movePiece(actionChoiceInt);
 
         inputDecisionHandler.updateDecisionContainer();
-        String stateKeyPrime = AITools.getByteEncryptedStateString(pMgr, isDusky);
-        inputAgent.updateRho(inputDecisionHandler.getDecisionReward());
+        String stateKeyPrime = AITools.getEncryptedGameStateString(pMgr, isDusky);
+        inputAgent.setRho(inputDecisionHandler.getDecisionReward());
 
         inputAgent.update(stateKeyPrime, actionChoiceInt);
     }
@@ -116,6 +114,8 @@ public final class AIEngine {
         Agent zero = new Agent();
         if (isStochastic) {
             zero.setEpsilon(1.0);
+        } else {
+            zero.setEpsilon(6.0);
         }
         agents.add(new AgentRecord(zero, new AIDecisionHandler(pMgr, duskyAgent)));
         LOGGER.info("Generated agent: stochastic={}, color={}, number: ",

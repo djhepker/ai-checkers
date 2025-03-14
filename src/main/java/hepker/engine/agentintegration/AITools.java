@@ -1,4 +1,4 @@
-package hepker.ai.utils;
+package hepker.engine.agentintegration;
 
 import hepker.game.entity.movement.ActionNode;
 import hepker.game.gameworld.PieceManager;
@@ -6,9 +6,7 @@ import hepker.game.entity.GameBoardPiece;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Comparator;
 
 /**
@@ -62,17 +60,17 @@ public final class AITools {
      * @param inputPMgr Necessary for evaluating pieces
      * @return String encoding of the gamestate
      */
-    public static String getByteEncryptedStateString(PieceManager inputPMgr, boolean isDusky) {
-        return intArrTo64Encoding(getStateArray(inputPMgr, isDusky));
+    public static String getEncryptedGameStateString(PieceManager inputPMgr, boolean isDusky) {
+        return encodeIntArrToString(getStateArray(inputPMgr, isDusky));
     }
 
     /**
-     * Base 64 encodes an int[] to a String representation
+     * Encodes an int[] to a String representation
      *
      * @param gameState 65-element int[] representing the gamestate
-     * @return Base64-encoded string
+     * @return String of gameboard pieces where empty spaces are shifted into their ASCII counterparts
      */
-    private static String intArrTo64Encoding(int[] gameState) {
+    private static String encodeIntArrToString(int[] gameState) {
         if (gameState == null) {
             LOGGER.error("Null gameState");
             throw new IllegalArgumentException("Null gameState");
@@ -80,11 +78,25 @@ public final class AITools {
             LOGGER.error(String.format("Invalid array length: %d", gameState.length));
             throw new IllegalArgumentException();
         }
-        ByteBuffer buffer = ByteBuffer.allocate(gameState.length * 4);
+        StringBuilder stateKeyBuilder = new StringBuilder();
+        int numberOfOpenSpaces = 0;
         for (int element : gameState) {
-            buffer.putInt(element);
+            if (element == 0) {
+                ++numberOfOpenSpaces;
+            } else if (numberOfOpenSpaces > 0) {
+                char compressedNullSpaces = (char) (31 + numberOfOpenSpaces); // Board is never larger than ascii
+                stateKeyBuilder.append(compressedNullSpaces)
+                        .append(element);
+                numberOfOpenSpaces = 0;
+            } else {
+                stateKeyBuilder.append(element);
+            }
         }
-        return Base64.getEncoder().encodeToString(buffer.array());
+        if (numberOfOpenSpaces > 0) {
+            char compressedNullSpaces = (char) (31 + numberOfOpenSpaces);
+            stateKeyBuilder.append(compressedNullSpaces);
+        }
+        return stateKeyBuilder.toString();
     }
 
     /**
@@ -107,7 +119,7 @@ public final class AITools {
     /**
      * Helper that changes Pieces into int
      *
-     * @param piece The given piece we are sconverting
+     * @param piece The given piece we are converting
      * @return an int representing the piece
      */
     private static int pieceToInt(GameBoardPiece piece) {

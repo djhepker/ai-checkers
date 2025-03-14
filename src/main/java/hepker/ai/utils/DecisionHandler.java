@@ -2,6 +2,7 @@ package hepker.ai.utils;
 
 /**
  * Outlines logic required by Agent for AI integration
+ *
  * */
 public interface DecisionHandler {
 
@@ -19,7 +20,7 @@ public interface DecisionHandler {
 
     /**
      * Implement logic to return the outcome of the Agent's decision. Reward is placed into learning calculation
-     * for future use.
+     * for future use. Output should be an argument to agentObject.setQValue()
      * @return The reward the Agent receives for choosing this action in this state.
      */
     double getDecisionReward();

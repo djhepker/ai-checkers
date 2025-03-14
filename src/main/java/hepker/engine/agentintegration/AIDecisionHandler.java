@@ -1,7 +1,6 @@
 package hepker.engine.agentintegration;
 
 import hepker.ai.utils.DecisionHandler;
-import hepker.ai.utils.AITools;
 import hepker.game.entity.GameBoardPiece;
 import hepker.game.entity.movement.ActionNode;
 import hepker.game.gameworld.PieceManager;
