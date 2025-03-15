@@ -1,10 +1,8 @@
 package hepker.ai.table;
 
-import hepker.utils.EnvLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Map;
@@ -12,8 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class DataManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataManager.class);
-    private static final String SQL_URL_KEY = "SQL_URL";
-    private static final String ENV_FILEPATH = ".env";
+    private static final String SQLKEY = "jdbc:sqlite:src/main/resources/data/q_values.db";
     private static final double FAILURE_RETURN_VALUE = 0.0;
 
     private final ConcurrentHashMap<String, double[]> updatedQValues;
@@ -21,15 +18,11 @@ public final class DataManager {
 
     public DataManager() {
         QValueRepository tempDb;
-        EnvLoader envLoader;
-        String sqlKey = "No URL";
         try {
-            envLoader = new EnvLoader(ENV_FILEPATH);
-            sqlKey = envLoader.get(SQL_URL_KEY);
-            tempDb = new QValueRepository(sqlKey);
-            LOGGER.info("Successfully initialized QValueRepository with URL: {}", sqlKey);
-        } catch (SQLException | IOException e) {
-            LOGGER.error("Failed to initialize QValueRepository with URL: {}", sqlKey, e);
+            tempDb = new QValueRepository(SQLKEY);
+            LOGGER.info("Successfully initialized QValueRepository with URL: {}", SQLKEY);
+        } catch (SQLException e) {
+            LOGGER.error("Failed to initialize QValueRepository with URL: {}", SQLKEY, e);
             throw new RuntimeException("Database initialization failed", e);
         }
         this.db = tempDb;
@@ -74,14 +67,13 @@ public final class DataManager {
                 resultArray = existingArray.clone();
             }
             resultArray[index] = inputQ;
-            // LOGGER.debug("Updated Q value for serialKey: {}, index: {}, value: {}", serialKey, index, inputQ);
             return resultArray;
         });
     }
 
     public void updateData() {
         try {
-            Map<String, double[]> snapshot = new ConcurrentHashMap<>(updatedQValues); // Snapshot for consistency
+            Map<String, double[]> snapshot = new ConcurrentHashMap<>(updatedQValues);
             if (!snapshot.isEmpty()) {
                 db.updateQTable(snapshot);
                 LOGGER.info("Successfully updated QTable with {} entries", updatedQValues.size());

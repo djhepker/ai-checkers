@@ -52,28 +52,28 @@ public final class AIEngine {
         }
     }
 
-    private void updateAgent(Agent inputAgent, AIDecisionHandler inputDecisionHandler) {
-        boolean isDusky = inputDecisionHandler.getPieceColor() == DUSKY;
-        stateKey = AITools.getEncryptedGameStateString(pMgr, isDusky);
+    private void updateAgent(Agent inputAgent, AIDecisionHandler aiActions) {
+        boolean isDusky = aiActions.getPieceColor() == DUSKY;
+        stateKey = aiActions.generateStateKey();
         inputAgent.setStateKey(stateKey);
-        inputDecisionHandler.updateDecisionContainer();
-        int numDecisions = inputDecisionHandler.getNumDecisions();
+        aiActions.updateDecisionContainer();
+        int numDecisions = aiActions.getNumDecisions();
         if (numDecisions == 0) {
             pMgr.flagGameOver();
-            LOGGER.info("{} Agent has no decisions.", inputDecisionHandler.getPieceColor());
+            LOGGER.info("{} Agent has no decisions.", aiActions.getPieceColor());
             return;
         }
 
         int actionChoiceInt = inputAgent.getActionInt(numDecisions);
         inputAgent.loadCurrentQ(stateKey, actionChoiceInt);
-        inputDecisionHandler.setPreDecisionRewardParameters(actionChoiceInt);
-        inputDecisionHandler.movePiece(actionChoiceInt);
+        aiActions.setPreDecisionRewardParameters(actionChoiceInt);
+        aiActions.performAction(actionChoiceInt);
 
-        inputDecisionHandler.updateDecisionContainer();
-        String stateKeyPrime = AITools.getEncryptedGameStateString(pMgr, isDusky);
-        inputAgent.setRho(inputDecisionHandler.getDecisionReward());
+        aiActions.updateDecisionContainer();
+        String stateKeyPrime = aiActions.generateStateKey();
+        inputAgent.setRho(aiActions.getDecisionReward());
 
-        inputAgent.update(stateKeyPrime, actionChoiceInt);
+        inputAgent.learn(stateKeyPrime, actionChoiceInt);
     }
 
     private void loadGameState(String gameTypeString, boolean lightChosen) {
