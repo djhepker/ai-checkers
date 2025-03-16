@@ -1,9 +1,9 @@
-package hepker.engine.agentintegration;
+package hepker.ai.agentintegration;
 
-import hepker.ai.utils.DecisionHandler;
 import hepker.game.entity.GameBoardPiece;
 import hepker.game.entity.movement.ActionNode;
 import hepker.game.gameworld.PieceManager;
+import hepker.utils.DecisionHandler;
 import lombok.Getter;
 
 import static hepker.game.entity.GameBoardPiece.PieceColor.DUSKY;

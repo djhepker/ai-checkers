@@ -1,4 +1,4 @@
-package hepker.engine.agentintegration;
+package hepker.ai.agentintegration;
 
 import hepker.utils.FileLoader;
 
