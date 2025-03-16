@@ -1,4 +1,4 @@
-package hepker.engine.agentintegration;
+package hepker.ai.agentintegration;
 
 import hepker.game.entity.movement.ActionNode;
 import hepker.game.gameworld.PieceManager;

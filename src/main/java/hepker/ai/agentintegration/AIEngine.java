@@ -1,6 +1,6 @@
-package hepker.engine.agentintegration;
+package hepker.ai.agentintegration;
 
-import hepker.ai.ai.Agent;
+import hepker.ai.Agent;
 import hepker.game.gameworld.PieceManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -94,7 +94,7 @@ public final class AIEngine {
 
     public void finishGame(boolean gameWon) {
         new AgentStats("src/main/resources/data/agentstats").processEpisode(gameWon);
-        Agent.finalizeQTableUpdate();
+        Agent.pushQTableUpdate();
     }
 
     public void flipAgentSwitch() {

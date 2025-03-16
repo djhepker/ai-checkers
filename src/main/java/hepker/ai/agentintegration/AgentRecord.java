@@ -1,6 +1,6 @@
-package hepker.engine.agentintegration;
+package hepker.ai.agentintegration;
 
-import hepker.ai.ai.Agent;
+import hepker.ai.Agent;
 
 record AgentRecord(Agent agent, AIDecisionHandler decisionHandler) {
 

@@ -1,6 +1,6 @@
 package hepker.engine;
 
-import hepker.engine.agentintegration.AIEngine;
+import hepker.ai.agentintegration.AIEngine;
 import hepker.game.graphics.GraphicsHandler;
 import hepker.game.gameworld.PieceManager;
 import hepker.game.graphics.InputHandler;
