@@ -18,7 +18,7 @@
         <dependency>
             <groupId>hepker</groupId>
             <artifactId>jql</artifactId>
-            <version>0.1.1</version>
+            <version>0.3.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>

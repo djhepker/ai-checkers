@@ -49,13 +49,13 @@ public final class AIDecisionHandler implements AIEnvironment {
         double ratioPieces = alliedPieces / (pieceColor == DUSKY ? pMgr.getNumLight() : pMgr.getNumDusky())
                 - alliedPieces / numEnemiesNaught;
         int pointsEarned = pointsFromDecision - AITools.getMaximumOpponentReward(pMgr, pieceColor);
-        double summation = ratioOptions + ratioPieces + pointsEarned;
+        double reward = ratioOptions + ratioPieces + pointsEarned;
         if (reasonableTurnCount < 0) {
             decayingScalar -= 0.1;
-            return summation > 0 ? decayingScalar * summation : -Math.abs(summation * decayingScalar);
+            return reward > 0 ? decayingScalar * reward : -Math.abs(reward * decayingScalar);
         } else {
             --reasonableTurnCount;
-            return summation;
+            return reward;
         }
     }
 
