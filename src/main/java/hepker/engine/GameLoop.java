@@ -1,6 +1,9 @@
 package hepker.engine;
 
+import hepker.ai.agentintegration.AgentStats;
+import hepker.utils.CSVHelper;
 import hepker.utils.EpisodeStatistics;
+import hepker.utils.FileLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,5 +68,13 @@ public final class GameLoop implements Runnable {
             Thread.currentThread().interrupt();
         }
         LOGGER.info("Game loop finished");
+    }
+
+    public void trainingProgress() {
+        String[] elements = new String[3];
+        elements[0] = "Average Turn Count per Epoch: " + CSVHelper.getAvgTurnCount();
+        elements[1] = AgentStats.getWinRatio();
+        elements[2] = "-";
+        FileLoader.appendLinesToFile("src/main/resources/data/agentPerformancePerSession", elements);
     }
 }

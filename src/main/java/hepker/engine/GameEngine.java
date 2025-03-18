@@ -42,7 +42,7 @@ public final class GameEngine {
         if (isTraining) {
             this.lightChosen = true;
             this.hasPlayer = false;
-            this.agentMgr = new AIEngine(pMgr, lightChosen, "Agent Vs Stochastic");
+            this.agentMgr = new AIEngine(pMgr, lightChosen, "Agent Vs Agent");
         } else {
             String gameMode = graphicsHandler.showGameModeDialog();
             this.hasPlayer = gameMode.endsWith("Player");

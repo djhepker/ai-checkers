@@ -17,7 +17,6 @@ public final class AIDecisionHandler implements AIEnvironment {
     private int numOptionsNaught;
     private int numEnemyOptionsNaught;
     private int pointsFromDecision;
-    private int numEnemiesNaught;
     private int reasonableTurnCount;
 
     @Getter
@@ -43,13 +42,13 @@ public final class AIDecisionHandler implements AIEnvironment {
     }
 
     public double getDecisionReward() {
+        if (AITools.getNumOpponentOptions(pMgr, pieceColor) == 0) {
+            return decayingScalar > 0.10 ? 100.0 * decayingScalar : 10.0;
+        }
         double ratioOptions = (double) decisionArray.length / AITools.getNumOpponentOptions(pMgr, pieceColor)
                 - (double) numOptionsNaught / numEnemyOptionsNaught;
-        double alliedPieces = pieceColor == DUSKY ? pMgr.getNumDusky() : pMgr.getNumLight();
-        double ratioPieces = alliedPieces / (pieceColor == DUSKY ? pMgr.getNumLight() : pMgr.getNumDusky())
-                - alliedPieces / numEnemiesNaught;
         int pointsEarned = pointsFromDecision - AITools.getMaximumOpponentReward(pMgr, pieceColor);
-        double reward = ratioOptions + ratioPieces + pointsEarned;
+        double reward = ratioOptions + pointsEarned;
         if (reasonableTurnCount < 0) {
             decayingScalar -= 0.1;
             return reward > 0 ? decayingScalar * reward : -Math.abs(reward * decayingScalar);
@@ -73,7 +72,6 @@ public final class AIDecisionHandler implements AIEnvironment {
     }
 
     public void setPreDecisionRewardParameters(ActionNode actionChosen) {
-        this.numEnemiesNaught = pieceColor == DUSKY ? pMgr.getNumLight() : pMgr.getNumDusky();
         this.numOptionsNaught = decisionArray.length;
         this.numEnemyOptionsNaught = AITools.getNumOpponentOptions(pMgr, pieceColor);
         pointsFromDecision = actionChosen.getReward();

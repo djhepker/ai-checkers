@@ -22,6 +22,8 @@ public final class CSVHelper {
     private static EpochData tailData = null;
     @Getter
     private static int dataSize = 0;
+    @Getter
+    private static double avgTurnCount = 0.0;
 
     private CSVHelper() {
 
@@ -90,6 +92,7 @@ public final class CSVHelper {
                                 cursor.sumTurnsPlayed));
                 cursor = cursor.previous;
             }
+            avgTurnCount = headData.turnAverage;
             headData = null;
             tailData = null;
             dataSize = 0;

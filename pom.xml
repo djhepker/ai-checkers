@@ -16,7 +16,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>hepker</groupId>
+            <groupId>io.github.djhepker</groupId>
             <artifactId>jql</artifactId>
             <version>0.3.1</version>
             <exclusions>

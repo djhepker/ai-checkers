@@ -1,6 +1,7 @@
 package hepker.ai.agentintegration;
 
 import hepker.utils.FileLoader;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -13,6 +14,9 @@ public final class AgentStats {
     private final FileLoader fileMgr;
     private int agentWinCount;
     private int agentLossCount;
+
+    @Getter
+    private static String winRatio = null;
 
     public AgentStats(String filePath) {
         this.fileMgr = new FileLoader(filePath);
@@ -40,8 +44,8 @@ public final class AgentStats {
             ++agentLossCount;
             fileMgr.updateLineByKey(AGENT_LOSS_KEY, Integer.toString(agentLossCount));
         }
-        BigDecimal winRatio = new BigDecimal(((float) agentWinCount / (agentWinCount + agentLossCount)) * 100)
-                .setScale(3, RoundingMode.HALF_UP);
-        fileMgr.updateLineByKey(AGENT_WINRATE_KEY, winRatio.toString());
+        winRatio = BigDecimal.valueOf(((float) agentWinCount / (agentWinCount + agentLossCount)) * 100)
+                .setScale(3, RoundingMode.HALF_UP).toString();
+        fileMgr.updateLineByKey(AGENT_WINRATE_KEY, winRatio);
     }
 }

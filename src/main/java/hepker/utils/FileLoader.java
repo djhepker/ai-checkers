@@ -1,12 +1,13 @@
 package hepker.utils;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 public final class FileLoader {
-
     private final String filePath;
 
     public FileLoader(String inputFilePath) {
@@ -37,5 +38,16 @@ public final class FileLoader {
 
     public void writeLines(List<String> lines) throws IOException {
         Files.write(Path.of(filePath), lines);
+    }
+
+    public static void appendLinesToFile(String filePath, String[] lines) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

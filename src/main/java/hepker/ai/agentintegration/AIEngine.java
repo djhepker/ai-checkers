@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import static hepker.game.entity.GameBoardPiece.PieceColor.DUSKY;
-
 /**
  * Class for connecting game to AI
  * */
@@ -53,7 +51,6 @@ public final class AIEngine {
     }
 
     private void updateAgent(Agent inputAgent, AIDecisionHandler aiActions) {
-        boolean isDusky = aiActions.getPieceColor() == DUSKY;
         stateKey = aiActions.generateStateKey();
         inputAgent.setStateKey(stateKey);
         aiActions.updateDecisionContainer();
@@ -84,9 +81,12 @@ public final class AIEngine {
                 generateAgent(true, !lightChosen);
                 generateAgent(false, lightChosen);
             }
-            case "Agent vs Agent" -> {
+            case "Agent Vs Agent" -> {
                 generateAgent(false, !lightChosen);
                 generateAgent(false, lightChosen);
+                for (AgentRecord record : agents) {
+                    record.agent.setEpsilon(0.6);
+                }
             }
             default -> throw new IllegalArgumentException("Invalid gameTypeString: " + gameTypeString);
         }
@@ -120,5 +120,9 @@ public final class AIEngine {
         agents.add(new AgentRecord(zero, new AIDecisionHandler(pMgr, duskyAgent)));
         LOGGER.info("Generated agent: stochastic={}, color={}, number: ",
                 isStochastic, duskyAgent ? "DUSKY" : "LIGHT", agents.size() - 1);
+    }
+
+    record AgentRecord(Agent agent, AIDecisionHandler decisionHandler) {
+
     }
 }
